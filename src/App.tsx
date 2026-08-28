@@ -29,6 +29,26 @@ export function App() {
 
   const [output, setOutput] = useState<FullReconciliationOutput | null>(null);
 
+  // Global Keyboard Navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if typing in an input
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      switch (e.key) {
+        case '1': setCurrentView('dashboard'); break;
+        case '2': setCurrentView('reconciler'); break;
+        case '3': setCurrentView('exceptions'); break;
+        case '4': setCurrentView('bundle_lab'); break;
+        case '5': setCurrentView('cash_forecast'); break;
+        case '6': setCurrentView('data_hub'); break;
+        case '7': setCurrentView('gaap_audit'); break;
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   // Run on mount or dataset change
   useEffect(() => {
     const runInitial = async () => {

@@ -265,3 +265,46 @@ body {
   from { transform: translateX(100%); }
   to { transform: translateX(0); }
 }
+
+/* ==========================================================================
+   PRINT STYLES FOR GAAP AUDIT (10/10 Demo-ability)
+   ========================================================================== */
+@media print {
+  body, html {
+    background: white !important;
+    color: black !important;
+  }
+  * {
+    color: black !important;
+    background: transparent !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+    border-color: #ccc !important;
+  }
+  
+  /* Hide sidebar and non-essential UI */
+  nav, .sidebar, button, .pulse-indicator {
+    display: none !important;
+  }
+
+  /* Expand main content */
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  .terminal-panel {
+    border: 1px solid #000 !important;
+    margin-bottom: 2rem !important;
+    page-break-inside: avoid;
+  }
+
+  table {
+    border-collapse: collapse !important;
+  }
+
+  th, td {
+    border-bottom: 1px solid #ccc !important;
+  }
+}

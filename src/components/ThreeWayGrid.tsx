@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import type {
   BankTransaction,
   GatewayRecord,
@@ -26,6 +26,24 @@ export const ThreeWayGrid: React.FC<ThreeWayGridProps> = ({
   const [activeTab, setActiveTab] = useState<'ALL' | 'FAST_PATH' | 'AGENTIC' | 'EXCEPTIONS'>('ALL');
   const [cliFilter, setCliFilter] = useState('');
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Focus search if user presses / (and isn't already focused)
+      if (e.key === '/' && document.activeElement !== inputRef.current) {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+      // Clear and blur if user presses Esc
+      if (e.key === 'Escape' && document.activeElement === inputRef.current) {
+        setCliFilter('');
+        inputRef.current?.blur();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const toggleRow = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -115,8 +133,9 @@ export const ThreeWayGrid: React.FC<ThreeWayGridProps> = ({
       <div style={{ display: 'flex', alignItems: 'center', background: 'var(--bg-root)', padding: '0.5rem 1rem', borderBottom: '1px solid var(--border-hairline)' }}>
         <span className="font-mono pulse-indicator" style={{ color: 'var(--accent-amber)', marginRight: '0.5rem', fontWeight: 'bold' }}>&gt;</span>
         <input 
+          ref={inputRef}
           type="text" 
-          placeholder="filter --id=* --status=*"
+          placeholder="filter --id=* --status=* (Press / to focus)"
           value={cliFilter}
           onChange={(e) => setCliFilter(e.target.value)}
           className="font-mono"
