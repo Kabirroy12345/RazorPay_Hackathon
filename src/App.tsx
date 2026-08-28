@@ -12,6 +12,7 @@ import { ExceptionResolutionView } from './components/views/ExceptionResolutionV
 import { CashForecasterView } from './components/views/CashForecasterView';
 import { DataHubView } from './components/views/DataHubView';
 import { GAAPAuditView } from './components/views/GAAPAuditView';
+import { LandingPageView } from './components/views/LandingPageView';
 import './styles/index.css';
 
 export function App() {
@@ -21,6 +22,7 @@ export function App() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedMatch, setSelectedMatch] = useState<MatchResult | null>(null);
   const [isBooting, setIsBooting] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsBooting(false), 1500);
@@ -133,6 +135,10 @@ export function App() {
     setOutput(newOutput);
     setIsProcessing(false);
   };
+
+  if (!isAuthenticated) {
+    return <LandingPageView onAuthSuccess={() => setIsAuthenticated(true)} />;
+  }
 
   if (isBooting) {
     return (
