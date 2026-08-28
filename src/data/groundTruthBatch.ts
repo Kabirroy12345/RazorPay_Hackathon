@@ -1,7 +1,7 @@
 import type { BankTransaction, GatewayRecord, ERPInvoice, GroundTruthEntry } from '../types/finance';
 
 /**
- * Frozen 52-Record Ground-Truth Dataset (aura-ledger.jsx Specification)
+ * Frozen 52-Record Ground-Truth Dataset (omnisettle-ai.jsx Specification)
  * 
  * 1. 35 Clean 1-to-1 Matches (Deterministic amounts, exact reference ID cross-referencing)
  * 2. 8 Records forming Adversarial Bundle (₹52,000 across 8 ERP invoices -> 1 bank payout of ₹48,272.80 after 2% fee, 18% GST, and ₹2,500 refund on ORD-BUN-04)

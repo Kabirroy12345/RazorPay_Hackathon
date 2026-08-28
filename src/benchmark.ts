@@ -7,7 +7,7 @@ import { executeFullReconciliation } from './engine/reconciler.js';
 
 function runTerminalBenchmark() {
   console.log('\n================================================================');
-  console.log('       AURA LEDGER — AI FINANCE CONTROLLER BENCHMARK            ');
+  console.log('       OMNISETTLE AI — FINANCE CONTROLLER BENCHMARK            ');
   console.log('       Razorpay Track 04: 3-Way Reconciliation Benchmark        ');
   console.log('================================================================\n');
 

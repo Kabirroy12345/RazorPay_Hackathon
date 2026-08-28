@@ -76,7 +76,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <ShieldCheck size={26} color="var(--accent-amber)" />
             <span className="font-mono" style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--text-primary)', letterSpacing: '0.05em' }}>
-              AURA_LEDGER
+              OMNI_SETTLE
             </span>
           </div>
           <div className="glowing-badge" style={{ fontSize: '0.7rem', padding: '0.2rem 0.6rem' }}>
@@ -306,7 +306,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
         <div id="architecture" style={{ marginBottom: '5rem' }}>
           <div className="terminal-panel" style={{ padding: '2.5rem', textAlign: 'center' }}>
             <span className="font-mono" style={{ color: 'var(--accent-amber)', fontSize: '0.8rem', fontWeight: 'bold' }}>[ SYSTEM_PIPELINE ]</span>
-            <h2 className="font-mono" style={{ fontSize: '1.75rem', color: 'var(--text-primary)', margin: '0.5rem 0 2rem' }}>How Aura Ledger Processes Your Data</h2>
+            <h2 className="font-mono" style={{ fontSize: '1.75rem', color: 'var(--text-primary)', margin: '0.5rem 0 2rem' }}>How OmniSettle AI Processes Your Data</h2>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '1rem', position: 'relative' }}>
               <div style={{ background: 'var(--bg-root)', padding: '1rem', border: '1px solid var(--border-hairline)' }}>
@@ -345,7 +345,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
         {/* FOOTER */}
         <div style={{ textAlign: 'center', borderTop: '1px solid var(--border-hairline)', paddingTop: '2rem' }}>
           <p className="font-mono" style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-            AURA_LEDGER v4.1 • Built for Razorpay Buildathon 2026 • Track 4: FinTech AI & Automation
+            OMNI_SETTLE v4.1 • Built for Razorpay Buildathon 2026 • Track 4: FinTech AI & Automation
           </p>
         </div>
       </div>

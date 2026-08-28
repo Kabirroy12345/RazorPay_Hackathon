@@ -15,7 +15,7 @@ app.use(express.json());
 app.use('/api', resolveRouter);
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Aura Ledger Backend Running' });
+  res.json({ status: 'ok', message: 'OmniSettle AI Backend Running' });
 });
 
 app.listen(PORT, () => {

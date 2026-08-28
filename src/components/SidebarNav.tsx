@@ -67,7 +67,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
           />
           <div>
             <div style={{ fontSize: '1.15rem', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '0.02em', fontFamily: 'var(--font-mono)' }}>
-              AURA_LEDGER
+              OMNI_SETTLE
             </div>
             <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.05em' }}>
               SYS/AUDIT

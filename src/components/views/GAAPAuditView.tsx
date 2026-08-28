@@ -129,7 +129,7 @@ export const GAAPAuditView: React.FC<GAAPAuditViewProps> = ({ output, activeData
           <div>
             <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Digital Controller Signature</div>
             <div style={{ fontSize: '1.15rem', fontFamily: 'cursive', color: 'var(--accent-amber)', marginTop: '0.2rem' }}>
-              Aura Ledger Autonomous AI Proofer
+              OmniSettle Autonomous AI Proofer
             </div>
             <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
               SHA-256 HASH: 8f9b2c4e1a6d3e8f7b5a4c2e1d0f9a8b

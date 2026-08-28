@@ -1,10 +1,10 @@
-# 🚀 Aura Ledger
+# 🚀 OmniSettle AI
 
-![Aura Ledger Banner](https://images.unsplash.com/photo-1640340434855-6084b1f4901c?q=80&w=1200&auto=format&fit=crop)
+![OmniSettle AI Banner](https://images.unsplash.com/photo-1640340434855-6084b1f4901c?q=80&w=1200&auto=format&fit=crop)
 
-**Aura Ledger** is an advanced, autonomous AI-powered financial reconciliation terminal built for the **Razorpay Buildathon**. It completely automates the tedious process of reconciling complex, multi-party financial data across Bank Statements, Payment Gateways, and ERP systems.
+**OmniSettle AI** is an advanced, autonomous AI-powered financial reconciliation terminal built for the **Razorpay Buildathon**. It completely automates the tedious process of reconciling complex, multi-party financial data across Bank Statements, Payment Gateways, and ERP systems.
 
-Designed with a strict, high-density Wall Street financial terminal aesthetic, Aura Ledger looks and feels like a professional trading instrument while packing state-of-the-art agentic AI capabilities under the hood.
+Designed with a strict, high-density Wall Street financial terminal aesthetic, OmniSettle AI looks and feels like a professional trading instrument while packing state-of-the-art agentic AI capabilities under the hood.
 
 ---
 
@@ -79,7 +79,7 @@ Make sure you have Node.js installed on your machine. You will also need an Anth
 
 ## 🏆 Built for the Razorpay Buildathon
 
-This project was built from the ground up to showcase the power of Autonomous AI in solving real-world FinTech operational bottlenecks. By combining deterministic matching with agentic AI reasoning, Aura Ledger achieves 100% reconciliation accuracy while requiring zero human intervention for complex bundled payouts.
+This project was built from the ground up to showcase the power of Autonomous AI in solving real-world FinTech operational bottlenecks. By combining deterministic matching with agentic AI reasoning, OmniSettle AI achieves 100% reconciliation accuracy while requiring zero human intervention for complex bundled payouts.
 
 > *"Reconciliation isn't just about matching numbers; it's about proving the math behind the money."*
 

@@ -145,7 +145,7 @@ export function App() {
       <div style={{ display: 'flex', minHeight: '100vh', background: '#000', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
         <div style={{ width: '400px' }}>
           <div className="font-mono data-flicker" style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '1rem' }}>
-            AURA_OS v4.1.2 [KERNEL_LOAD]<br/>
+            OMNI_OS v4.1.2 [KERNEL_LOAD]<br/>
             MEMORY_ALLOC... OK<br/>
             MOUNTING_LEDGERS... OK<br/>
             INIT_AI_ENGINE... OK

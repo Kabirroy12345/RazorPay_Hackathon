@@ -24,7 +24,7 @@ export const HeaderMetrics: React.FC<HeaderMetricsProps> = ({
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.35rem' }}>
             <h1 className="font-mono" style={{ fontSize: '1.85rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '0.02em' }}>
-              AURA_LEDGER
+              OMNI_SETTLE
             </h1>
             <span className="badge badge-amber">
               SYS_AUDIT

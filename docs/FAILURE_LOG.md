@@ -1,4 +1,4 @@
-# Failure Log: Aura Ledger
+# Failure Log: OmniSettle AI
 
 This log documents genuine API failures, malformed data edge cases, and systemic breakage encountered during the development of the LLM-backed agentic resolver, along with the implemented self-healing solutions.
 

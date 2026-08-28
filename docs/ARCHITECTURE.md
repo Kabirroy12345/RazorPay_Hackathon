@@ -1,4 +1,4 @@
-# Aura Ledger Architecture
+# OmniSettle AI Architecture
 
 ## Data Flow Diagram
 
