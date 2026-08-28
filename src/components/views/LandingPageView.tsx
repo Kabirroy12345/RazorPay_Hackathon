@@ -2,19 +2,13 @@ import React, { useState } from 'react';
 import { 
   ArrowRight, 
   ShieldCheck, 
-  Lock, 
-  Mail, 
-  User, 
   Zap, 
   Cpu, 
   AlertTriangle, 
   FileText, 
-  CheckCircle2, 
   X, 
   Sparkles, 
-  Activity, 
-  Database,
-  ExternalLink
+  Database
 } from 'lucide-react';
 
 interface LandingPageViewProps {

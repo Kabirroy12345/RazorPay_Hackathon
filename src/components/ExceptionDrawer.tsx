@@ -22,7 +22,6 @@ export const ExceptionDrawer: React.FC<ExceptionDrawerProps> = ({
 
   useEffect(() => {
     if (!selectedMatch) return;
-    setVisibleLines(0);
     const interval = setInterval(() => {
       setVisibleLines(prev => {
         if (prev >= selectedMatch.reasoningTrace.length) {
@@ -32,7 +31,10 @@ export const ExceptionDrawer: React.FC<ExceptionDrawerProps> = ({
         return prev + 1;
       });
     }, 150);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      setVisibleLines(0);
+    };
   }, [selectedMatch]);
 
   if (!selectedMatch) return null;
