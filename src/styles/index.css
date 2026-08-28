@@ -1,0 +1,267 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-root: #0A0A0A;
+  --bg-surface: #141414;
+  
+  --border-hairline: #2A2A2A;
+  --border-hover: #4A4A4A;
+  
+  --text-primary: #EDEDED;
+  --text-muted: #8A8A8A;
+  
+  --accent-amber: #D9A441;
+  --accent-red: #C0524A;
+  
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-root);
+  background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-blend-mode: overlay;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Scrollbar styling - minimal/flat */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-root);
+  border-left: 1px solid var(--border-hairline);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-hairline);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+.app-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Base structural panel with Cascade Animation */
+.terminal-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-hairline);
+  box-shadow: none;
+  animation: panel-cascade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.terminal-panel:nth-child(1) { animation-delay: 0.05s; }
+.terminal-panel:nth-child(2) { animation-delay: 0.10s; }
+.terminal-panel:nth-child(3) { animation-delay: 0.15s; }
+.terminal-panel:nth-child(4) { animation-delay: 0.20s; }
+.terminal-panel:nth-child(5) { animation-delay: 0.25s; }
+.terminal-panel:nth-child(6) { animation-delay: 0.30s; }
+.terminal-panel:nth-child(7) { animation-delay: 0.35s; }
+.terminal-panel:nth-child(8) { animation-delay: 0.40s; }
+.terminal-panel:nth-child(9) { animation-delay: 0.45s; }
+.terminal-panel:nth-child(10) { animation-delay: 0.50s; }
+
+/* Badges / Labels with Scanning Animation */
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.4rem;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid currentColor;
+  position: relative;
+  overflow: hidden;
+}
+
+.badge::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  animation: badge-scan 3s infinite linear;
+}
+
+.badge-amber {
+  color: var(--accent-amber);
+  background: rgba(217, 164, 65, 0.05);
+}
+
+.badge-red {
+  color: var(--accent-red);
+  background: rgba(192, 82, 74, 0.05);
+}
+
+/* Flat action buttons with hover/active animations */
+.btn-terminal {
+  background: var(--bg-root);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--border-hairline);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.btn-terminal:hover:not(:disabled) {
+  border-color: var(--border-hover);
+  background: #1C1C1C;
+  transform: scale(1.02);
+}
+
+.btn-terminal:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn-terminal:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-terminal.primary {
+  color: var(--bg-root);
+  background: var(--text-primary);
+  border-color: var(--text-primary);
+}
+
+.btn-terminal.primary:hover:not(:disabled) {
+  background: #FFFFFF;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+}
+
+/* Tables with row hover glint animations */
+.terminal-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  cursor: crosshair;
+}
+
+.terminal-table th {
+  padding: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-hairline);
+  background: var(--bg-surface);
+}
+
+.terminal-table td {
+  padding: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-hairline);
+  position: relative;
+}
+
+.terminal-table tr {
+  transition: background 0.15s ease;
+}
+
+.terminal-table tr:hover {
+  background: var(--bg-surface) !important;
+}
+
+.terminal-table tr:hover td::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--text-muted);
+}
+
+/* Minimal Utilities & Data Streams (Animations) */
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+.data-flicker {
+  animation: data-flicker 0.6s steps(4, end);
+}
+
+.pulse-indicator {
+  animation: pulse-op 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.glitch-shake {
+  animation: fault-shake 0.3s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+.drawer-slide-in {
+  animation: drawer-slide 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Keyframes */
+@keyframes panel-cascade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes badge-scan {
+  0% { left: -100%; }
+  20% { left: 200%; }
+  100% { left: 200%; }
+}
+
+@keyframes fault-shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+@keyframes pulse-op {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@keyframes data-flicker {
+  0% { opacity: 0.2; }
+  25% { opacity: 0.8; }
+  50% { opacity: 0.1; }
+  75% { opacity: 0.9; }
+  100% { opacity: 1; }
+}
+
+@keyframes drawer-slide {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
