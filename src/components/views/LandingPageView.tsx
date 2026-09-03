@@ -13,9 +13,10 @@ import {
 
 interface LandingPageViewProps {
   onAuthSuccess: () => void;
+  onOpenMovableUI?: () => void;
 }
 
-export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
+export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess, onOpenMovableUI }) => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -91,6 +92,15 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            {onOpenMovableUI && (
+              <button 
+                onClick={onOpenMovableUI} 
+                className="btn-terminal" 
+                style={{ fontSize: '0.8rem', padding: '0.45rem 0.85rem', borderColor: 'rgba(56, 189, 248, 0.4)', color: '#38bdf8' }}
+              >
+                🎨 MOVABLE TILES
+              </button>
+            )}
             <button 
               onClick={onAuthSuccess} 
               className="btn-terminal primary" 

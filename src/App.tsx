@@ -13,7 +13,7 @@ import { CashForecasterView } from './components/views/CashForecasterView';
 import { DataHubView } from './components/views/DataHubView';
 import { GAAPAuditView } from './components/views/GAAPAuditView';
 import { LandingPageView } from './components/views/LandingPageView';
-import { LoadingSplashView } from './components/views/LoadingSplashView';
+import { AdobeMaxMosaicView } from './components/views/AdobeMaxMosaicView';
 import './styles/index.css';
 
 export function App() {
@@ -139,11 +139,23 @@ export function App() {
   };
 
   if (showSplash) {
-    return <LoadingSplashView onComplete={() => setShowSplash(false)} />;
+    return (
+      <AdobeMaxMosaicView 
+        onEnter={() => {
+          setShowSplash(false);
+          setIsAuthenticated(true);
+        }} 
+      />
+    );
   }
 
   if (!isAuthenticated) {
-    return <LandingPageView onAuthSuccess={() => setIsAuthenticated(true)} />;
+    return (
+      <LandingPageView 
+        onAuthSuccess={() => setIsAuthenticated(true)} 
+        onOpenMovableUI={() => setShowSplash(true)}
+      />
+    );
   }
 
   if (isBooting) {
@@ -181,6 +193,7 @@ export function App() {
         exceptionCount={output.metrics.exceptionCount}
         isMockMode={output.isMockMode}
         onSelectView={view => setCurrentView(view)}
+        onOpenMovableUI={() => setShowSplash(true)}
       />
 
       {/* Main Active Module Content View */}

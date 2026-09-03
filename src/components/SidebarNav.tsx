@@ -17,6 +17,7 @@ interface SidebarNavProps {
   exceptionCount: number;
   isMockMode?: boolean;
   onSelectView: (view: AppView) => void;
+  onOpenMovableUI?: () => void;
 }
 
 export const SidebarNav: React.FC<SidebarNavProps> = ({
@@ -25,6 +26,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
   exceptionCount,
   isMockMode,
   onSelectView,
+  onOpenMovableUI,
 }) => {
   const navItems: Array<{ id: AppView; label: string; icon: React.ReactNode; badge?: string | number }> = [
     { id: 'dashboard', label: 'Executive Dashboard', icon: <LayoutDashboard size={18} /> },
@@ -161,10 +163,32 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         </nav>
       </div>
 
-      {/* Footer Security Badge */}
-      <div style={{ borderTop: '1px solid var(--border-hairline)', paddingTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--text-muted)', fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}>
-        <Lock size={14} className="pulse-indicator" />
-        <span className="data-flicker">SECURED_TRACK_04</span>
+      {/* Footer Security Badge & Movable UI shortcut */}
+      <div style={{ borderTop: '1px solid var(--border-hairline)', paddingTop: '1rem' }}>
+        {onOpenMovableUI && (
+          <button
+            onClick={onOpenMovableUI}
+            className="btn-terminal"
+            style={{
+              width: '100%',
+              fontSize: '0.72rem',
+              padding: '0.4rem',
+              marginBottom: '0.75rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.4rem',
+              borderColor: 'rgba(56, 189, 248, 0.3)',
+              color: '#38bdf8',
+            }}
+          >
+            🎨 ADOBE MAX MOSAIC
+          </button>
+        )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--text-muted)', fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}>
+          <Lock size={14} className="pulse-indicator" />
+          <span className="data-flicker">SECURED_TRACK_04</span>
+        </div>
       </div>
     </aside>
   );
