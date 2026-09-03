@@ -138,7 +138,7 @@ export async function runAgenticResolver(
             }
           }
         }
-      } catch (err) {
+      } catch {
         // Fallback for offline mode or when backend server is not running
         detectedMockMode = true;
         const candidateInvoices = unmatchedERPInvoices.filter(e =>
@@ -245,7 +245,7 @@ export async function runAgenticResolver(
           ],
         });
       }
-    } catch (err) {
+    } catch {
       // Fallback for offline mode when backend server is not running
       detectedMockMode = true;
       const rate = bTxn.amount / gFX.grossAmount;

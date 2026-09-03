@@ -13,9 +13,11 @@ import { CashForecasterView } from './components/views/CashForecasterView';
 import { DataHubView } from './components/views/DataHubView';
 import { GAAPAuditView } from './components/views/GAAPAuditView';
 import { LandingPageView } from './components/views/LandingPageView';
+import { LoadingSplashView } from './components/views/LoadingSplashView';
 import './styles/index.css';
 
 export function App() {
+  const [showSplash, setShowSplash] = useState(true);
   const [currentView, setCurrentView] = useState<AppView>('dashboard');
   const [activeDataset, setActiveDataset] = useState<FinancialDataset>(ALL_DATASETS.CORE_BENCHMARK);
   const [isSimulatingFault, setIsSimulatingFault] = useState(false);
@@ -135,6 +137,10 @@ export function App() {
     setOutput(newOutput);
     setIsProcessing(false);
   };
+
+  if (showSplash) {
+    return <LoadingSplashView onComplete={() => setShowSplash(false)} />;
+  }
 
   if (!isAuthenticated) {
     return <LandingPageView onAuthSuccess={() => setIsAuthenticated(true)} />;

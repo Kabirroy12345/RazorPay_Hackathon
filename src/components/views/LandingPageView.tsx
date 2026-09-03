@@ -67,9 +67,13 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
       {/* Top Navbar */}
       <nav className="landing-nav">
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <ShieldCheck size={26} color="var(--accent-amber)" />
-            <span className="font-mono" style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--text-primary)', letterSpacing: '0.05em' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+            <div style={{ background: '#ffffff', padding: '0.25rem 0.6rem', borderRadius: '5px', display: 'flex', alignItems: 'center', boxShadow: '0 0 12px rgba(2, 132, 199, 0.2)' }}>
+              <img src="/razorpay-logo.png" alt="Razorpay" style={{ height: '18px', objectFit: 'contain' }} />
+            </div>
+            <span className="font-mono" style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>✕</span>
+            <ShieldCheck size={22} color="var(--accent-amber)" />
+            <span className="font-mono" style={{ fontSize: '1.05rem', fontWeight: 'bold', color: 'var(--text-primary)', letterSpacing: '0.05em' }}>
               OMNI_SETTLE
             </span>
           </div>
