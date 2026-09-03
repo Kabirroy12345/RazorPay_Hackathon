@@ -8,7 +8,9 @@ import {
   Database,
   FileCheck,
   Lock,
+  LogOut,
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import type { AppView, FinancialDataset } from '../types/finance';
 
 interface SidebarNavProps {
@@ -18,6 +20,7 @@ interface SidebarNavProps {
   isMockMode?: boolean;
   onSelectView: (view: AppView) => void;
   onOpenMovableUI?: () => void;
+  onLogout?: () => void;
 }
 
 export const SidebarNav: React.FC<SidebarNavProps> = ({
@@ -27,7 +30,9 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
   isMockMode,
   onSelectView,
   onOpenMovableUI,
+  onLogout,
 }) => {
+  const { user, logout } = useAuth();
   const navItems: Array<{ id: AppView; label: string; icon: React.ReactNode; badge?: string | number }> = [
     { id: 'dashboard', label: 'Executive Dashboard', icon: <LayoutDashboard size={18} /> },
     { id: 'reconciler', label: '3-Way Live Ledger', icon: <Zap size={18} /> },
@@ -163,8 +168,37 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         </nav>
       </div>
 
-      {/* Footer Security Badge & Movable UI shortcut */}
-      <div style={{ borderTop: '1px solid var(--border-hairline)', paddingTop: '1rem' }}>
+      {/* Footer Operator Badge & Security Info */}
+      <div style={{ borderTop: '1px solid var(--border-hairline)', paddingTop: '0.85rem' }}>
+        {/* Authenticated Operator Badge & Logout */}
+        <div style={{ background: 'var(--bg-root)', border: '1px solid var(--border-hairline)', padding: '0.65rem 0.75rem', marginBottom: '0.75rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', overflow: 'hidden' }}>
+              <div style={{ width: '26px', height: '26px', borderRadius: '4px', background: '#00D2FF', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 800 }}>
+                {user?.name?.[0]?.toUpperCase() || 'O'}
+              </div>
+              <div style={{ overflow: 'hidden' }}>
+                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {user?.name || 'Authorized Operator'}
+                </div>
+                <div style={{ fontSize: '0.62rem', color: '#00D2FF', fontFamily: 'var(--font-mono)', letterSpacing: '0.04em' }}>
+                  [{user?.role || 'OPERATOR'}]
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                logout();
+                onLogout?.();
+              }}
+              title="Sign Out (Invalidate JWT)"
+              style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '0.3rem', display: 'flex', alignItems: 'center' }}
+            >
+              <LogOut size={15} />
+            </button>
+          </div>
+        </div>
+
         {onOpenMovableUI && (
           <button
             onClick={onOpenMovableUI}
@@ -187,7 +221,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         )}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--text-muted)', fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}>
           <Lock size={14} className="pulse-indicator" />
-          <span className="data-flicker">SECURED_TRACK_04</span>
+          <span className="data-flicker">SECURED_TRACK_04 • JWT</span>
         </div>
       </div>
     </aside>

@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { 
   ArrowRight, 
-  ShieldCheck, 
   Zap, 
   AlertTriangle, 
   FileText, 
-  X, 
   Database, 
   TrendingUp, 
   LayoutDashboard, 
@@ -16,6 +14,7 @@ import {
   Activity 
 } from 'lucide-react';
 import { HeroSection } from '../landing/HeroSection';
+import { AuthModal } from '../auth/AuthModal';
 import type { AppView } from '../../types/finance';
 
 interface LandingPageViewProps {
@@ -25,12 +24,6 @@ interface LandingPageViewProps {
 
 export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess, onOpenMovableUI }) => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [error, setError] = useState('');
 
   // Interactive Pipeline Step in Section 2
   const [activePipelineStep, setActivePipelineStep] = useState(2);
@@ -40,35 +33,6 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
 
   // Exception Selection in Section 6
   const [selectedExceptionIndex, setSelectedExceptionIndex] = useState(0);
-
-  const handleAuthSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-
-    if (!email || !password || (!isLogin && !name)) {
-      setError('Please complete all credential fields.');
-      return;
-    }
-
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      setIsAuthModalOpen(false);
-      onAuthSuccess('dashboard');
-    }, 800);
-  };
-
-  const handlePresetLogin = (presetEmail: string, roleName: string) => {
-    setEmail(presetEmail);
-    setPassword('••••••••••••');
-    setName(roleName);
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      setIsAuthModalOpen(false);
-      onAuthSuccess('dashboard');
-    }, 600);
-  };
 
   const exceptionsData = [
     {
@@ -156,7 +120,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
       
       {/* HERO SECTION: AURA LEDGER AI FINANCIAL TERMINAL */}
       <HeroSection 
-        onGetStarted={() => onAuthSuccess('dashboard')}
+        onGetStarted={() => setIsAuthModalOpen(true)}
         onSeeAction={() => {
           const el = document.getElementById('problem');
           el?.scrollIntoView({ behavior: 'smooth' });
@@ -1355,114 +1319,13 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
       </footer>
 
       {/* ========================================================================= */}
-      {/* 13. PRESERVED OPERATOR & JUDGE AUTHENTICATION MODAL                       */}
+      {/* 13. FULL-FEATURED JWT / OTP / SOCIAL AUTHENTICATION MODAL                 */}
       {/* ========================================================================= */}
-      {isAuthModalOpen && (
-        <div className="auth-modal-overlay" onClick={() => setIsAuthModalOpen(false)}>
-          <div className="auth-modal-box" onClick={e => e.stopPropagation()}>
-            <button 
-              onClick={() => setIsAuthModalOpen(false)}
-              style={{ position: 'absolute', right: '1.25rem', top: '1.25rem', background: 'none', border: 'none', color: '#8E8E93', cursor: 'pointer' }}
-            >
-              <X size={20} />
-            </button>
-
-            <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-              <ShieldCheck size={36} color="#00D2FF" style={{ margin: '0 auto 0.5rem' }} />
-              <h2 className="font-mono" style={{ fontSize: '1.2rem', color: '#FFFFFF' }}>OPERATOR_AUTHENTICATION</h2>
-              <p className="font-mono" style={{ fontSize: '0.72rem', color: '#8E8E93' }}>[ ACCESS_CONTROL_LEVEL_4 ]</p>
-            </div>
-
-            {/* PRESET ROLE SHORTCUTS FOR JUDGES */}
-            <div style={{ marginBottom: '1.5rem', background: '#070709', padding: '0.85rem', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-              <div className="font-mono" style={{ fontSize: '0.7rem', color: '#00D2FF', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-                ⚡ JUDGE QUICK-LOGIN PRESETS:
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.5rem' }}>
-                <button 
-                  onClick={() => handlePresetLogin('judge@razorpay.com', 'Buildathon Judge')}
-                  className="btn-terminal"
-                  style={{ fontSize: '0.7rem', padding: '0.4rem', textAlign: 'center' }}
-                >
-                  Razorpay Judge
-                </button>
-                <button 
-                  onClick={() => handlePresetLogin('auditor@big4.com', 'Lead GAAP Auditor')}
-                  className="btn-terminal"
-                  style={{ fontSize: '0.7rem', padding: '0.4rem', textAlign: 'center' }}
-                >
-                  Lead Auditor
-                </button>
-              </div>
-            </div>
-
-            {error && (
-              <div style={{ padding: '0.5rem', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #EF4444', color: '#EF4444', fontSize: '0.8rem', marginBottom: '1rem', fontFamily: 'var(--font-mono)' }}>
-                {error}
-              </div>
-            )}
-
-            <form onSubmit={handleAuthSubmit}>
-              {!isLogin && (
-                <div className="auth-input-group">
-                  <label>Operator Name</label>
-                  <input 
-                    type="text" 
-                    className="auth-input" 
-                    placeholder="Full Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                </div>
-              )}
-
-              <div className="auth-input-group">
-                <label>Operator Email</label>
-                <input 
-                  type="email" 
-                  className="auth-input" 
-                  placeholder="operator@company.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-
-              <div className="auth-input-group">
-                <label>Access Key</label>
-                <input 
-                  type="password" 
-                  className="auth-input" 
-                  placeholder="••••••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-
-              <button type="submit" className="btn-auth" disabled={isLoading} style={{ marginTop: '1.5rem' }}>
-                {isLoading ? (
-                  <span className="data-flicker">AUTHENTICATING...</span>
-                ) : (
-                  <>
-                    {isLogin ? 'INITIALIZE_SESSION' : 'PROVISION_ACCOUNT'}
-                    <ArrowRight size={16} />
-                  </>
-                )}
-              </button>
-            </form>
-
-            <div style={{ marginTop: '1rem', textAlign: 'center' }}>
-              <button 
-                type="button" 
-                onClick={() => { setIsLogin(!isLogin); setError(''); }}
-                className="font-mono"
-                style={{ background: 'none', border: 'none', color: '#8E8E93', fontSize: '0.75rem', cursor: 'pointer', textDecoration: 'underline' }}
-              >
-                {isLogin ? '[ REQUEST_NEW_OPERATOR_KEY ]' : '[ AUTHENTICATE_EXISTING_KEY ]'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onSuccess={() => onAuthSuccess('dashboard')}
+      />
     </div>
   );
 };

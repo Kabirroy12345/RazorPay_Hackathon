@@ -14,9 +14,11 @@ import { DataHubView } from './components/views/DataHubView';
 import { GAAPAuditView } from './components/views/GAAPAuditView';
 import { LandingPageView } from './components/views/LandingPageView';
 import { AdobeMaxMosaicView } from './components/views/AdobeMaxMosaicView';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import './styles/index.css';
 
-export function App() {
+function AppContent() {
+  const { isAuthenticated, demoLogin, logout } = useAuth();
   const [showSplash, setShowSplash] = useState(false);
   const [currentView, setCurrentView] = useState<AppView>('dashboard');
   const [activeDataset, setActiveDataset] = useState<FinancialDataset>(ALL_DATASETS.CORE_BENCHMARK);
@@ -24,10 +26,9 @@ export function App() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedMatch, setSelectedMatch] = useState<MatchResult | null>(null);
   const [isBooting, setIsBooting] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsBooting(false), 1500);
+    const timer = setTimeout(() => setIsBooting(false), 1200);
     return () => clearTimeout(timer);
   }, []);
 
@@ -141,9 +142,11 @@ export function App() {
   if (showSplash) {
     return (
       <AdobeMaxMosaicView 
-        onEnter={() => {
+        onEnter={async () => {
           setShowSplash(false);
-          setIsAuthenticated(true);
+          if (!isAuthenticated) {
+            await demoLogin('judge');
+          }
         }} 
       />
     );
@@ -154,7 +157,6 @@ export function App() {
       <LandingPageView 
         onAuthSuccess={(targetView?: AppView) => {
           if (targetView) setCurrentView(targetView);
-          setIsAuthenticated(true);
         }} 
         onOpenMovableUI={() => setShowSplash(true)}
       />
@@ -197,6 +199,7 @@ export function App() {
         isMockMode={output.isMockMode}
         onSelectView={view => setCurrentView(view)}
         onOpenMovableUI={() => setShowSplash(true)}
+        onLogout={logout}
       />
 
       {/* Main Active Module Content View */}
@@ -244,6 +247,14 @@ export function App() {
         )}
       </main>
     </div>
+  );
+}
+
+export function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 

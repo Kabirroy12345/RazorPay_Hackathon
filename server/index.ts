@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import resolveRouter from './api/resolve';
+import authRouter from './api/auth';
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ app.use(express.json());
 
 // Mount the API routes
 app.use('/api', resolveRouter);
+app.use('/api/auth', authRouter);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'OmniSettle AI Backend Running' });
