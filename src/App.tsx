@@ -13,13 +13,11 @@ import { CashForecasterView } from './components/views/CashForecasterView';
 import { DataHubView } from './components/views/DataHubView';
 import { GAAPAuditView } from './components/views/GAAPAuditView';
 import { LandingPageView } from './components/views/LandingPageView';
-import { AdobeMaxMosaicView } from './components/views/AdobeMaxMosaicView';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import './styles/index.css';
 
 function AppContent() {
-  const { isAuthenticated, demoLogin, logout } = useAuth();
-  const [showSplash, setShowSplash] = useState(false);
+  const { isAuthenticated, logout } = useAuth();
   const [currentView, setCurrentView] = useState<AppView>('dashboard');
   const [activeDataset, setActiveDataset] = useState<FinancialDataset>(ALL_DATASETS.CORE_BENCHMARK);
   const [isSimulatingFault, setIsSimulatingFault] = useState(false);
@@ -139,26 +137,13 @@ function AppContent() {
     setIsProcessing(false);
   };
 
-  if (showSplash) {
-    return (
-      <AdobeMaxMosaicView 
-        onEnter={async () => {
-          setShowSplash(false);
-          if (!isAuthenticated) {
-            await demoLogin('judge');
-          }
-        }} 
-      />
-    );
-  }
-
+  // Strictly 1 Landing Page Gateway
   if (!isAuthenticated) {
     return (
       <LandingPageView 
         onAuthSuccess={(targetView?: AppView) => {
           if (targetView) setCurrentView(targetView);
         }} 
-        onOpenMovableUI={() => setShowSplash(true)}
       />
     );
   }
@@ -198,7 +183,6 @@ function AppContent() {
         exceptionCount={output.metrics.exceptionCount}
         isMockMode={output.isMockMode}
         onSelectView={view => setCurrentView(view)}
-        onOpenMovableUI={() => setShowSplash(true)}
         onLogout={logout}
       />
 
