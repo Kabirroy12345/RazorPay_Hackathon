@@ -620,3 +620,37 @@ html {
     padding: 0 1.25rem !important;
   }
 }
+
+/* ==========================================================================
+   INFINITE MOVING MARQUEE TICKER (Continuous 60fps Motion)
+   ========================================================================== */
+
+.ticker-container {
+  overflow: hidden;
+  white-space: nowrap;
+  display: flex;
+  width: 100%;
+  position: relative;
+  user-select: none;
+}
+
+.ticker-track {
+  display: flex;
+  flex-shrink: 0;
+  gap: 3rem;
+  will-change: transform;
+  animation: marqueeScroll 30s linear infinite;
+}
+
+.ticker-container:hover .ticker-track {
+  animation-play-state: paused;
+}
+
+@keyframes marqueeScroll {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}

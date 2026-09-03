@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { 
-  ArrowRight, 
-  Zap, 
-  ShieldCheck, 
-  Lock 
-} from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import { RazorpayIntroSplash } from '../landing/RazorpayIntroSplash';
+import { GlobalSpaceBackground } from '../landing/GlobalSpaceBackground';
+import { Navbar } from '../landing/Navbar';
 import { UnifiedHero3D } from '../landing/UnifiedHero3D';
+import { ArchitectureDiagram } from '../landing/ArchitectureDiagram';
 import { BottleneckVisual } from '../landing/BottleneckVisual';
 import { PipelineConveyor } from '../landing/PipelineConveyor';
 import { DualPathChamber } from '../landing/DualPathChamber';
@@ -20,128 +19,49 @@ interface LandingPageViewProps {
 }
 
 export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
+  // 3-Second Razorpay Splash Controller
+  const [showRazorpaySplash, setShowRazorpaySplash] = useState<boolean>(() => {
+    // Only show once per browser session unless forced
+    return !sessionStorage.getItem('omnisettle_rzp_splash_seen');
+  });
+
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
+  const handleSplashComplete = () => {
+    sessionStorage.setItem('omnisettle_rzp_splash_seen', 'true');
+    setShowRazorpaySplash(false);
+  };
+
   return (
-    <div style={{ backgroundColor: '#07080E', color: '#EDEDED', minHeight: '100vh', overflowX: 'hidden', position: 'relative', fontFamily: 'var(--font-sans)' }}>
+    <div style={{ backgroundColor: '#05070E', color: '#EDEDED', minHeight: '100vh', overflowX: 'hidden', position: 'relative', fontFamily: 'var(--font-sans)' }}>
       
-      {/* ========================================================================= */}
-      {/* 1. STICKY MINIMAL GLASSMORPHIC NAVIGATION                                 */}
-      {/* ========================================================================= */}
-      <nav
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '68px',
-          backgroundColor: 'rgba(7, 8, 14, 0.85)',
-          backdropFilter: 'blur(18px)',
-          WebkitBackdropFilter: 'blur(18px)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-          zIndex: 100,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0 2.5rem',
-        }}
-      >
-        {/* Brand Lockup */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-          <div
-            style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '8px',
-              background: 'linear-gradient(135deg, #00D2FF 0%, #7C3AED 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 0 15px rgba(0, 210, 255, 0.35)',
-            }}
-          >
-            <ShieldCheck size={18} color="#000" />
-          </div>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.02rem', fontWeight: 900, letterSpacing: '0.06em', color: '#FFFFFF' }}>
-            OMNISETTLE<span style={{ color: '#00D2FF' }}>.AI</span>
-          </span>
-          <span style={{ color: 'rgba(255, 255, 255, 0.2)', fontSize: '0.85rem' }}>/</span>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#8E8E93', letterSpacing: '0.06em' }} className="desktop-nav-links">
-            AUTONOMOUS 3-WAY RECONCILIATION ENGINE
-          </span>
-        </div>
+      {/* 3-Second Razorpay Actual Logo Intro Splash */}
+      {showRazorpaySplash && (
+        <RazorpayIntroSplash onComplete={handleSplashComplete} />
+      )}
 
-        {/* Minimal Navigation & CTAs */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.75rem' }}>
-          <div style={{ display: 'flex', gap: '1.4rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }} className="desktop-nav-links">
-            <a href="#problem" style={{ color: '#8E8E93', textDecoration: 'none', transition: 'color 0.2s' }}>01. BOTTLENECK</a>
-            <a href="#pipeline" style={{ color: '#8E8E93', textDecoration: 'none', transition: 'color 0.2s' }}>02. PIPELINE</a>
-            <a href="#hybrid" style={{ color: '#8E8E93', textDecoration: 'none', transition: 'color 0.2s' }}>03. HYBRID</a>
-            <a href="#bundle" style={{ color: '#8E8E93', textDecoration: 'none', transition: 'color 0.2s' }}>04. BUNDLE LAB</a>
-            <a href="#exceptions" style={{ color: '#8E8E93', textDecoration: 'none', transition: 'color 0.2s' }}>05. ANOMALIES</a>
-            <a href="#modules" style={{ color: '#8E8E93', textDecoration: 'none', transition: 'color 0.2s' }}>06. MODULES</a>
-          </div>
+      {/* Global Cosmic Space Background Everywhere */}
+      <GlobalSpaceBackground />
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            {/* 1-Click Judge Pass Button */}
-            <button
-              onClick={() => onAuthSuccess('dashboard')}
-              style={{
-                background: '#00D2FF',
-                border: 'none',
-                color: '#000000',
-                fontFamily: 'var(--font-mono)',
-                fontWeight: 800,
-                fontSize: '0.75rem',
-                padding: '0.5rem 1rem',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.4rem',
-                boxShadow: '0 0 20px rgba(0, 210, 255, 0.3)',
-                transition: 'all 0.2s ease',
-              }}
-            >
-              <Zap size={14} /> ⚡ 1-CLICK JUDGE PASS
-            </button>
-
-            {/* Operator Login / Signup Modal Trigger */}
-            <button
-              onClick={() => setIsAuthModalOpen(true)}
-              style={{
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
-                color: '#EDEDED',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.75rem',
-                padding: '0.5rem 0.9rem',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.35rem',
-                transition: 'all 0.2s ease',
-              }}
-            >
-              <Lock size={13} /> OPERATOR LOGIN
-            </button>
-          </div>
-        </div>
-      </nav>
+      {/* Redesigned Floating Glassmorphic Header Bar */}
+      <Navbar
+        onJudgePass={() => onAuthSuccess('dashboard')}
+        onOpenAuthModal={() => setIsAuthModalOpen(true)}
+      />
 
       {/* ========================================================================= */}
-      {/* 2. MONUMENTAL 3D HERO: EDITORIAL ASYMMETRIC + UNIFIED 3D MACHINE           */}
+      {/* 1. MONUMENTAL 3D HERO                                                     */}
       {/* ========================================================================= */}
       <section
         style={{
           position: 'relative',
           minHeight: '100vh',
           width: '100%',
-          paddingTop: '68px',
+          paddingTop: '72px',
           display: 'flex',
           alignItems: 'center',
           overflow: 'visible',
+          zIndex: 10,
         }}
       >
         {/* Layer 0: Monumental Architectural Watermark */}
@@ -242,18 +162,18 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
               <button
                 onClick={() => setIsAuthModalOpen(true)}
                 style={{
-                  background: '#00D2FF',
+                  background: 'linear-gradient(135deg, #00D2FF 0%, #0284C7 100%)',
                   color: '#000000',
-                  fontWeight: 800,
+                  fontWeight: 900,
                   fontSize: '0.92rem',
                   padding: '0.9rem 2.2rem',
-                  borderRadius: '6px',
+                  borderRadius: '7px',
                   border: 'none',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.5rem',
-                  boxShadow: '0 0 30px rgba(0, 210, 255, 0.35)',
+                  boxShadow: '0 0 35px rgba(0, 210, 255, 0.45)',
                   transition: 'all 0.2s ease',
                 }}
               >
@@ -268,7 +188,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
                   fontWeight: 600,
                   fontSize: '0.9rem',
                   padding: '0.9rem 1.8rem',
-                  borderRadius: '6px',
+                  borderRadius: '7px',
                   border: '1px solid rgba(255, 255, 255, 0.12)',
                   textDecoration: 'none',
                   display: 'flex',
@@ -305,53 +225,79 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
       </section>
 
       {/* ========================================================================= */}
-      {/* 3. REAL-TIME LIVE TRANSACTION RECONCILIATION MARQUEE TICKER               */}
+      {/* 2. REAL-TIME CONTINUOUS MOVING MARQUEE TICKER (IMAGE 3 FIX)               */}
       {/* ========================================================================= */}
       <div
         style={{
           width: '100%',
-          backgroundColor: '#090B14',
-          borderTop: '1px solid rgba(0, 210, 255, 0.15)',
-          borderBottom: '1px solid rgba(0, 210, 255, 0.15)',
+          backgroundColor: 'rgba(9, 11, 20, 0.88)',
+          borderTop: '1px solid rgba(0, 210, 255, 0.2)',
+          borderBottom: '1px solid rgba(0, 210, 255, 0.2)',
           padding: '0.85rem 0',
           overflow: 'hidden',
-          whiteSpace: 'nowrap',
-          display: 'flex',
           zIndex: 20,
           position: 'relative',
+          backdropFilter: 'blur(12px)',
         }}
       >
-        <div className="ticker-track" style={{ display: 'flex', gap: '3rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>
-          <span style={{ color: '#10B981', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10B981' }} />
-            [SET-88412] HDFC ₹48,272.80 ↔ RAZORPAY 2% MDR ↔ 8 ERP INVOICES (INV-BUN-01..08) — ZERO DELTA VERIFIED (0.0000 INR)
-          </span>
-          <span style={{ color: '#00D2FF', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#00D2FF' }} />
-            [TXN-1082] DETERMINISTIC 1:1 FAST-PATH MATCH (0.9ms) — RECONCILED (0 LLM TOKENS)
-          </span>
-          <span style={{ color: '#EF4444', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#EF4444' }} />
-            [EXC-FEE-402] GATEWAY FEE OVERCHARGE: BILLED 3.50% vs 2.00% CONTRACT (₹142.50 SHORTFALL) — ROUTED TO TREASURY
-          </span>
-          <span style={{ color: '#10B981', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10B981' }} />
-            [SET-99124] ICICI PAYOUT ₹1,24,500.00 ↔ 12 BUNDLE INVOICES — GAAP AUDIT TRAIL HASHED
-          </span>
-          <span style={{ color: '#F59E0B', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#F59E0B' }} />
-            [EXC-DUP-109] DUPLICATE BANK DEBIT DETECTED ON TXN-9982 — AUTO-REMEDIATION PREPARED
-          </span>
+        <div className="ticker-container">
+          {/* Segment 1 */}
+          <div className="ticker-track">
+            <span style={{ color: '#10B981', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10B981', boxShadow: '0 0 8px #10B981' }} />
+              [SET-88412] HDFC ₹48,272.80 ↔ RAZORPAY 2% MDR ↔ 8 ERP INVOICES (INV-BUN-01..08) — ZERO DELTA VERIFIED (0.0000 INR)
+            </span>
+            <span style={{ color: '#00D2FF', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#00D2FF', boxShadow: '0 0 8px #00D2FF' }} />
+              [TXN-1082] DETERMINISTIC 1:1 FAST-PATH MATCH (0.9ms) — RECONCILED (0 LLM TOKENS)
+            </span>
+            <span style={{ color: '#EF4444', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#EF4444', boxShadow: '0 0 8px #EF4444' }} />
+              [EXC-FEE-402] GATEWAY OVERCHARGE: BILLED 3.50% vs 2.00% CONTRACT (₹142.50 SHORTFALL) — ROUTED TO TREASURY
+            </span>
+            <span style={{ color: '#10B981', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10B981', boxShadow: '0 0 8px #10B981' }} />
+              [SET-99124] ICICI PAYOUT ₹1,24,500.00 ↔ 12 BUNDLE INVOICES — GAAP AUDIT TRAIL HASHED
+            </span>
+            <span style={{ color: '#F59E0B', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#F59E0B', boxShadow: '0 0 8px #F59E0B' }} />
+              [EXC-DUP-109] DUPLICATE BANK DEBIT DETECTED ON TXN-9982 — AUTO-REMEDIATION PREPARED
+            </span>
+          </div>
+
+          {/* Segment 2 (Duplicate for Seamless Infinite Marquee Loop) */}
+          <div className="ticker-track">
+            <span style={{ color: '#10B981', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10B981', boxShadow: '0 0 8px #10B981' }} />
+              [SET-88412] HDFC ₹48,272.80 ↔ RAZORPAY 2% MDR ↔ 8 ERP INVOICES (INV-BUN-01..08) — ZERO DELTA VERIFIED (0.0000 INR)
+            </span>
+            <span style={{ color: '#00D2FF', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#00D2FF', boxShadow: '0 0 8px #00D2FF' }} />
+              [TXN-1082] DETERMINISTIC 1:1 FAST-PATH MATCH (0.9ms) — RECONCILED (0 LLM TOKENS)
+            </span>
+            <span style={{ color: '#EF4444', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#EF4444', boxShadow: '0 0 8px #EF4444' }} />
+              [EXC-FEE-402] GATEWAY OVERCHARGE: BILLED 3.50% vs 2.00% CONTRACT (₹142.50 SHORTFALL) — ROUTED TO TREASURY
+            </span>
+            <span style={{ color: '#10B981', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10B981', boxShadow: '0 0 8px #10B981' }} />
+              [SET-99124] ICICI PAYOUT ₹1,24,500.00 ↔ 12 BUNDLE INVOICES — GAAP AUDIT TRAIL HASHED
+            </span>
+            <span style={{ color: '#F59E0B', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#F59E0B', boxShadow: '0 0 8px #F59E0B' }} />
+              [EXC-DUP-109] DUPLICATE BANK DEBIT DETECTED ON TXN-9982 — AUTO-REMEDIATION PREPARED
+            </span>
+          </div>
         </div>
       </div>
 
       {/* ========================================================================= */}
-      {/* 4. SECTION 1: THE BOTTLENECK (BESPOKE INTERACTIVE CIRCUIT VISUAL)         */}
+      {/* 3. SECTION 1: THE BOTTLENECK (BESPOKE INTERACTIVE CIRCUIT VISUAL)         */}
       {/* ========================================================================= */}
       <section
         id="problem"
         style={{
-          padding: '8rem 2.5rem',
+          padding: '8rem 2.5rem 4rem',
           maxWidth: '1280px',
           margin: '0 auto',
           position: 'relative',
@@ -387,6 +333,11 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
         {/* Bespoke Bottleneck Simulator Component */}
         <BottleneckVisual />
       </section>
+
+      {/* ========================================================================= */}
+      {/* 4. INTER-SECTION ARCHITECTURAL BLUEPRINT (IMAGE IN BETWEEN)               */}
+      {/* ========================================================================= */}
+      <ArchitectureDiagram />
 
       {/* ========================================================================= */}
       {/* 5. SECTION 2: 5-STAGE KINETIC PIPELINE CONVEYOR                           */}
@@ -505,7 +456,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
       </section>
 
       {/* ========================================================================= */}
-      {/* 9. SECTION 6: HOLOGRAPHIC APPLICATION MODULES SHOWCASE                    */}
+      {/* 9. SECTION 6: UPGRADED COMPLETE PRODUCTION SUITE (HOLOGRAPHIC)            */}
       {/* ========================================================================= */}
       <section
         id="modules"
@@ -525,11 +476,11 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
             COMPLETE PRODUCTION SUITE
           </h2>
           <p style={{ fontSize: '1.1rem', color: '#8E8E93', maxWidth: '650px', margin: '0 auto', lineHeight: 1.6 }}>
-            Click any module below to jump directly into the live working system.
+            Click any module below to jump directly into the live working terminal.
           </p>
         </div>
 
-        {/* Bespoke Holographic Modules */}
+        {/* Upgraded Bespoke Holographic Modules */}
         <HolographicModules onSelectModule={(view) => onAuthSuccess(view)} />
       </section>
 
@@ -548,6 +499,8 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
           fontFamily: 'var(--font-mono)',
           fontSize: '0.75rem',
           color: '#8E8E93',
+          position: 'relative',
+          zIndex: 10,
         }}
       >
         <div>
