@@ -2,19 +2,21 @@ import {
   FROZEN_BANK_TRANSACTIONS,
   FROZEN_GATEWAY_RECORDS,
   FROZEN_ERP_INVOICES,
+  FROZEN_GROUND_TRUTH_VECTOR,
 } from './data/groundTruthBatch.js';
 import { executeFullReconciliation } from './engine/reconciler.js';
 
-function runTerminalBenchmark() {
+async function runTerminalBenchmark() {
   console.log('\n================================================================');
   console.log('       OMNISETTLE AI — FINANCE CONTROLLER BENCHMARK            ');
   console.log('       Razorpay Track 04: 3-Way Reconciliation Benchmark        ');
   console.log('================================================================\n');
 
-  const output = executeFullReconciliation(
+  const output = await executeFullReconciliation(
     FROZEN_BANK_TRANSACTIONS,
     FROZEN_GATEWAY_RECORDS,
-    FROZEN_ERP_INVOICES
+    FROZEN_ERP_INVOICES,
+    FROZEN_GROUND_TRUTH_VECTOR
   );
 
   const { metrics } = output;
@@ -48,4 +50,4 @@ function runTerminalBenchmark() {
   console.log('✅ BENCHMARK VERIFICATION STATUS: 100% GROUND TRUTH VERIFIED PASS\n');
 }
 
-runTerminalBenchmark();
+runTerminalBenchmark().catch(console.error);

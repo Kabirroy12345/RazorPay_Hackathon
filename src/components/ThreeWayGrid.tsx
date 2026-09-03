@@ -70,7 +70,7 @@ export const ThreeWayGrid: React.FC<ThreeWayGridProps> = ({
     ? activeTabMatches.filter(m => 
         m.id.toLowerCase().includes(cliFilter.toLowerCase()) || 
         m.status.toLowerCase().includes(cliFilter.toLowerCase()) ||
-        m.bankRecordId.toLowerCase().includes(cliFilter.toLowerCase())
+        (m.bankRecordId && m.bankRecordId.toLowerCase().includes(cliFilter.toLowerCase()))
       )
     : activeTabMatches;
 

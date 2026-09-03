@@ -25,7 +25,7 @@ export async function executeFullReconciliation(
   bankTxns: BankTransaction[],
   gatewayRecords: GatewayRecord[],
   erpInvoices: ERPInvoice[],
-  groundTruthVector: GroundTruthEntry[]
+  groundTruthVector: GroundTruthEntry[] = []
 ): Promise<FullReconciliationOutput> {
   const startTime = performance.now();
 

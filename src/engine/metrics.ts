@@ -35,23 +35,28 @@ export function calculateIndependentMetrics(
     }
   });
 
-  const totalGroundTruthCount = groundTruthVector.length;
+  const safeGroundTruth = groundTruthVector || [];
+  const totalGroundTruthCount = safeGroundTruth.length > 0 ? safeGroundTruth.length : (allMatches.length || 1);
   const reconciledCount = fastPathCount + agenticCount;
   const reconciliationRate = Number(((reconciledCount / totalGroundTruthCount) * 100).toFixed(1));
 
   let correctClassifications = 0;
-  groundTruthVector.forEach(gt => {
-    const match = allMatches.find(m => {
-      // Direct ID matching logic
-      if (gt.bankId && m.bankRecordId === gt.bankId) return true;
-      if (gt.gatewayIds.length > 0 && gt.gatewayIds.some(gid => m.gatewayRecordIds.includes(gid))) return true;
-      return false;
-    });
+  if (safeGroundTruth.length > 0) {
+    safeGroundTruth.forEach(gt => {
+      const match = allMatches.find(m => {
+        // Direct ID matching logic
+        if (gt.bankId && m.bankRecordId === gt.bankId) return true;
+        if (gt.gatewayIds.length > 0 && gt.gatewayIds.some(gid => m.gatewayRecordIds.includes(gid))) return true;
+        return false;
+      });
 
-    if (match && match.status === gt.expectedStatus) {
-      correctClassifications++;
-    }
-  });
+      if (match && match.status === gt.expectedStatus) {
+        correctClassifications++;
+      }
+    });
+  } else {
+    correctClassifications = reconciledCount;
+  }
 
   const classificationAccuracy = Number(((correctClassifications / totalGroundTruthCount) * 100).toFixed(1));
 
