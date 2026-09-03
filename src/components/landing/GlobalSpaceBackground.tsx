@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { useLandingTheme } from '../../context/LandingThemeContext';
 
 interface Star {
   x: number;
@@ -23,6 +24,7 @@ interface ShootingStar {
 
 export const GlobalSpaceBackground: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const { themeConfig, theme } = useLandingTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -41,7 +43,7 @@ export const GlobalSpaceBackground: React.FC = () => {
     };
     window.addEventListener('resize', handleResize);
 
-    // Mouse coordinates for subtle cosmic parallax
+    // Mouse coordinates for cosmic parallax
     let mouseX = width / 2;
     let mouseY = height / 2;
     let targetMouseX = mouseX;
@@ -53,12 +55,12 @@ export const GlobalSpaceBackground: React.FC = () => {
     };
     window.addEventListener('mousemove', handleMouseMove);
 
-    // Generate 220 depth-sorted stars
-    const starColors = ['#FFFFFF', '#C5E6FF', '#00D2FF', '#D8B4FE', '#FDE047'];
+    // Generate 220 depth-sorted stars matching the active theme
+    const starColors = themeConfig.starColors;
     const stars: Star[] = Array.from({ length: 220 }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      z: Math.random() * 3 + 1, // 1 to 4 depth
+      z: Math.random() * 3 + 1,
       radius: Math.random() * 1.5 + 0.5,
       baseAlpha: Math.random() * 0.6 + 0.2,
       twinkleSpeed: Math.random() * 0.02 + 0.005,
@@ -82,15 +84,15 @@ export const GlobalSpaceBackground: React.FC = () => {
       shootingStar.y = Math.random() * height * 0.4;
       shootingStar.length = Math.random() * 80 + 50;
       shootingStar.speed = Math.random() * 8 + 12;
-      shootingStar.angle = (Math.PI / 4) + (Math.random() - 0.5) * 0.2; // roughly 45 degrees
+      shootingStar.angle = (Math.PI / 4) + (Math.random() - 0.5) * 0.2;
       shootingStar.alpha = 1;
       shootingStar.active = true;
     };
 
     let timeSinceLastShootingStar = 0;
+    let matrixScanY = 0;
 
     const render = () => {
-      // Smooth mouse follow
       mouseX += (targetMouseX - mouseX) * 0.05;
       mouseY += (targetMouseY - mouseY) * 0.05;
       const offsetX = (mouseX - width / 2) * 0.015;
@@ -98,48 +100,74 @@ export const GlobalSpaceBackground: React.FC = () => {
 
       ctx.clearRect(0, 0, width, height);
 
-      // Deep Space Base Fill
-      ctx.fillStyle = '#05070E';
+      // Theme-specific Background Fill
+      ctx.fillStyle = themeConfig.bgBase;
       ctx.fillRect(0, 0, width, height);
 
-      // Multiple Ambient Cosmic Nebulae
-      // Nebula 1: Electric Cyan (top right)
-      const gradCyan = ctx.createRadialGradient(
-        width * 0.8 + offsetX * 2,
-        height * 0.2 + offsetY * 2,
-        40,
-        width * 0.8,
-        height * 0.2,
-        width * 0.45
-      );
-      gradCyan.addColorStop(0, 'rgba(0, 210, 255, 0.08)');
-      gradCyan.addColorStop(0.6, 'rgba(0, 210, 255, 0.02)');
-      gradCyan.addColorStop(1, 'rgba(0, 0, 0, 0)');
-      ctx.fillStyle = gradCyan;
-      ctx.fillRect(0, 0, width, height);
+      // Theme-specific Ambient Nebulae
+      if (theme === 'stealth') {
+        // Tactical Matrix Scanlines & Grid
+        matrixScanY = (matrixScanY + 0.8) % height;
+        ctx.fillStyle = 'rgba(0, 255, 102, 0.03)';
+        ctx.fillRect(0, matrixScanY, width, 40);
 
-      // Nebula 2: Deep Violet / Magenta (bottom left)
-      const gradViolet = ctx.createRadialGradient(
-        width * 0.15 - offsetX * 2,
-        height * 0.8 - offsetY * 2,
-        50,
-        width * 0.15,
-        height * 0.8,
-        width * 0.5
-      );
-      gradViolet.addColorStop(0, 'rgba(124, 58, 237, 0.07)');
-      gradViolet.addColorStop(0.5, 'rgba(236, 72, 153, 0.03)');
-      gradViolet.addColorStop(1, 'rgba(0, 0, 0, 0)');
-      ctx.fillStyle = gradViolet;
-      ctx.fillRect(0, 0, width, height);
+        // Soft green radar sweep in center
+        const gradRadar = ctx.createRadialGradient(width / 2, height / 2, 50, width / 2, height / 2, width * 0.45);
+        gradRadar.addColorStop(0, 'rgba(0, 255, 102, 0.04)');
+        gradRadar.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = gradRadar;
+        ctx.fillRect(0, 0, width, height);
+      } else if (theme === 'razorpay') {
+        // Razorpay Sapphire & Gold Nebulae
+        const gradRzp = ctx.createRadialGradient(width * 0.8, height * 0.2, 50, width * 0.8, height * 0.2, width * 0.5);
+        gradRzp.addColorStop(0, 'rgba(12, 140, 233, 0.12)');
+        gradRzp.addColorStop(0.6, 'rgba(12, 140, 233, 0.03)');
+        gradRzp.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = gradRzp;
+        ctx.fillRect(0, 0, width, height);
 
-      // Render Twinkling Stars
+        const gradGold = ctx.createRadialGradient(width * 0.15, height * 0.8, 50, width * 0.15, height * 0.8, width * 0.4);
+        gradGold.addColorStop(0, 'rgba(242, 193, 78, 0.06)');
+        gradGold.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = gradGold;
+        ctx.fillRect(0, 0, width, height);
+      } else if (theme === 'hyperion') {
+        // Magenta & Amber Sunset Nebulae
+        const gradMag = ctx.createRadialGradient(width * 0.75, height * 0.25, 60, width * 0.75, height * 0.25, width * 0.55);
+        gradMag.addColorStop(0, 'rgba(255, 0, 127, 0.1)');
+        gradMag.addColorStop(0.7, 'rgba(255, 0, 127, 0.02)');
+        gradMag.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = gradMag;
+        ctx.fillRect(0, 0, width, height);
+
+        const gradAmb = ctx.createRadialGradient(width * 0.2, height * 0.75, 60, width * 0.2, height * 0.75, width * 0.45);
+        gradAmb.addColorStop(0, 'rgba(255, 184, 0, 0.07)');
+        gradAmb.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = gradAmb;
+        ctx.fillRect(0, 0, width, height);
+      } else {
+        // Cosmic Cyber Default (Cyan / Violet)
+        const gradCyan = ctx.createRadialGradient(width * 0.8 + offsetX * 2, height * 0.2 + offsetY * 2, 40, width * 0.8, height * 0.2, width * 0.45);
+        gradCyan.addColorStop(0, 'rgba(0, 210, 255, 0.08)');
+        gradCyan.addColorStop(0.6, 'rgba(0, 210, 255, 0.02)');
+        gradCyan.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = gradCyan;
+        ctx.fillRect(0, 0, width, height);
+
+        const gradViolet = ctx.createRadialGradient(width * 0.15 - offsetX * 2, height * 0.8 - offsetY * 2, 50, width * 0.15, height * 0.8, width * 0.5);
+        gradViolet.addColorStop(0, 'rgba(124, 58, 237, 0.07)');
+        gradViolet.addColorStop(0.5, 'rgba(236, 72, 153, 0.03)');
+        gradViolet.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = gradViolet;
+        ctx.fillRect(0, 0, width, height);
+      }
+
+      // Render Stars
       for (let i = 0; i < stars.length; i++) {
         const star = stars[i];
         star.twinklePhase += star.twinkleSpeed;
         const currentAlpha = Math.max(0.1, star.baseAlpha + Math.sin(star.twinklePhase) * 0.35);
 
-        // Parallax position calculation based on star depth (z)
         const renderX = (star.x + offsetX * star.z + width) % width;
         const renderY = (star.y + offsetY * star.z + height) % height;
 
@@ -156,9 +184,9 @@ export const GlobalSpaceBackground: React.FC = () => {
       }
       ctx.globalAlpha = 1.0;
 
-      // Render Shooting Star
+      // Render Shooting Stars
       timeSinceLastShootingStar++;
-      if (!shootingStar.active && timeSinceLastShootingStar > 240 && Math.random() < 0.02) {
+      if (!shootingStar.active && timeSinceLastShootingStar > 220 && Math.random() < 0.02) {
         spawnShootingStar();
         timeSinceLastShootingStar = 0;
       }
@@ -168,8 +196,8 @@ export const GlobalSpaceBackground: React.FC = () => {
         const tailY = shootingStar.y - Math.sin(shootingStar.angle) * shootingStar.length;
 
         const starGrad = ctx.createLinearGradient(tailX, tailY, shootingStar.x, shootingStar.y);
-        starGrad.addColorStop(0, 'rgba(0, 210, 255, 0)');
-        starGrad.addColorStop(1, `rgba(255, 255, 255, ${shootingStar.alpha})`);
+        starGrad.addColorStop(0, `${themeConfig.primaryAccent}00`);
+        starGrad.addColorStop(1, themeConfig.primaryAccent);
 
         ctx.beginPath();
         ctx.moveTo(tailX, tailY);
@@ -182,11 +210,7 @@ export const GlobalSpaceBackground: React.FC = () => {
         shootingStar.y += Math.sin(shootingStar.angle) * shootingStar.speed;
         shootingStar.alpha -= 0.015;
 
-        if (
-          shootingStar.alpha <= 0 ||
-          shootingStar.x > width ||
-          shootingStar.y > height
-        ) {
+        if (shootingStar.alpha <= 0 || shootingStar.x > width || shootingStar.y > height) {
           shootingStar.active = false;
         }
       }
@@ -201,7 +225,7 @@ export const GlobalSpaceBackground: React.FC = () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, []);
+  }, [theme, themeConfig]);
 
   return (
     <canvas

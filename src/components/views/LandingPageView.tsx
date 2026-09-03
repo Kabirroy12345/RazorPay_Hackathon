@@ -12,19 +12,21 @@ import { BalanceScaleProof } from '../landing/BalanceScaleProof';
 import { SonarExceptionRadar } from '../landing/SonarExceptionRadar';
 import { HolographicModules } from '../landing/HolographicModules';
 import { AuthModal } from '../auth/AuthModal';
+import { LandingThemeProvider, useLandingTheme } from '../../context/LandingThemeContext';
 import type { AppView } from '../../types/finance';
 
 interface LandingPageViewProps {
   onAuthSuccess: (targetView?: AppView) => void;
 }
 
-export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
+const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
   // Always trigger the 3-second official Razorpay intro splash on visit
   const [showRazorpaySplash, setShowRazorpaySplash] = useState<boolean>(true);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const { themeConfig } = useLandingTheme();
 
   return (
-    <div style={{ backgroundColor: '#05070E', color: '#EDEDED', minHeight: '100vh', overflowX: 'hidden', position: 'relative', fontFamily: 'var(--font-sans)' }}>
+    <div style={{ backgroundColor: themeConfig.bgBase, color: '#EDEDED', minHeight: '100vh', overflowX: 'hidden', position: 'relative', fontFamily: 'var(--font-sans)', transition: 'background-color 0.4s ease' }}>
       
       {/* 3-Second Official Razorpay Actual Logo Intro Splash */}
       {showRazorpaySplash && (
@@ -34,7 +36,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
       {/* Global Cosmic Space Background Everywhere */}
       <GlobalSpaceBackground />
 
-      {/* Redesigned Floating Glassmorphic Header Bar with Custom Logo */}
+      {/* Redesigned Floating Glassmorphic Header Bar with Multi-Theme Switcher */}
       <Navbar
         onJudgePass={() => onAuthSuccess('dashboard')}
         onOpenAuthModal={() => setIsAuthModalOpen(true)}
@@ -98,11 +100,11 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
                 style={{
                   fontFamily: 'var(--font-mono)',
                   fontSize: '0.68rem',
-                  color: '#00D2FF',
+                  color: themeConfig.primaryAccent,
                   padding: '0.2rem 0.65rem',
                   borderRadius: '4px',
-                  border: '1px solid rgba(0, 210, 255, 0.35)',
-                  background: 'rgba(0, 210, 255, 0.06)',
+                  border: `1px solid ${themeConfig.primaryAccent}44`,
+                  background: `${themeConfig.primaryAccent}10`,
                   letterSpacing: '0.08em',
                 }}
               >
@@ -131,7 +133,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
               }}
             >
               Reconcile<br />
-              <span style={{ color: '#00D2FF', textShadow: '0 0 30px rgba(0, 210, 255, 0.45)' }}>Everything.</span><br />
+              <span style={{ color: themeConfig.primaryAccent, textShadow: `0 0 30px ${themeConfig.glowColor}` }}>Everything.</span><br />
               Trust<br />
               The Numbers.
             </h1>
@@ -153,7 +155,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
               <button
                 onClick={() => setIsAuthModalOpen(true)}
                 style={{
-                  background: 'linear-gradient(135deg, #00D2FF 0%, #0284C7 100%)',
+                  background: `linear-gradient(135deg, ${themeConfig.primaryAccent} 0%, ${themeConfig.secondaryAccent} 100%)`,
                   color: '#000000',
                   fontWeight: 900,
                   fontSize: '0.88rem',
@@ -164,7 +166,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.5rem',
-                  boxShadow: '0 0 30px rgba(0, 210, 255, 0.45)',
+                  boxShadow: `0 0 30px ${themeConfig.glowColor}`,
                   transition: 'all 0.2s ease',
                 }}
               >
@@ -194,8 +196,8 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#8E8E93' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
-                <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#00D2FF', boxShadow: '0 0 8px #00D2FF' }} />
-                <span>FAST-PATH LATENCY: <strong style={{ color: '#00D2FF' }}>&lt;1.2ms</strong> (0 LLM Tokens)</span>
+                <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: themeConfig.primaryAccent, boxShadow: `0 0 8px ${themeConfig.primaryAccent}` }} />
+                <span>FAST-PATH LATENCY: <strong style={{ color: themeConfig.primaryAccent }}>&lt;1.2ms</strong> (0 LLM Tokens)</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
                 <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10B981', boxShadow: '0 0 8px #10B981' }} />
@@ -222,8 +224,8 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
         style={{
           width: '100%',
           backgroundColor: 'rgba(9, 11, 20, 0.92)',
-          borderTop: '1px solid rgba(0, 210, 255, 0.2)',
-          borderBottom: '1px solid rgba(0, 210, 255, 0.2)',
+          borderTop: `1px solid ${themeConfig.primaryAccent}33`,
+          borderBottom: `1px solid ${themeConfig.primaryAccent}33`,
           padding: '0.75rem 0',
           overflow: 'hidden',
           zIndex: 20,
@@ -238,8 +240,8 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
               <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10B981', boxShadow: '0 0 8px #10B981' }} />
               [SET-88412] HDFC ₹48,272.80 ↔ RAZORPAY 2% MDR ↔ 8 ERP INVOICES (INV-BUN-01..08) — ZERO DELTA VERIFIED (0.0000 INR)
             </span>
-            <span style={{ color: '#00D2FF', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>
-              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#00D2FF', boxShadow: '0 0 8px #00D2FF' }} />
+            <span style={{ color: themeConfig.primaryAccent, display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: themeConfig.primaryAccent, boxShadow: `0 0 8px ${themeConfig.primaryAccent}` }} />
               [TXN-1082] DETERMINISTIC 1:1 FAST-PATH MATCH (0.9ms) — RECONCILED (0 LLM TOKENS)
             </span>
             <span style={{ color: '#EF4444', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>
@@ -262,8 +264,8 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
               <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10B981', boxShadow: '0 0 8px #10B981' }} />
               [SET-88412] HDFC ₹48,272.80 ↔ RAZORPAY 2% MDR ↔ 8 ERP INVOICES (INV-BUN-01..08) — ZERO DELTA VERIFIED (0.0000 INR)
             </span>
-            <span style={{ color: '#00D2FF', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>
-              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#00D2FF', boxShadow: '0 0 8px #00D2FF' }} />
+            <span style={{ color: themeConfig.primaryAccent, display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: themeConfig.primaryAccent, boxShadow: `0 0 8px ${themeConfig.primaryAccent}` }} />
               [TXN-1082] DETERMINISTIC 1:1 FAST-PATH MATCH (0.9ms) — RECONCILED (0 LLM TOKENS)
             </span>
             <span style={{ color: '#EF4444', display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>
@@ -283,7 +285,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
       </div>
 
       {/* ========================================================================= */}
-      {/* 3. SECTION 1: THE BOTTLENECK                                              */}
+      {/* 3. SECTION 1: THE BOTTLENECK (IMAGE 2: 3D REVOLVING ORBITAL PLACARDS)     */}
       {/* ========================================================================= */}
       <section
         id="problem"
@@ -296,7 +298,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
         }}
       >
         <div style={{ marginBottom: '2rem' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#00D2FF', letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: themeConfig.primaryAccent, letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
             [ 01 / THE RECONCILIATION BOTTLENECK ]
           </div>
 
@@ -312,7 +314,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
           >
             FINANCE DOESN'T HAVE<br />
             A GENERATION PROBLEM.<br />
-            <span style={{ color: '#00D2FF' }}>IT HAS A VERIFICATION PROBLEM.</span>
+            <span style={{ color: themeConfig.primaryAccent }}>IT HAS A VERIFICATION PROBLEM.</span>
           </h2>
 
           <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '700px', lineHeight: 1.6 }}>
@@ -321,12 +323,12 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
           </p>
         </div>
 
-        {/* Bespoke Bottleneck Simulator Component */}
+        {/* Bespoke 3D Revolving Orbital Placards */}
         <BottleneckVisual />
       </section>
 
       {/* ========================================================================= */}
-      {/* 4. ARCHITECTURAL BLUEPRINT (INTER-SECTION IMAGE DIAGRAM)                  */}
+      {/* 4. ARCHITECTURAL BLUEPRINT (IMAGE 1: SUPER VIBRANT HACKATHON MATRIX)      */}
       {/* ========================================================================= */}
       <ArchitectureDiagram />
 
@@ -344,7 +346,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
         }}
       >
         <div style={{ marginBottom: '2rem' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#00D2FF', letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: themeConfig.primaryAccent, letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
             [ 02 / RECONCILIATION PIPELINE ARCHITECTURE ]
           </div>
           <h2 style={{ fontSize: 'clamp(2rem, 4.2vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 0.75rem' }}>
@@ -373,7 +375,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
         }}
       >
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#00D2FF', letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: themeConfig.primaryAccent, letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
             [ 03 / HYBRID RECONCILIATION ARCHITECTURE ]
           </div>
           <h2 style={{ fontSize: 'clamp(2rem, 4.2vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 0.75rem' }}>
@@ -460,7 +462,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
         }}
       >
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#00D2FF', letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: themeConfig.primaryAccent, letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
             [ 06 / TERMINAL WORKSPACE MODULES ]
           </div>
           <h2 style={{ fontSize: 'clamp(2rem, 4.2vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 0.75rem' }}>
@@ -500,7 +502,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
           <button
             onClick={() => onAuthSuccess('dashboard')}
-            style={{ background: 'none', border: 'none', color: '#00D2FF', cursor: 'pointer', fontFamily: 'var(--font-mono)', fontWeight: 800 }}
+            style={{ background: 'none', border: 'none', color: themeConfig.primaryAccent, cursor: 'pointer', fontFamily: 'var(--font-mono)', fontWeight: 800 }}
           >
             [ LAUNCH SYSTEM ➔ ]
           </button>
@@ -517,5 +519,13 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
         onSuccess={() => onAuthSuccess('dashboard')}
       />
     </div>
+  );
+};
+
+export const LandingPageView: React.FC<LandingPageViewProps> = (props) => {
+  return (
+    <LandingThemeProvider>
+      <LandingPageMain {...props} />
+    </LandingThemeProvider>
   );
 };
