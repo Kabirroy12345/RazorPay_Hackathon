@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { 
-  ShieldCheck, 
   X, 
-  ArrowRight, 
   Mail, 
   Lock, 
   User, 
   KeyRound, 
   CheckCircle2, 
   AlertCircle,
-  Clock
+  ShieldCheck
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -62,7 +60,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
       } else {
         await login(email, password);
       }
-      setSuccessMsg('Authentication successful. Generating JWT token...');
+      setSuccessMsg('Authentication verified. Generating JWT token...');
       setTimeout(() => {
         onSuccess();
         onClose();
@@ -81,7 +79,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
     setSuccessMsg(null);
 
     if (!otpEmail || !otpEmail.includes('@')) {
-      setError('Please enter a valid email or Gmail address');
+      setError('Please enter a valid email address');
       return;
     }
 
@@ -112,19 +110,37 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
     setIsLoading(true);
     try {
       await verifyOtp(otpEmail, otpCode.trim());
-      setSuccessMsg('Code verified! JWT issued successfully.');
+      setSuccessMsg('Code verified! JWT session active.');
       setTimeout(() => {
         onSuccess();
         onClose();
       }, 500);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Verification failed');
+      setError(err instanceof Error ? err.message : 'Invalid or expired OTP code');
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Handle Social OAuth (Google, Facebook, Gmail)
+  // Handle 1-Click Demo Presets
+  const handleDemoPreset = async (preset: 'judge' | 'auditor' | 'cfo' | 'operator') => {
+    setError(null);
+    setIsLoading(true);
+    try {
+      await demoLogin(preset);
+      setSuccessMsg(`Session established as ${preset.toUpperCase()}`);
+      setTimeout(() => {
+        onSuccess();
+        onClose();
+      }, 400);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to initialize demo session');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle Social OAuth
   const handleSocialLogin = async (provider: 'google' | 'facebook' | 'gmail') => {
     setError(null);
     setIsLoading(true);
@@ -134,26 +150,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
       setTimeout(() => {
         onSuccess();
         onClose();
-      }, 500);
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : `${provider} login failed`);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Handle 1-Click Demo Login
-  const handleDemoAccess = async (preset: 'judge' | 'auditor' | 'cfo' | 'operator') => {
-    setError(null);
-    setIsLoading(true);
-    try {
-      await demoLogin(preset);
-      setTimeout(() => {
-        onSuccess();
-        onClose();
       }, 400);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Demo access failed');
+      setError(err instanceof Error ? err.message : 'Social OAuth failed');
     } finally {
       setIsLoading(false);
     }
@@ -164,32 +163,45 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
       style={{
         position: 'fixed',
         inset: 0,
-        backgroundColor: 'rgba(7, 7, 9, 0.85)',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-        zIndex: 200,
+        backgroundColor: 'rgba(2, 4, 10, 0.88)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        zIndex: 9999,
         padding: '1.5rem',
       }}
-      onClick={onClose}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
       <div
         style={{
           position: 'relative',
           width: '100%',
           maxWidth: '480px',
-          backgroundColor: '#0F1015',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          borderRadius: '12px',
-          boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 35px rgba(0, 210, 255, 0.12)',
-          padding: '2rem 2.25rem',
+          background: 'linear-gradient(180deg, rgba(14, 18, 35, 0.96) 0%, rgba(8, 10, 20, 0.98) 100%)',
+          border: '1px solid rgba(0, 210, 255, 0.35)',
+          borderRadius: '16px',
+          padding: '2.25rem',
+          boxShadow: '0 30px 80px rgba(0, 0, 0, 0.95), 0 0 50px rgba(0, 210, 255, 0.2)',
           color: '#EDEDED',
           overflow: 'hidden',
         }}
-        onClick={(e) => e.stopPropagation()}
       >
+        {/* Subtle Top Accent Glow Line */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: '10%',
+            right: '10%',
+            height: '2px',
+            background: 'linear-gradient(90deg, transparent, #00D2FF, #7C3AED, transparent)',
+          }}
+        />
+
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -197,38 +209,53 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
             position: 'absolute',
             top: '1.25rem',
             right: '1.25rem',
-            background: 'none',
-            border: 'none',
+            background: 'rgba(255, 255, 255, 0.05)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: '6px',
             color: '#8E8E93',
             cursor: 'pointer',
-            padding: '0.25rem',
+            padding: '0.4rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.2s',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = '#FFFFFF';
+            e.currentTarget.style.borderColor = '#00D2FF';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = '#8E8E93';
+            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
           }}
         >
-          <X size={18} />
+          <X size={16} />
         </button>
 
-        {/* Modal Header */}
-        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+        {/* Modal Brand Header */}
+        <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
           <div
             style={{
-              width: '38px',
-              height: '38px',
-              borderRadius: '8px',
-              background: 'linear-gradient(135deg, #00D2FF 0%, #7C3AED 100%)',
+              width: '44px',
+              height: '44px',
+              borderRadius: '12px',
+              background: 'linear-gradient(135deg, rgba(0, 210, 255, 0.2) 0%, rgba(124, 58, 237, 0.2) 100%)',
+              border: '1px solid rgba(0, 210, 255, 0.4)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              margin: '0 auto 0.75rem',
-              boxShadow: '0 0 20px rgba(0, 210, 255, 0.3)',
+              margin: '0 auto 0.85rem',
+              boxShadow: '0 0 25px rgba(0, 210, 255, 0.35)',
             }}
           >
-            <ShieldCheck size={20} color="#000" />
+            <ShieldCheck size={22} color="#00D2FF" />
           </div>
-          <h2 style={{ fontFamily: 'var(--font-mono)', fontSize: '1.2rem', fontWeight: 800, color: '#FFFFFF', margin: '0 0 0.25rem' }}>
-            OPERATOR AUTHENTICATION
+
+          <h2 style={{ fontFamily: 'var(--font-mono)', fontSize: '1.25rem', fontWeight: 900, color: '#FFFFFF', margin: '0 0 0.3rem', letterSpacing: '0.04em' }}>
+            OMNISETTLE TERMINAL ACCESS
           </h2>
           <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#8E8E93', margin: 0 }}>
-            JWT SECURE ACCESS • RAZORPAY BUILDATHON 2026
+            JWT SECURE SESSION • RAZORPAY BUILDATHON 2026
           </p>
         </div>
 
@@ -237,25 +264,25 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '0.35rem',
-            backgroundColor: '#070709',
-            padding: '0.3rem',
-            borderRadius: '6px',
-            border: '1px solid rgba(255, 255, 255, 0.06)',
+            gap: '0.4rem',
+            backgroundColor: '#04060C',
+            padding: '0.35rem',
+            borderRadius: '8px',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
             marginBottom: '1.5rem',
           }}
         >
           <button
             onClick={() => { setActiveTab('PASSWORD'); setError(null); }}
             style={{
-              background: activeTab === 'PASSWORD' ? '#1A1B22' : 'transparent',
+              background: activeTab === 'PASSWORD' ? 'rgba(0, 210, 255, 0.15)' : 'transparent',
               color: activeTab === 'PASSWORD' ? '#00D2FF' : '#8E8E93',
-              border: activeTab === 'PASSWORD' ? '1px solid rgba(0, 210, 255, 0.3)' : '1px solid transparent',
-              borderRadius: '4px',
-              padding: '0.45rem',
+              border: activeTab === 'PASSWORD' ? '1px solid #00D2FF' : '1px solid transparent',
+              borderRadius: '6px',
+              padding: '0.5rem 0.3rem',
               fontFamily: 'var(--font-mono)',
               fontSize: '0.72rem',
-              fontWeight: 700,
+              fontWeight: 800,
               cursor: 'pointer',
               transition: 'all 0.2s',
             }}
@@ -266,14 +293,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
           <button
             onClick={() => { setActiveTab('OTP'); setError(null); }}
             style={{
-              background: activeTab === 'OTP' ? '#1A1B22' : 'transparent',
+              background: activeTab === 'OTP' ? 'rgba(0, 210, 255, 0.15)' : 'transparent',
               color: activeTab === 'OTP' ? '#00D2FF' : '#8E8E93',
-              border: activeTab === 'OTP' ? '1px solid rgba(0, 210, 255, 0.3)' : '1px solid transparent',
-              borderRadius: '4px',
-              padding: '0.45rem',
+              border: activeTab === 'OTP' ? '1px solid #00D2FF' : '1px solid transparent',
+              borderRadius: '6px',
+              padding: '0.5rem 0.3rem',
               fontFamily: 'var(--font-mono)',
               fontSize: '0.72rem',
-              fontWeight: 700,
+              fontWeight: 800,
               cursor: 'pointer',
               transition: 'all 0.2s',
             }}
@@ -284,14 +311,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
           <button
             onClick={() => { setActiveTab('DEMO'); setError(null); }}
             style={{
-              background: activeTab === 'DEMO' ? '#1A1B22' : 'transparent',
+              background: activeTab === 'DEMO' ? 'rgba(16, 185, 129, 0.15)' : 'transparent',
               color: activeTab === 'DEMO' ? '#10B981' : '#8E8E93',
-              border: activeTab === 'DEMO' ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid transparent',
-              borderRadius: '4px',
-              padding: '0.45rem',
+              border: activeTab === 'DEMO' ? '1px solid #10B981' : '1px solid transparent',
+              borderRadius: '6px',
+              padding: '0.5rem 0.3rem',
               fontFamily: 'var(--font-mono)',
               fontSize: '0.72rem',
-              fontWeight: 700,
+              fontWeight: 800,
               cursor: 'pointer',
               transition: 'all 0.2s',
             }}
@@ -300,14 +327,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
           </button>
         </div>
 
-        {/* Error / Success Notifications */}
+        {/* Notifications */}
         {error && (
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: '0.5rem',
-              backgroundColor: 'rgba(239, 68, 68, 0.1)',
+              backgroundColor: 'rgba(239, 68, 68, 0.12)',
               border: '1px solid #EF4444',
               color: '#EF4444',
               padding: '0.65rem 0.85rem',
@@ -328,7 +355,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
               display: 'flex',
               alignItems: 'center',
               gap: '0.5rem',
-              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+              backgroundColor: 'rgba(16, 185, 129, 0.12)',
               border: '1px solid #10B981',
               color: '#10B981',
               padding: '0.65rem 0.85rem',
@@ -343,19 +370,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
           </div>
         )}
 
-        {/* ------------------------------------------------------------------- */}
-        {/* TAB 1: PASSWORD LOGIN & SIGNUP                                      */}
-        {/* ------------------------------------------------------------------- */}
+        {/* TAB 1: PASSWORD */}
         {activeTab === 'PASSWORD' && (
           <div>
-            <form onSubmit={handleSubmitPasswordAuth} style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
+            <form onSubmit={handleSubmitPasswordAuth} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {isSignUp && (
                 <div>
-                  <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#8E8E93', marginBottom: '0.35rem' }}>
-                    FULL OPERATOR NAME
+                  <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#8E8E93', marginBottom: '0.35rem' }}>
+                    OPERATOR NAME
                   </label>
                   <div style={{ position: 'relative' }}>
-                    <User size={15} color="#8E8E93" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)' }} />
+                    <User size={15} color="#00D2FF" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)' }} />
                     <input
                       type="text"
                       placeholder="Kabir Roy"
@@ -364,13 +389,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                       required={isSignUp}
                       style={{
                         width: '100%',
-                        backgroundColor: '#070709',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
-                        borderRadius: '6px',
-                        padding: '0.65rem 0.85rem 0.65rem 2.4rem',
+                        backgroundColor: '#070A14',
+                        border: '1px solid rgba(0, 210, 255, 0.3)',
+                        borderRadius: '7px',
+                        padding: '0.7rem 0.85rem 0.7rem 2.4rem',
                         color: '#FFFFFF',
                         fontFamily: 'var(--font-mono)',
                         fontSize: '0.85rem',
+                        outline: 'none',
                         boxSizing: 'border-box',
                       }}
                     />
@@ -379,26 +405,27 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
               )}
 
               <div>
-                <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#8E8E93', marginBottom: '0.35rem' }}>
+                <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#8E8E93', marginBottom: '0.35rem' }}>
                   OPERATOR EMAIL
                 </label>
                 <div style={{ position: 'relative' }}>
-                  <Mail size={15} color="#8E8E93" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)' }} />
+                  <Mail size={15} color="#00D2FF" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)' }} />
                   <input
                     type="email"
-                    placeholder="operator@company.com"
+                    placeholder="operator@omnisettle.ai"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     style={{
                       width: '100%',
-                      backgroundColor: '#070709',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      borderRadius: '6px',
-                      padding: '0.65rem 0.85rem 0.65rem 2.4rem',
+                      backgroundColor: '#070A14',
+                      border: '1px solid rgba(0, 210, 255, 0.3)',
+                      borderRadius: '7px',
+                      padding: '0.7rem 0.85rem 0.7rem 2.4rem',
                       color: '#FFFFFF',
                       fontFamily: 'var(--font-mono)',
                       fontSize: '0.85rem',
+                      outline: 'none',
                       boxSizing: 'border-box',
                     }}
                   />
@@ -406,11 +433,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
               </div>
 
               <div>
-                <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#8E8E93', marginBottom: '0.35rem' }}>
+                <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#8E8E93', marginBottom: '0.35rem' }}>
                   PASSWORD / ACCESS KEY
                 </label>
                 <div style={{ position: 'relative' }}>
-                  <Lock size={15} color="#8E8E93" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)' }} />
+                  <Lock size={15} color="#00D2FF" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)' }} />
                   <input
                     type="password"
                     placeholder="••••••••••••"
@@ -419,13 +446,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                     required
                     style={{
                       width: '100%',
-                      backgroundColor: '#070709',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      borderRadius: '6px',
-                      padding: '0.65rem 0.85rem 0.65rem 2.4rem',
+                      backgroundColor: '#070A14',
+                      border: '1px solid rgba(0, 210, 255, 0.3)',
+                      borderRadius: '7px',
+                      padding: '0.7rem 0.85rem 0.7rem 2.4rem',
                       color: '#FFFFFF',
                       fontFamily: 'var(--font-mono)',
                       fontSize: '0.85rem',
+                      outline: 'none',
                       boxSizing: 'border-box',
                     }}
                   />
@@ -436,79 +464,67 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                 type="submit"
                 disabled={isLoading}
                 style={{
-                  backgroundColor: '#00D2FF',
+                  marginTop: '0.5rem',
+                  background: 'linear-gradient(135deg, #00D2FF 0%, #0284C7 100%)',
                   color: '#000000',
                   border: 'none',
-                  borderRadius: '6px',
-                  padding: '0.8rem',
+                  borderRadius: '7px',
+                  padding: '0.85rem',
                   fontFamily: 'var(--font-mono)',
-                  fontSize: '0.85rem',
-                  fontWeight: 800,
+                  fontSize: '0.82rem',
+                  fontWeight: 900,
                   cursor: isLoading ? 'not-allowed' : 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '0.5rem',
-                  marginTop: '0.5rem',
-                  boxShadow: '0 0 20px rgba(0, 210, 255, 0.25)',
+                  boxShadow: '0 0 25px rgba(0, 210, 255, 0.4)',
                 }}
               >
-                {isLoading ? 'SIGNING JWT TOKEN...' : isSignUp ? 'CREATE ACCOUNT & ISSUE JWT' : 'INITIALIZE SESSION ➔'}
+                {isLoading ? 'VERIFYING...' : isSignUp ? 'CREATE ACCOUNT & ISSUE JWT' : 'INITIALIZE SESSION ➔'}
               </button>
             </form>
 
             <div style={{ textAlign: 'center', marginTop: '1rem' }}>
               <button
-                type="button"
                 onClick={() => { setIsSignUp(!isSignUp); setError(null); }}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#8E8E93',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.72rem',
-                  cursor: 'pointer',
-                  textDecoration: 'underline',
-                }}
+                style={{ background: 'none', border: 'none', color: '#8E8E93', fontFamily: 'var(--font-mono)', fontSize: '0.72rem', cursor: 'pointer' }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = '#00D2FF')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = '#8E8E93')}
               >
-                {isSignUp ? '[ ALREADY HAVE A KEY? SIGN IN ]' : '[ NEW OPERATOR? REGISTER HERE ]'}
+                {isSignUp ? '[ ALREADY REGISTERED? LOG IN HERE ]' : '[ NEW OPERATOR? REGISTER HERE ]'}
               </button>
             </div>
           </div>
         )}
 
-        {/* ------------------------------------------------------------------- */}
-        {/* TAB 2: EMAIL / GMAIL 6-DIGIT OTP VERIFICATION                       */}
-        {/* ------------------------------------------------------------------- */}
+        {/* TAB 2: EMAIL OTP */}
         {activeTab === 'OTP' && (
           <div>
             {otpStep === 'INPUT_EMAIL' ? (
               <form onSubmit={handleSendOtp} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <p style={{ fontSize: '0.82rem', color: '#8E8E93', margin: '0 0 0.5rem', lineHeight: 1.5 }}>
-                  Enter your email or Gmail to receive an instant, cryptographically signed 6-digit one-time code.
-                </p>
-
                 <div>
-                  <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#8E8E93', marginBottom: '0.35rem' }}>
-                    EMAIL / GMAIL ADDRESS
+                  <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#8E8E93', marginBottom: '0.35rem' }}>
+                    ENTER EMAIL FOR 6-DIGIT OTP
                   </label>
                   <div style={{ position: 'relative' }}>
-                    <Mail size={15} color="#8E8E93" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)' }} />
+                    <Mail size={15} color="#00D2FF" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)' }} />
                     <input
                       type="email"
-                      placeholder="user@gmail.com"
+                      placeholder="your.email@gmail.com"
                       value={otpEmail}
                       onChange={(e) => setOtpEmail(e.target.value)}
                       required
                       style={{
                         width: '100%',
-                        backgroundColor: '#070709',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
-                        borderRadius: '6px',
-                        padding: '0.65rem 0.85rem 0.65rem 2.4rem',
+                        backgroundColor: '#070A14',
+                        border: '1px solid rgba(0, 210, 255, 0.3)',
+                        borderRadius: '7px',
+                        padding: '0.7rem 0.85rem 0.7rem 2.4rem',
                         color: '#FFFFFF',
                         fontFamily: 'var(--font-mono)',
                         fontSize: '0.85rem',
+                        outline: 'none',
                         boxSizing: 'border-box',
                       }}
                     />
@@ -519,337 +535,230 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                   type="submit"
                   disabled={isLoading}
                   style={{
-                    backgroundColor: '#00D2FF',
+                    background: '#00D2FF',
                     color: '#000000',
                     border: 'none',
-                    borderRadius: '6px',
-                    padding: '0.8rem',
+                    borderRadius: '7px',
+                    padding: '0.85rem',
                     fontFamily: 'var(--font-mono)',
                     fontSize: '0.82rem',
-                    fontWeight: 800,
+                    fontWeight: 900,
                     cursor: isLoading ? 'not-allowed' : 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '0.5rem',
+                    boxShadow: '0 0 25px rgba(0, 210, 255, 0.4)',
                   }}
                 >
-                  {isLoading ? 'DISPATCHING CODE...' : 'DISPATCH 6-DIGIT OTP ➔'}
+                  {isLoading ? 'DISPATCHING...' : 'DISPATCH 6-DIGIT OTP ➔'}
                 </button>
               </form>
             ) : (
               <form onSubmit={handleVerifyOtp} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#8E8E93' }}>
-                    SENT TO: <strong style={{ color: '#FFFFFF' }}>{otpEmail}</strong>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setOtpStep('INPUT_EMAIL')}
-                    style={{ background: 'none', border: 'none', color: '#00D2FF', fontSize: '0.72rem', cursor: 'pointer', fontFamily: 'var(--font-mono)' }}
-                  >
-                    Change
-                  </button>
-                </div>
-
-                {/* Development Preview Banner for Judges */}
-                {previewOtp && (
-                  <div
-                    style={{
-                      background: 'rgba(0, 210, 255, 0.08)',
-                      border: '1px dashed rgba(0, 210, 255, 0.4)',
-                      padding: '0.6rem 0.85rem',
-                      borderRadius: '6px',
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '0.75rem',
-                      color: '#00D2FF',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <span>⚡ HACKATHON TEST OTP:</span>
-                    <strong style={{ fontSize: '1rem', letterSpacing: '0.2em' }}>{previewOtp}</strong>
-                    <button
-                      type="button"
-                      onClick={() => setOtpCode(previewOtp)}
-                      style={{ background: '#00D2FF', color: '#000', border: 'none', borderRadius: '3px', padding: '0.2rem 0.45rem', fontSize: '0.68rem', cursor: 'pointer', fontWeight: 700 }}
-                    >
-                      Auto-Fill
-                    </button>
-                  </div>
-                )}
-
                 <div>
-                  <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#8E8E93', marginBottom: '0.35rem' }}>
-                    ENTER 6-DIGIT VERIFICATION CODE
-                  </label>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#8E8E93', marginBottom: '0.35rem' }}>
+                    <span>ENTER 6-DIGIT OTP CODE</span>
+                    <span style={{ color: '#00D2FF' }}>EXPIRES: {otpCountdown}s</span>
+                  </div>
                   <div style={{ position: 'relative' }}>
-                    <KeyRound size={16} color="#8E8E93" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)' }} />
+                    <KeyRound size={15} color="#00D2FF" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)' }} />
                     <input
                       type="text"
                       maxLength={6}
-                      placeholder="884120"
+                      placeholder="• • • • • •"
                       value={otpCode}
                       onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
                       required
                       style={{
                         width: '100%',
-                        backgroundColor: '#070709',
-                        border: '1px solid #00D2FF',
-                        borderRadius: '6px',
-                        padding: '0.75rem 0.85rem 0.75rem 2.4rem',
-                        color: '#FFFFFF',
+                        backgroundColor: '#070A14',
+                        border: '1px solid rgba(0, 210, 255, 0.4)',
+                        borderRadius: '7px',
+                        padding: '0.7rem 0.85rem 0.7rem 2.4rem',
+                        color: '#00D2FF',
                         fontFamily: 'var(--font-mono)',
                         fontSize: '1.2rem',
                         letterSpacing: '0.35em',
+                        textAlign: 'center',
+                        outline: 'none',
                         boxSizing: 'border-box',
                       }}
                     />
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#8E8E93', fontSize: '0.72rem', fontFamily: 'var(--font-mono)' }}>
-                  <Clock size={13} />
-                  <span>Code expires in: {Math.floor(otpCountdown / 60)}:{(otpCountdown % 60).toString().padStart(2, '0')}</span>
-                </div>
+                {/* Convenient Test Autofill for Judges */}
+                {previewOtp && (
+                  <div style={{ background: '#04060C', padding: '0.65rem 0.85rem', borderRadius: '6px', border: '1px solid rgba(0, 210, 255, 0.25)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: '0.72rem' }}>
+                    <span style={{ color: '#8E8E93' }}>TEST OTP: <strong style={{ color: '#00D2FF' }}>{previewOtp}</strong></span>
+                    <button
+                      type="button"
+                      onClick={() => setOtpCode(previewOtp)}
+                      style={{ background: 'rgba(0, 210, 255, 0.15)', border: '1px solid #00D2FF', color: '#00D2FF', padding: '0.2rem 0.5rem', borderRadius: '4px', cursor: 'pointer', fontSize: '0.65rem', fontWeight: 800 }}
+                    >
+                      AUTO-FILL
+                    </button>
+                  </div>
+                )}
 
                 <button
                   type="submit"
-                  disabled={isLoading || otpCode.length !== 6}
+                  disabled={isLoading}
                   style={{
-                    backgroundColor: '#10B981',
+                    background: 'linear-gradient(135deg, #00D2FF 0%, #10B981 100%)',
                     color: '#000000',
                     border: 'none',
-                    borderRadius: '6px',
-                    padding: '0.8rem',
+                    borderRadius: '7px',
+                    padding: '0.85rem',
                     fontFamily: 'var(--font-mono)',
-                    fontSize: '0.85rem',
-                    fontWeight: 800,
-                    cursor: isLoading || otpCode.length !== 6 ? 'not-allowed' : 'pointer',
+                    fontSize: '0.82rem',
+                    fontWeight: 900,
+                    cursor: isLoading ? 'not-allowed' : 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '0.5rem',
+                    boxShadow: '0 0 25px rgba(16, 185, 129, 0.4)',
                   }}
                 >
-                  {isLoading ? 'VERIFYING CODE...' : 'VERIFY & ISSUE JWT ➔'}
+                  {isLoading ? 'VERIFYING...' : 'CONFIRM CODE & LOGIN ➔'}
                 </button>
               </form>
             )}
           </div>
         )}
 
-        {/* ------------------------------------------------------------------- */}
-        {/* TAB 3: 1-CLICK DEMO ACCESS FOR JUDGES & AUDITORS                   */}
-        {/* ------------------------------------------------------------------- */}
+        {/* TAB 3: 1-CLICK DEMO */}
         {activeTab === 'DEMO' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <p style={{ fontSize: '0.75rem', color: '#8E8E93', margin: '0 0 0.25rem', fontFamily: 'var(--font-mono)' }}>
-              Instant 1-Click Role Presets (Signed with 24h JWT):
-            </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: '#8E8E93', marginBottom: '0.25rem' }}>
+              SELECT PRESET ROLE FOR INSTANT SIGNED JWT:
+            </div>
 
-            <button
-              onClick={() => handleDemoAccess('judge')}
-              disabled={isLoading}
-              style={{
-                background: 'rgba(0, 210, 255, 0.08)',
-                border: '1px solid rgba(0, 210, 255, 0.35)',
-                borderRadius: '8px',
-                padding: '0.85rem 1rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                cursor: 'pointer',
-                textAlign: 'left',
-              }}
-            >
-              <div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', fontWeight: 800, color: '#00D2FF' }}>
-                  ⚡ Razorpay Buildathon Judge
+            {[
+              { id: 'judge', name: 'Razorpay Buildathon Judge', email: 'judge@razorpay.com', role: 'JUDGE_ADMIN', color: '#00D2FF' },
+              { id: 'auditor', name: 'Big 4 Lead GAAP Auditor', email: 'auditor@big4.com', role: 'LEAD_AUDITOR', color: '#F59E0B' },
+              { id: 'cfo', name: 'Enterprise Treasury CFO', email: 'cfo@enterprise.com', role: 'TREASURY_CFO', color: '#10B981' },
+              { id: 'operator', name: 'FinTech Treasury Operator', email: 'operator@omnisettle.ai', role: 'OPERATOR', color: '#A855F7' },
+            ].map((d) => (
+              <button
+                key={d.id}
+                onClick={() => handleDemoPreset(d.id as 'judge' | 'auditor' | 'cfo' | 'operator')}
+                disabled={isLoading}
+                style={{
+                  background: 'rgba(8, 12, 24, 0.95)',
+                  border: `1px solid ${d.color}44`,
+                  borderRadius: '8px',
+                  padding: '0.75rem 1rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  cursor: isLoading ? 'not-allowed' : 'pointer',
+                  textAlign: 'left',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = d.color;
+                  e.currentTarget.style.boxShadow = `0 0 15px ${d.color}33`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = `${d.color}44`;
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
+              >
+                <div>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', fontWeight: 800, color: '#FFFFFF' }}>
+                    {d.name}
+                  </div>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: '#8E8E93' }}>
+                    {d.email}
+                  </div>
                 </div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#8E8E93', marginTop: '0.2rem' }}>
-                  judge@razorpay.com • [ROLE: JUDGE_ADMIN]
-                </div>
-              </div>
-              <ArrowRight size={16} color="#00D2FF" />
-            </button>
-
-            <button
-              onClick={() => handleDemoAccess('auditor')}
-              disabled={isLoading}
-              style={{
-                background: 'rgba(16, 185, 129, 0.08)',
-                border: '1px solid rgba(16, 185, 129, 0.35)',
-                borderRadius: '8px',
-                padding: '0.85rem 1rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                cursor: 'pointer',
-                textAlign: 'left',
-              }}
-            >
-              <div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', fontWeight: 800, color: '#10B981' }}>
-                  Big 4 Lead GAAP Auditor
-                </div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#8E8E93', marginTop: '0.2rem' }}>
-                  auditor@big4.com • [ROLE: LEAD_AUDITOR]
-                </div>
-              </div>
-              <ArrowRight size={16} color="#10B981" />
-            </button>
-
-            <button
-              onClick={() => handleDemoAccess('cfo')}
-              disabled={isLoading}
-              style={{
-                background: 'rgba(245, 158, 11, 0.08)',
-                border: '1px solid rgba(245, 158, 11, 0.35)',
-                borderRadius: '8px',
-                padding: '0.85rem 1rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                cursor: 'pointer',
-                textAlign: 'left',
-              }}
-            >
-              <div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', fontWeight: 800, color: '#F59E0B' }}>
-                  Enterprise Chief Financial Officer
-                </div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#8E8E93', marginTop: '0.2rem' }}>
-                  cfo@enterprise.com • [ROLE: TREASURY_CFO]
-                </div>
-              </div>
-              <ArrowRight size={16} color="#F59E0B" />
-            </button>
-
-            <button
-              onClick={() => handleDemoAccess('operator')}
-              disabled={isLoading}
-              style={{
-                background: 'rgba(168, 85, 247, 0.08)',
-                border: '1px solid rgba(168, 85, 247, 0.35)',
-                borderRadius: '8px',
-                padding: '0.85rem 1rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                cursor: 'pointer',
-                textAlign: 'left',
-              }}
-            >
-              <div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', fontWeight: 800, color: '#A855F7' }}>
-                  FinTech Treasury Operator
-                </div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#8E8E93', marginTop: '0.2rem' }}>
-                  operator@omnisettle.ai • [ROLE: OPERATOR]
-                </div>
-              </div>
-              <ArrowRight size={16} color="#A855F7" />
-            </button>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: d.color, background: `${d.color}15`, padding: '0.2rem 0.5rem', borderRadius: '4px', border: `1px solid ${d.color}44`, fontWeight: 800 }}>
+                  {d.role}
+                </span>
+              </button>
+            ))}
           </div>
         )}
 
-        {/* ------------------------------------------------------------------- */}
-        {/* SOCIAL LOGINS (GOOGLE, GMAIL, FACEBOOK)                             */}
-        {/* ------------------------------------------------------------------- */}
-        <div style={{ marginTop: '1.75rem', paddingTop: '1.25rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
-          <div style={{ textAlign: 'center', marginBottom: '0.85rem' }}>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#8E8E93' }}>
-              OR AUTHENTICATE WITH ENTERPRISE SSO
-            </span>
+        {/* Enterprise SSO Divider & Social Buttons */}
+        <div style={{ marginTop: '1.5rem', paddingTop: '1.25rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+          <div style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: '#8E8E93', marginBottom: '0.75rem' }}>
+            OR AUTHENTICATE WITH ENTERPRISE SSO
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.65rem' }}>
-            {/* Google OAuth Button */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
             <button
-              type="button"
               onClick={() => handleSocialLogin('google')}
               disabled={isLoading}
               style={{
-                background: '#070709',
+                background: '#070A14',
                 border: '1px solid rgba(255, 255, 255, 0.1)',
                 borderRadius: '6px',
-                padding: '0.6rem',
+                padding: '0.5rem',
+                color: '#FFFFFF',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.72rem',
+                cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: '0.4rem',
-                cursor: 'pointer',
-                color: '#EDEDED',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.72rem',
-                fontWeight: 600,
+                gap: '0.35rem',
               }}
             >
-              <svg width="15" height="15" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
-                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.36 24 12 24z"/>
-                <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.04 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
-                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.36 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
-              </svg>
               Google
             </button>
 
-            {/* Gmail Direct OAuth Button */}
             <button
-              type="button"
               onClick={() => handleSocialLogin('gmail')}
               disabled={isLoading}
               style={{
-                background: '#070709',
+                background: '#070A14',
                 border: '1px solid rgba(255, 255, 255, 0.1)',
                 borderRadius: '6px',
-                padding: '0.6rem',
+                padding: '0.5rem',
+                color: '#FFFFFF',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.72rem',
+                cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: '0.4rem',
-                cursor: 'pointer',
-                color: '#EDEDED',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.72rem',
-                fontWeight: 600,
+                gap: '0.35rem',
               }}
             >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L12 9.573l8.073-6.08C21.691 2.28 24 3.434 24 5.457z" fill="#EA4335"/>
-              </svg>
               Gmail
             </button>
 
-            {/* Facebook OAuth Button */}
             <button
-              type="button"
               onClick={() => handleSocialLogin('facebook')}
               disabled={isLoading}
               style={{
-                background: '#070709',
+                background: '#070A14',
                 border: '1px solid rgba(255, 255, 255, 0.1)',
                 borderRadius: '6px',
-                padding: '0.6rem',
+                padding: '0.5rem',
+                color: '#FFFFFF',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.72rem',
+                cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: '0.4rem',
-                cursor: 'pointer',
-                color: '#EDEDED',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.72rem',
-                fontWeight: 600,
+                gap: '0.35rem',
               }}
             >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="#1877F2">
-                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-              </svg>
               Facebook
             </button>
           </div>
+        </div>
+
+        {/* Security Footer Cipher */}
+        <div style={{ textAlign: 'center', marginTop: '1.25rem', fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: '#8E8E93', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}>
+          <Lock size={12} color="#10B981" />
+          <span>SHA-256 JWT ENCRYPTION // 24H VALIDITY</span>
         </div>
       </div>
     </div>

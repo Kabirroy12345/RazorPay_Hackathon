@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Zap, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 interface RazorpayIntroSplashProps {
   onComplete: () => void;
@@ -12,7 +12,7 @@ export const RazorpayIntroSplash: React.FC<RazorpayIntroSplashProps> = ({ onComp
 
   const handleFinish = useCallback(() => {
     setIsVisible(false);
-    setTimeout(onComplete, 600); // Allow fade-out animation to finish
+    setTimeout(onComplete, 500); // Smooth fade-out before unmounting
   }, [onComplete]);
 
   useEffect(() => {
@@ -35,13 +35,13 @@ export const RazorpayIntroSplash: React.FC<RazorpayIntroSplashProps> = ({ onComp
       {isVisible && (
         <motion.div
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, scale: 1.04 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          exit={{ opacity: 0, scale: 1.05 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           style={{
             position: 'fixed',
             inset: 0,
-            zIndex: 99999,
-            backgroundColor: '#05070E',
+            zIndex: 999999,
+            backgroundColor: '#04060E',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -50,49 +50,50 @@ export const RazorpayIntroSplash: React.FC<RazorpayIntroSplashProps> = ({ onComp
             fontFamily: 'var(--font-sans)',
           }}
         >
-          {/* Radiant Background Spotlight */}
+          {/* Deep Cosmic Background Spotlight */}
           <div
             style={{
               position: 'absolute',
-              width: '600px',
-              height: '600px',
+              width: '700px',
+              height: '700px',
               borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(12, 35, 64, 0.8) 0%, rgba(2, 4, 10, 0) 70%)',
+              background: 'radial-gradient(circle, rgba(12, 35, 64, 0.9) 0%, rgba(2, 4, 10, 0) 70%)',
               pointerEvents: 'none',
             }}
           />
 
-          {/* Concentric Laser Pulse Rings */}
+          {/* Animated Neon Pulse Rings */}
           <motion.div
-            animate={{ scale: [0.9, 1.4, 0.9], opacity: [0.3, 0.7, 0.3] }}
+            animate={{ scale: [0.85, 1.35, 0.85], opacity: [0.3, 0.8, 0.3] }}
             transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
             style={{
               position: 'absolute',
-              width: '420px',
-              height: '420px',
+              width: '450px',
+              height: '450px',
               borderRadius: '50%',
-              border: '1.5px solid rgba(0, 210, 255, 0.35)',
+              border: '2px solid rgba(0, 210, 255, 0.4)',
+              boxShadow: '0 0 40px rgba(0, 210, 255, 0.25)',
               pointerEvents: 'none',
             }}
           />
           <motion.div
-            animate={{ scale: [1.1, 1.6, 1.1], opacity: [0.2, 0.5, 0.2] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+            animate={{ scale: [1.1, 1.6, 1.1], opacity: [0.2, 0.6, 0.2] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
             style={{
               position: 'absolute',
-              width: '520px',
-              height: '520px',
+              width: '560px',
+              height: '560px',
               borderRadius: '50%',
-              border: '1px dashed rgba(124, 58, 237, 0.35)',
+              border: '1.5px dashed rgba(124, 58, 237, 0.4)',
               pointerEvents: 'none',
             }}
           />
 
-          {/* Central Logo Lockup */}
+          {/* Content Container */}
           <motion.div
-            initial={{ scale: 0.85, opacity: 0, y: 15 }}
+            initial={{ scale: 0.8, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
             style={{
               position: 'relative',
               zIndex: 10,
@@ -100,72 +101,57 @@ export const RazorpayIntroSplash: React.FC<RazorpayIntroSplashProps> = ({ onComp
               flexDirection: 'column',
               alignItems: 'center',
               textAlign: 'center',
+              padding: '0 2rem',
             }}
           >
-            {/* Authentic Razorpay Logo Container */}
+            {/* Authentic Razorpay Logo Display Card */}
             <div
               style={{
-                position: 'relative',
-                padding: '1.5rem 2.5rem',
-                background: 'rgba(10, 14, 25, 0.85)',
-                border: '1px solid rgba(0, 210, 255, 0.4)',
+                background: '#FFFFFF',
                 borderRadius: '16px',
-                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.8), 0 0 45px rgba(0, 210, 255, 0.25)',
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
-                marginBottom: '2rem',
+                padding: '1.25rem 2.75rem',
+                boxShadow: '0 25px 70px rgba(0, 0, 0, 0.95), 0 0 50px rgba(0, 210, 255, 0.45)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '1.25rem',
+                justifyContent: 'center',
+                marginBottom: '2rem',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
               }}
             >
-              {/* Razorpay Brand Image */}
               <img
                 src="/razorpay-logo.png"
                 alt="Razorpay"
                 style={{
-                  height: '48px',
+                  height: '54px',
+                  maxWidth: '260px',
                   objectFit: 'contain',
-                  filter: 'drop-shadow(0 0 15px rgba(0, 210, 255, 0.5))',
-                }}
-                onError={(e) => {
-                  // Fallback SVG mark if image fails
-                  const target = e.currentTarget;
-                  target.style.display = 'none';
-                  const fallback = document.getElementById('rzp-fallback-mark');
-                  if (fallback) fallback.style.display = 'flex';
+                  display: 'block',
                 }}
               />
-
-              {/* Fallback Vector Emblem */}
-              <div
-                id="rzp-fallback-mark"
-                style={{
-                  display: 'none',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                }}
-              >
-                <div style={{ width: '42px', height: '42px', borderRadius: '10px', background: '#00D2FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Zap size={24} color="#000" />
-                </div>
-                <span style={{ fontSize: '1.8rem', fontWeight: 900, letterSpacing: '-0.03em', color: '#FFFFFF' }}>
-                  Razorpay
-                </span>
-              </div>
             </div>
 
-            {/* Hackathon Track Tag */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.85rem' }}>
+            {/* Track 04 Metadata Pill */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.6rem',
+                marginBottom: '1rem',
+                background: 'rgba(0, 210, 255, 0.1)',
+                border: '1px solid rgba(0, 210, 255, 0.35)',
+                padding: '0.35rem 0.9rem',
+                borderRadius: '20px',
+              }}
+            >
               <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#00D2FF', boxShadow: '0 0 10px #00D2FF' }} />
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#00D2FF', letterSpacing: '0.15em', fontWeight: 800 }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#00D2FF', letterSpacing: '0.12em', fontWeight: 800 }}>
                 RAZORPAY BUILDATHON 2026 • TRACK 04
               </span>
             </div>
 
             <h2
               style={{
-                fontSize: 'clamp(1.6rem, 3.5vw, 2.4rem)',
+                fontSize: 'clamp(1.8rem, 4vw, 2.5rem)',
                 fontWeight: 900,
                 color: '#FFFFFF',
                 letterSpacing: '-0.02em',
@@ -175,12 +161,12 @@ export const RazorpayIntroSplash: React.FC<RazorpayIntroSplashProps> = ({ onComp
               Autonomous 3-Way Reconciliation
             </h2>
 
-            <p style={{ fontSize: '0.9rem', color: '#8E8E93', margin: '0 0 2rem', maxWidth: '420px', lineHeight: 1.5 }}>
-              Connecting Bank Statements, Razorpay Gateway settlements, and ERP General Ledgers with zero-delta proof.
+            <p style={{ fontSize: '0.92rem', color: '#8E8E93', margin: '0 0 2rem', maxWidth: '440px', lineHeight: 1.5 }}>
+              Engineered for high-volume settlements, fee audit compliance, and zero-delta mathematical verification.
             </p>
 
             {/* 3-Second Loading Progress Bar */}
-            <div style={{ width: '280px', position: 'relative' }}>
+            <div style={{ width: '300px', position: 'relative' }}>
               <div style={{ height: '4px', background: 'rgba(255, 255, 255, 0.1)', borderRadius: '2px', overflow: 'hidden' }}>
                 <motion.div
                   initial={{ width: '0%' }}
@@ -189,12 +175,12 @@ export const RazorpayIntroSplash: React.FC<RazorpayIntroSplashProps> = ({ onComp
                   style={{
                     height: '100%',
                     background: 'linear-gradient(90deg, #00D2FF 0%, #7C3AED 100%)',
-                    boxShadow: '0 0 12px #00D2FF',
+                    boxShadow: '0 0 15px #00D2FF',
                   }}
                 />
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: '#8E8E93', marginTop: '0.6rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#8E8E93', marginTop: '0.65rem' }}>
                 <span>INITIALIZING ENGINE...</span>
                 <span style={{ color: '#00D2FF', fontWeight: 800 }}>{secondsRemaining}s</span>
               </div>
@@ -204,22 +190,30 @@ export const RazorpayIntroSplash: React.FC<RazorpayIntroSplashProps> = ({ onComp
             <button
               onClick={handleFinish}
               style={{
-                marginTop: '1.5rem',
-                background: 'transparent',
-                border: 'none',
-                color: 'rgba(255, 255, 255, 0.4)',
+                marginTop: '1.75rem',
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                borderRadius: '6px',
+                padding: '0.45rem 1rem',
+                color: '#8E8E93',
                 fontFamily: 'var(--font-mono)',
                 fontSize: '0.72rem',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.35rem',
-                transition: 'color 0.2s',
+                gap: '0.4rem',
+                transition: 'all 0.2s',
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = '#FFFFFF')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255, 255, 255, 0.4)')}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = '#FFFFFF';
+                e.currentTarget.style.borderColor = '#00D2FF';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = '#8E8E93';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.12)';
+              }}
             >
-              SKIP INTRO <ArrowRight size={12} />
+              SKIP INTRO <ArrowRight size={13} />
             </button>
           </motion.div>
         </motion.div>

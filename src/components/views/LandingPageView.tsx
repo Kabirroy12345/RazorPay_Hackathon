@@ -19,52 +19,43 @@ interface LandingPageViewProps {
 }
 
 export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
-  // 3-Second Razorpay Splash Controller
-  const [showRazorpaySplash, setShowRazorpaySplash] = useState<boolean>(() => {
-    // Only show once per browser session unless forced
-    return !sessionStorage.getItem('omnisettle_rzp_splash_seen');
-  });
-
+  // Always trigger the 3-second official Razorpay intro splash on visit
+  const [showRazorpaySplash, setShowRazorpaySplash] = useState<boolean>(true);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-
-  const handleSplashComplete = () => {
-    sessionStorage.setItem('omnisettle_rzp_splash_seen', 'true');
-    setShowRazorpaySplash(false);
-  };
 
   return (
     <div style={{ backgroundColor: '#05070E', color: '#EDEDED', minHeight: '100vh', overflowX: 'hidden', position: 'relative', fontFamily: 'var(--font-sans)' }}>
       
-      {/* 3-Second Razorpay Actual Logo Intro Splash */}
+      {/* 3-Second Official Razorpay Actual Logo Intro Splash */}
       {showRazorpaySplash && (
-        <RazorpayIntroSplash onComplete={handleSplashComplete} />
+        <RazorpayIntroSplash onComplete={() => setShowRazorpaySplash(false)} />
       )}
 
       {/* Global Cosmic Space Background Everywhere */}
       <GlobalSpaceBackground />
 
-      {/* Redesigned Floating Glassmorphic Header Bar */}
+      {/* Redesigned Floating Glassmorphic Header Bar with Custom Logo */}
       <Navbar
         onJudgePass={() => onAuthSuccess('dashboard')}
         onOpenAuthModal={() => setIsAuthModalOpen(true)}
       />
 
       {/* ========================================================================= */}
-      {/* 1. MONUMENTAL 3D HERO                                                     */}
+      {/* 1. MONUMENTAL 3D HERO (TIGHTENED & IMPACTFUL)                             */}
       {/* ========================================================================= */}
       <section
         style={{
           position: 'relative',
-          minHeight: '100vh',
           width: '100%',
-          paddingTop: '72px',
+          paddingTop: '80px',
+          paddingBottom: '2rem',
           display: 'flex',
           alignItems: 'center',
           overflow: 'visible',
           zIndex: 10,
         }}
       >
-        {/* Layer 0: Monumental Architectural Watermark */}
+        {/* Layer 0: Architectural Watermark */}
         <div
           style={{
             position: 'absolute',
@@ -72,7 +63,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
             left: '50%',
             transform: 'translate(-50%, -50%)',
             fontFamily: 'var(--font-mono)',
-            fontSize: 'clamp(5rem, 18vw, 16rem)',
+            fontSize: 'clamp(4.5rem, 16vw, 14rem)',
             fontWeight: 900,
             color: 'rgba(255, 255, 255, 0.015)',
             letterSpacing: '0.12em',
@@ -85,7 +76,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
           OMNISETTLE
         </div>
 
-        {/* Hero Grid: Left Content / Right 3D Spatial Machine */}
+        {/* Hero Grid */}
         <div
           style={{
             position: 'relative',
@@ -93,22 +84,22 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
             width: '100%',
             maxWidth: '1380px',
             margin: '0 auto',
-            padding: '2.5rem 2.5rem',
+            padding: '1.5rem 2rem 0',
             display: 'grid',
-            gridTemplateColumns: 'minmax(320px, 520px) 1fr',
+            gridTemplateColumns: 'minmax(320px, 500px) 1fr',
             alignItems: 'center',
-            gap: '2rem',
+            gap: '1.5rem',
           }}
         >
-          {/* Left Column: Monumental Headline & Control Actions */}
+          {/* Left Column: Headline & Action Buttons */}
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
               <span
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  fontSize: '0.7rem',
+                  fontSize: '0.68rem',
                   color: '#00D2FF',
-                  padding: '0.25rem 0.7rem',
+                  padding: '0.2rem 0.65rem',
                   borderRadius: '4px',
                   border: '1px solid rgba(0, 210, 255, 0.35)',
                   background: 'rgba(0, 210, 255, 0.06)',
@@ -120,7 +111,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
               <span
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  fontSize: '0.7rem',
+                  fontSize: '0.68rem',
                   color: '#8E8E93',
                   letterSpacing: '0.06em',
                 }}
@@ -131,26 +122,26 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
 
             <h1
               style={{
-                fontSize: 'clamp(2.8rem, 5.2vw, 4.4rem)',
+                fontSize: 'clamp(2.6rem, 4.8vw, 4.2rem)',
                 fontWeight: 900,
                 lineHeight: 1.04,
                 letterSpacing: '-0.035em',
                 color: '#FFFFFF',
-                margin: '0 0 1.5rem 0',
+                margin: '0 0 1.25rem 0',
               }}
             >
               Reconcile<br />
-              <span style={{ color: '#00D2FF', textShadow: '0 0 30px rgba(0, 210, 255, 0.4)' }}>Everything.</span><br />
+              <span style={{ color: '#00D2FF', textShadow: '0 0 30px rgba(0, 210, 255, 0.45)' }}>Everything.</span><br />
               Trust<br />
               The Numbers.
             </h1>
 
             <p
               style={{
-                fontSize: '1.05rem',
+                fontSize: '1rem',
                 color: '#8E8E93',
-                lineHeight: 1.6,
-                marginBottom: '2.25rem',
+                lineHeight: 1.55,
+                marginBottom: '1.75rem',
                 maxWidth: '460px',
               }}
             >
@@ -158,22 +149,22 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
               Sub-millisecond deterministic checks for clean 1:1 records. Agentic Claude 3.5 reasoning with zero-delta mathematical proof for complex bundles.
             </p>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
               <button
                 onClick={() => setIsAuthModalOpen(true)}
                 style={{
                   background: 'linear-gradient(135deg, #00D2FF 0%, #0284C7 100%)',
                   color: '#000000',
                   fontWeight: 900,
-                  fontSize: '0.92rem',
-                  padding: '0.9rem 2.2rem',
+                  fontSize: '0.88rem',
+                  padding: '0.85rem 2rem',
                   borderRadius: '7px',
                   border: 'none',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.5rem',
-                  boxShadow: '0 0 35px rgba(0, 210, 255, 0.45)',
+                  boxShadow: '0 0 30px rgba(0, 210, 255, 0.45)',
                   transition: 'all 0.2s ease',
                 }}
               >
@@ -186,8 +177,8 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
                   background: 'rgba(255, 255, 255, 0.05)',
                   color: '#EDEDED',
                   fontWeight: 600,
-                  fontSize: '0.9rem',
-                  padding: '0.9rem 1.8rem',
+                  fontSize: '0.88rem',
+                  padding: '0.85rem 1.6rem',
                   borderRadius: '7px',
                   border: '1px solid rgba(255, 255, 255, 0.12)',
                   textDecoration: 'none',
@@ -201,16 +192,16 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
               </a>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem', fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#8E8E93' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#8E8E93' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
                 <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#00D2FF', boxShadow: '0 0 8px #00D2FF' }} />
                 <span>FAST-PATH LATENCY: <strong style={{ color: '#00D2FF' }}>&lt;1.2ms</strong> (0 LLM Tokens)</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
                 <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10B981', boxShadow: '0 0 8px #10B981' }} />
                 <span>MATCH PRECISION: <strong style={{ color: '#10B981' }}>99.98%</strong> (Verified Ground Truth)</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
                 <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#F59E0B', boxShadow: '0 0 8px #F59E0B' }} />
                 <span>STREAM CAPACITY: <strong style={{ color: '#EDEDED' }}>10,000+ TXNS/SEC</strong></span>
               </div>
@@ -218,7 +209,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
           </div>
 
           {/* Right Column: Unified 3D Cybernetic Machine */}
-          <div style={{ width: '100%', minHeight: '640px' }}>
+          <div style={{ width: '100%', minHeight: '580px' }}>
             <UnifiedHero3D />
           </div>
         </div>
@@ -230,10 +221,10 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
       <div
         style={{
           width: '100%',
-          backgroundColor: 'rgba(9, 11, 20, 0.88)',
+          backgroundColor: 'rgba(9, 11, 20, 0.92)',
           borderTop: '1px solid rgba(0, 210, 255, 0.2)',
           borderBottom: '1px solid rgba(0, 210, 255, 0.2)',
-          padding: '0.85rem 0',
+          padding: '0.75rem 0',
           overflow: 'hidden',
           zIndex: 20,
           position: 'relative',
@@ -292,31 +283,31 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
       </div>
 
       {/* ========================================================================= */}
-      {/* 3. SECTION 1: THE BOTTLENECK (BESPOKE INTERACTIVE CIRCUIT VISUAL)         */}
+      {/* 3. SECTION 1: THE BOTTLENECK                                              */}
       {/* ========================================================================= */}
       <section
         id="problem"
         style={{
-          padding: '8rem 2.5rem 4rem',
+          padding: '4.5rem 2rem 2rem',
           maxWidth: '1280px',
           margin: '0 auto',
           position: 'relative',
           zIndex: 10,
         }}
       >
-        <div style={{ marginBottom: '3.5rem' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF', letterSpacing: '0.15em', marginBottom: '1.25rem' }}>
+        <div style={{ marginBottom: '2rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#00D2FF', letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
             [ 01 / THE RECONCILIATION BOTTLENECK ]
           </div>
 
           <h2
             style={{
-              fontSize: 'clamp(2.2rem, 5vw, 4rem)',
+              fontSize: 'clamp(2rem, 4.2vw, 3.4rem)',
               fontWeight: 900,
               lineHeight: 1.1,
               letterSpacing: '-0.02em',
               color: '#FFFFFF',
-              margin: '0 0 1.5rem',
+              margin: '0 0 1rem',
             }}
           >
             FINANCE DOESN'T HAVE<br />
@@ -324,7 +315,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
             <span style={{ color: '#00D2FF' }}>IT HAS A VERIFICATION PROBLEM.</span>
           </h2>
 
-          <p style={{ fontSize: '1.15rem', color: '#8E8E93', maxWidth: '720px', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '700px', lineHeight: 1.6 }}>
             Modern financial operations generate millions of transactional records every day, yet still rely heavily on 
             manual spreadsheets to verify discrepancies across disconnected systems.
           </p>
@@ -335,7 +326,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
       </section>
 
       {/* ========================================================================= */}
-      {/* 4. INTER-SECTION ARCHITECTURAL BLUEPRINT (IMAGE IN BETWEEN)               */}
+      {/* 4. ARCHITECTURAL BLUEPRINT (INTER-SECTION IMAGE DIAGRAM)                  */}
       {/* ========================================================================= */}
       <ArchitectureDiagram />
 
@@ -345,21 +336,21 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
       <section
         id="pipeline"
         style={{
-          padding: '8rem 2.5rem',
+          padding: '4.5rem 2rem 2rem',
           maxWidth: '1280px',
           margin: '0 auto',
           position: 'relative',
           zIndex: 10,
         }}
       >
-        <div style={{ marginBottom: '3.5rem' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF', letterSpacing: '0.15em', marginBottom: '1.25rem' }}>
+        <div style={{ marginBottom: '2rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#00D2FF', letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
             [ 02 / RECONCILIATION PIPELINE ARCHITECTURE ]
           </div>
-          <h2 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.8rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 1rem' }}>
+          <h2 style={{ fontSize: 'clamp(2rem, 4.2vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 0.75rem' }}>
             5 STAGES TO VERIFIED PROOF
           </h2>
-          <p style={{ fontSize: '1.1rem', color: '#8E8E93', maxWidth: '650px', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '650px', lineHeight: 1.6 }}>
             Click any gate on the conveyor to inspect real-time canonical schema transformations and mathematical guardrails.
           </p>
         </div>
@@ -374,21 +365,21 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
       <section
         id="hybrid"
         style={{
-          padding: '8rem 2.5rem',
+          padding: '4.5rem 2rem 2rem',
           maxWidth: '1280px',
           margin: '0 auto',
           position: 'relative',
           zIndex: 10,
         }}
       >
-        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF', letterSpacing: '0.15em', marginBottom: '1.25rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#00D2FF', letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
             [ 03 / HYBRID RECONCILIATION ARCHITECTURE ]
           </div>
-          <h2 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.8rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 1rem' }}>
+          <h2 style={{ fontSize: 'clamp(2rem, 4.2vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 0.75rem' }}>
             DUAL-PATH EXECUTION ENGINE
           </h2>
-          <p style={{ fontSize: '1.1rem', color: '#8E8E93', maxWidth: '680px', margin: '0 auto', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '650px', margin: '0 auto', lineHeight: 1.6 }}>
             Deterministic sub-millisecond precision for the majority. Claude 3.5 Sonnet agentic intelligence for difficult non-linear edge cases.
           </p>
         </div>
@@ -403,21 +394,21 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
       <section
         id="bundle"
         style={{
-          padding: '8rem 2.5rem',
+          padding: '4.5rem 2rem 2rem',
           maxWidth: '1280px',
           margin: '0 auto',
           position: 'relative',
           zIndex: 10,
         }}
       >
-        <div style={{ marginBottom: '3.5rem' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#F59E0B', letterSpacing: '0.15em', marginBottom: '1.25rem' }}>
+        <div style={{ marginBottom: '2rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#F59E0B', letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
             [ 04 / MATHEMATICAL PROOF LAB ]
           </div>
-          <h2 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.8rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 1rem' }}>
+          <h2 style={{ fontSize: 'clamp(2rem, 4.2vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 0.75rem' }}>
             INTERACTIVE BUNDLE MATH PROOF
           </h2>
-          <p style={{ fontSize: '1.1rem', color: '#8E8E93', maxWidth: '680px', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '650px', lineHeight: 1.6 }}>
             Demonstrating how 1 payment gateway settlement matches across 8 disparate customer invoices while rigorously calculating deductions.
           </p>
         </div>
@@ -432,21 +423,21 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
       <section
         id="exceptions"
         style={{
-          padding: '8rem 2.5rem',
+          padding: '4.5rem 2rem 2rem',
           maxWidth: '1280px',
           margin: '0 auto',
           position: 'relative',
           zIndex: 10,
         }}
       >
-        <div style={{ marginBottom: '3.5rem' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#EF4444', letterSpacing: '0.15em', marginBottom: '1.25rem' }}>
+        <div style={{ marginBottom: '2rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#EF4444', letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
             [ 05 / ANOMALY ISOLATION RADAR ]
           </div>
-          <h2 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.8rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 1rem' }}>
+          <h2 style={{ fontSize: 'clamp(2rem, 4.2vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 0.75rem' }}>
             HONEST EXCEPTION REMEDIATION
           </h2>
-          <p style={{ fontSize: '1.1rem', color: '#8E8E93', maxWidth: '680px', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '650px', lineHeight: 1.6 }}>
             Never force bad matches. OmniSettle isolates genuine financial anomalies into 5 strict categories for automated 1-click remediation.
           </p>
         </div>
@@ -461,21 +452,21 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
       <section
         id="modules"
         style={{
-          padding: '8rem 2.5rem',
+          padding: '4.5rem 2rem 2.5rem',
           maxWidth: '1280px',
           margin: '0 auto',
           position: 'relative',
           zIndex: 10,
         }}
       >
-        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF', letterSpacing: '0.15em', marginBottom: '1.25rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#00D2FF', letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
             [ 06 / TERMINAL WORKSPACE MODULES ]
           </div>
-          <h2 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.8rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 1rem' }}>
+          <h2 style={{ fontSize: 'clamp(2rem, 4.2vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 0.75rem' }}>
             COMPLETE PRODUCTION SUITE
           </h2>
-          <p style={{ fontSize: '1.1rem', color: '#8E8E93', maxWidth: '650px', margin: '0 auto', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '650px', margin: '0 auto', lineHeight: 1.6 }}>
             Click any module below to jump directly into the live working terminal.
           </p>
         </div>
@@ -490,14 +481,14 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
       <footer
         style={{
           borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-          padding: '4rem 2.5rem',
+          padding: '2.5rem 2rem',
           maxWidth: '1280px',
           margin: '0 auto',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           fontFamily: 'var(--font-mono)',
-          fontSize: '0.75rem',
+          fontSize: '0.72rem',
           color: '#8E8E93',
           position: 'relative',
           zIndex: 10,
@@ -518,7 +509,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess 
       </footer>
 
       {/* ========================================================================= */}
-      {/* 11. FULL-FEATURED JWT / OTP / SOCIAL AUTHENTICATION MODAL                 */}
+      {/* 11. REDESIGNED CYBERNETIC AUTH MODAL                                      */}
       {/* ========================================================================= */}
       <AuthModal
         isOpen={isAuthModalOpen}
