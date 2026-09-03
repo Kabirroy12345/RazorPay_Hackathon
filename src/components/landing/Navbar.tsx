@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Zap, Lock, Palette } from 'lucide-react';
+import { Zap, Palette } from 'lucide-react';
 import { useLandingTheme, THEME_CONFIGS, type LandingThemeMode } from '../../context/LandingThemeContext';
 
 interface NavbarProps {
@@ -90,25 +90,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onJudgePass, onOpenAuthModal }) 
             </div>
           </div>
         </a>
-
-        {/* Live Engine Telemetry Badge */}
-        <div
-          className="desktop-nav-links"
-          style={{
-            background: `${themeConfig.primaryAccent}15`,
-            border: `1px solid ${themeConfig.primaryAccent}40`,
-            borderRadius: '20px',
-            padding: '0.3rem 0.75rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-          }}
-        >
-          <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: themeConfig.primaryAccent, boxShadow: `0 0 8px ${themeConfig.primaryAccent}` }} />
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: themeConfig.primaryAccent, fontWeight: 800 }}>
-            ENGINE LIVE &lt;1.2ms
-          </span>
-        </div>
       </div>
 
       {/* Center Navigation Links with Glowing Hover */}
@@ -231,49 +212,70 @@ export const Navbar: React.FC<NavbarProps> = ({ onJudgePass, onOpenAuthModal }) 
           )}
         </div>
 
-        {/* 1-Click Judge Pass Button */}
+        {/* Judge Evaluation Pass Button */}
         <button
           onClick={onJudgePass}
           style={{
-            background: `linear-gradient(135deg, ${themeConfig.primaryAccent} 0%, ${themeConfig.secondaryAccent} 100%)`,
-            border: 'none',
-            color: '#000000',
-            fontFamily: 'var(--font-mono)',
-            fontWeight: 900,
-            fontSize: '0.76rem',
-            padding: '0.55rem 1.1rem',
-            borderRadius: '7px',
+            background: 'linear-gradient(180deg, #1E293B 0%, #0F172A 100%)',
+            border: `1px solid ${themeConfig.primaryAccent}88`,
+            color: '#FFFFFF',
+            fontFamily: 'var(--font-sans)',
+            fontWeight: 600,
+            fontSize: '0.82rem',
+            padding: '0.45rem 1.05rem',
+            borderRadius: '8px',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
-            gap: '0.45rem',
-            boxShadow: `0 0 25px ${themeConfig.glowColor}`,
+            gap: '0.5rem',
+            boxShadow: `0 2px 10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 0 16px ${themeConfig.glowColor}`,
             transition: 'all 0.2s ease',
           }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-1px)';
+            e.currentTarget.style.borderColor = themeConfig.primaryAccent;
+            e.currentTarget.style.boxShadow = `0 4px 15px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 0 24px ${themeConfig.glowColor}`;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.borderColor = `${themeConfig.primaryAccent}88`;
+            e.currentTarget.style.boxShadow = `0 2px 10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 0 16px ${themeConfig.glowColor}`;
+          }}
         >
-          <Zap size={14} color="#000000" /> ⚡ 1-CLICK JUDGE PASS
+          <Zap size={14} color={themeConfig.primaryAccent} />
+          <span>Judge Evaluation Pass</span>
         </button>
 
-        {/* Operator Login Button */}
+        {/* Sign In Button */}
         <button
           onClick={onOpenAuthModal}
           style={{
-            background: 'rgba(255, 255, 255, 0.05)',
-            border: '1px solid rgba(255, 255, 255, 0.15)',
-            color: '#EDEDED',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.74rem',
-            fontWeight: 600,
-            padding: '0.55rem 0.95rem',
-            borderRadius: '7px',
+            background: 'rgba(255, 255, 255, 0.04)',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            color: '#CBD5E1',
+            fontFamily: 'var(--font-sans)',
+            fontSize: '0.82rem',
+            fontWeight: 500,
+            padding: '0.45rem 0.95rem',
+            borderRadius: '8px',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             gap: '0.4rem',
             transition: 'all 0.2s ease',
           }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = '#FFFFFF';
+            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.25)';
+            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = '#CBD5E1';
+            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.12)';
+            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+          }}
         >
-          <Lock size={13} /> LOGIN
+          <span>Sign In</span>
         </button>
       </div>
     </header>

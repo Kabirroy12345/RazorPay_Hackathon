@@ -155,42 +155,69 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
               <button
                 onClick={() => setIsAuthModalOpen(true)}
                 style={{
-                  background: `linear-gradient(135deg, ${themeConfig.primaryAccent} 0%, ${themeConfig.secondaryAccent} 100%)`,
-                  color: '#000000',
-                  fontWeight: 900,
-                  fontSize: '0.88rem',
-                  padding: '0.85rem 2rem',
-                  borderRadius: '7px',
-                  border: 'none',
+                  background: 'linear-gradient(180deg, #1E293B 0%, #0F172A 100%)',
+                  border: `1.5px solid ${themeConfig.primaryAccent}88`,
+                  color: '#FFFFFF',
+                  fontFamily: 'var(--font-sans)',
+                  fontWeight: 600,
+                  fontSize: '0.92rem',
+                  padding: '0.8rem 1.85rem',
+                  borderRadius: '10px',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '0.5rem',
-                  boxShadow: `0 0 30px ${themeConfig.glowColor}`,
+                  gap: '0.6rem',
+                  boxShadow: `0 4px 15px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 0 25px ${themeConfig.glowColor}`,
                   transition: 'all 0.2s ease',
                 }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.borderColor = themeConfig.primaryAccent;
+                  e.currentTarget.style.boxShadow = `0 6px 20px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 0 35px ${themeConfig.glowColor}`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.borderColor = `${themeConfig.primaryAccent}88`;
+                  e.currentTarget.style.boxShadow = `0 4px 15px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 0 25px ${themeConfig.glowColor}`;
+                }}
               >
-                Launch System <ArrowRight size={16} />
+                <span>Launch Reconciliation Terminal</span>
+                <ArrowRight size={16} color={themeConfig.primaryAccent} />
               </button>
 
               <a
                 href="#problem"
                 style={{
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  color: '#EDEDED',
-                  fontWeight: 600,
-                  fontSize: '0.88rem',
-                  padding: '0.85rem 1.6rem',
-                  borderRadius: '7px',
-                  border: '1px solid rgba(255, 255, 255, 0.12)',
+                  background: 'rgba(255, 255, 255, 0.04)',
+                  border: '1px solid rgba(255, 255, 255, 0.14)',
+                  color: '#E2E8F0',
+                  fontFamily: 'var(--font-sans)',
+                  fontWeight: 500,
+                  fontSize: '0.92rem',
+                  padding: '0.8rem 1.6rem',
+                  borderRadius: '10px',
                   textDecoration: 'none',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '0.4rem',
+                  gap: '0.5rem',
+                  backdropFilter: 'blur(10px)',
                   transition: 'all 0.2s ease',
                 }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.25)';
+                  e.currentTarget.style.color = '#FFFFFF';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.14)';
+                  e.currentTarget.style.color = '#E2E8F0';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
               >
-                Explore 3D Engine ↓
+                <span>Explore Architecture</span>
+                <span style={{ fontSize: '0.8rem', opacity: 0.7 }}>↓</span>
               </a>
             </div>
 
