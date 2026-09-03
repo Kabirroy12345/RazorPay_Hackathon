@@ -1,21 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, ArrowRight, Activity, Zap } from 'lucide-react';
 
 interface LoadingSplashViewProps {
   onComplete: () => void;
 }
 
-const STATUS_MESSAGES = [
-  'CONNECTING_TO_RAZORPAY_SETTLEMENT_GATEWAY...',
-  'SYNCHRONIZING_3_WAY_LEDGER_PROTOCOLS...',
-  'CALIBRATING_CLAUDE_3.5_AGENTIC_PROOFER...',
-  'VERIFYING_GAAP_COMPLIANCE_SIGNATURES...',
-  'INITIALIZATION_COMPLETE. LAUNCHING_OMNISETTLE...',
-];
-
 export const LoadingSplashView: React.FC<LoadingSplashViewProps> = ({ onComplete }) => {
   const [progress, setProgress] = useState(0);
-  const [statusIndex, setStatusIndex] = useState(0);
   const [isFadingOut, setIsFadingOut] = useState(false);
 
   useEffect(() => {
@@ -25,367 +15,326 @@ export const LoadingSplashView: React.FC<LoadingSplashViewProps> = ({ onComplete
           clearInterval(interval);
           setTimeout(() => {
             setIsFadingOut(true);
-            setTimeout(onComplete, 500);
-          }, 300);
+            setTimeout(onComplete, 600);
+          }, 400);
           return 100;
         }
-        const increment = Math.floor(Math.random() * 8) + 4;
-        const next = Math.min(100, prev + increment);
-        const nextStatus = Math.min(
-          STATUS_MESSAGES.length - 1,
-          Math.floor((next / 100) * STATUS_MESSAGES.length)
-        );
-        setStatusIndex(nextStatus);
-        return next;
+        const next = prev + Math.floor(Math.random() * 6) + 3;
+        return Math.min(100, next);
       });
-    }, 90);
+    }, 70);
 
     return () => clearInterval(interval);
   }, [onComplete]);
-
-  const handleSkip = () => {
-    setIsFadingOut(true);
-    setTimeout(onComplete, 300);
-  };
 
   return (
     <div
       style={{
         position: 'fixed',
         inset: 0,
-        backgroundColor: '#05070B',
+        backgroundColor: '#181014',
+        backgroundImage: `
+          radial-gradient(ellipse 90% 60% at 50% 35%, #351c27 0%, #1c1118 45%, #0f090d 100%)
+        `,
         zIndex: 9999,
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
+        padding: '2.5rem 3.5rem',
         overflow: 'hidden',
-        transition: 'opacity 0.5s ease-out, transform 0.5s ease-out',
+        color: '#F4ECE4',
+        fontFamily: "'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+        transition: 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
         opacity: isFadingOut ? 0 : 1,
-        transform: isFadingOut ? 'scale(1.03)' : 'scale(1)',
+        transform: isFadingOut ? 'scale(1.02)' : 'scale(1)',
       }}
     >
-      {/* Background Topographic Wave Contours (Inspired by design reference) */}
-      <svg
-        style={{
-          position: 'absolute',
-          inset: 0,
-          width: '100%',
-          height: '100%',
-          opacity: 0.35,
-          pointerEvents: 'none',
-        }}
-        viewBox="0 0 1440 900"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <linearGradient id="topoGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#0284c7" stopOpacity="0.8" />
-            <stop offset="50%" stopColor="#a855f7" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="#ec4899" stopOpacity="0.4" />
-          </linearGradient>
-          <linearGradient id="topoGradient2" x1="100%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.9" />
-            <stop offset="60%" stopColor="#6366f1" stopOpacity="0.5" />
-            <stop offset="100%" stopColor="#d946ef" stopOpacity="0.3" />
-          </linearGradient>
-          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="6" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
-        </defs>
-
-        {/* Outer Topographic Contours */}
-        <path
-          d="M 200 450 C 350 250, 600 220, 800 320 C 1000 420, 1200 300, 1350 480 C 1450 600, 1100 800, 850 720 C 600 640, 350 780, 200 620 Z"
-          stroke="url(#topoGradient1)"
-          strokeWidth="1.5"
-          filter="url(#glow)"
-        />
-        <path
-          d="M 260 460 C 390 290, 610 260, 780 350 C 950 440, 1140 330, 1270 490 C 1360 600, 1060 750, 830 680 C 600 610, 390 730, 260 590 Z"
-          stroke="url(#topoGradient2)"
-          strokeWidth="1.8"
-        />
-        <path
-          d="M 330 470 C 430 330, 620 300, 760 380 C 900 460, 1080 370, 1190 500 C 1270 590, 1020 700, 810 640 C 610 580, 430 680, 330 560 Z"
-          stroke="url(#topoGradient1)"
-          strokeWidth="2"
-          filter="url(#glow)"
-        />
-        <path
-          d="M 400 480 C 480 370, 640 350, 750 410 C 860 470, 1010 400, 1100 510 C 1170 590, 970 660, 790 610 C 610 560, 480 630, 400 540 Z"
-          stroke="url(#topoGradient2)"
-          strokeWidth="2.2"
-        />
-        <path
-          d="M 480 490 C 540 410, 670 400, 740 440 C 810 480, 930 440, 1000 510 C 1050 560, 910 610, 760 580 C 620 550, 520 590, 480 520 Z"
-          stroke="url(#topoGradient1)"
-          strokeWidth="2.5"
-          filter="url(#glow)"
-        />
-        <path
-          d="M 560 495 C 600 445, 690 440, 730 465 C 770 490, 850 470, 890 510 C 920 540, 840 570, 740 550 C 640 530, 580 550, 560 510 Z"
-          stroke="url(#topoGradient2)"
-          strokeWidth="3"
-        />
-      </svg>
-
-      {/* Floating Ambient Glow Orbs */}
+      {/* Ambient Illuminated Floating Sculpture Background (Inspired by Luxuminos reference) */}
       <div
         style={{
           position: 'absolute',
-          width: '500px',
-          height: '500px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(14, 165, 233, 0.18) 0%, transparent 70%)',
-          top: '20%',
-          left: '15%',
-          filter: 'blur(80px)',
+          top: '32%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '640px',
+          height: '320px',
+          background: 'radial-gradient(ellipse 65% 50% at 50% 50%, rgba(245, 180, 140, 0.28) 0%, rgba(217, 119, 6, 0.15) 35%, rgba(13, 148, 136, 0) 70%)',
+          filter: 'blur(55px)',
           pointerEvents: 'none',
-        }}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          width: '450px',
-          height: '450px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 70%)',
-          bottom: '15%',
-          right: '15%',
-          filter: 'blur(80px)',
-          pointerEvents: 'none',
+          zIndex: 1,
         }}
       />
 
-      {/* Top Bar with Skip Action */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '2rem',
-          left: '2.5rem',
-          right: '2.5rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          zIndex: 10,
-        }}
-      >
-        {/* Track Badge */}
+      {/* TOP EDITORIAL HEADER & NAVIGATION GRID */}
+      <header style={{ position: 'relative', zIndex: 10, width: '100%' }}>
+        {/* Top Eyebrow Banner */}
         <div
           style={{
+            textAlign: 'center',
+            fontSize: '0.78rem',
+            letterSpacing: '0.22em',
+            textTransform: 'uppercase',
+            color: 'rgba(244, 236, 228, 0.65)',
+            paddingBottom: '0.85rem',
+            borderBottom: '1px solid rgba(244, 236, 228, 0.12)',
             display: 'flex',
             alignItems: 'center',
-            gap: '0.6rem',
-            padding: '0.4rem 0.9rem',
-            background: 'rgba(255, 255, 255, 0.04)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: '9999px',
-            backdropFilter: 'blur(10px)',
+            justifyContent: 'center',
+            gap: '1rem',
           }}
         >
-          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#0284c7', boxShadow: '0 0 8px #0284c7' }}></span>
-          <span className="font-mono" style={{ fontSize: '0.75rem', color: '#94a3b8', letterSpacing: '0.05em' }}>
-            RAZORPAY BUILDATHON 2026 • TRACK 04
-          </span>
+          <span>RAZORPAY BUILDATHON 2026</span>
+          <span style={{ opacity: 0.4 }}>•</span>
+          <span>TRACK 04: FINTECH AI & AUTONOMOUS RECONCILIATION</span>
         </div>
 
-        {/* Skip Button */}
-        <button
-          onClick={handleSkip}
-          className="font-mono"
+        {/* Fine Category Hairline Navigation Bar */}
+        <div
           style={{
-            background: 'rgba(255, 255, 255, 0.05)',
-            border: '1px solid rgba(255, 255, 255, 0.15)',
-            color: '#e2e8f0',
-            fontSize: '0.75rem',
-            padding: '0.45rem 1rem',
-            borderRadius: '9999px',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.4rem',
-            transition: 'all 0.2s ease',
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.borderColor = '#0284c7';
-            e.currentTarget.style.color = '#38bdf8';
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-            e.currentTarget.style.color = '#e2e8f0';
+            display: 'grid',
+            gridTemplateColumns: 'repeat(5, 1fr)',
+            fontSize: '0.72rem',
+            letterSpacing: '0.15em',
+            textTransform: 'uppercase',
+            color: 'rgba(244, 236, 228, 0.55)',
+            padding: '0.85rem 0',
+            borderBottom: '1px solid rgba(244, 236, 228, 0.08)',
           }}
         >
-          SKIP_INTRO <ArrowRight size={13} />
-        </button>
-      </div>
+          <span style={{ textAlign: 'left' }}>3-WAY AUDIT</span>
+          <span style={{ textAlign: 'center' }}>SUBSET-SUM SOLVER</span>
+          <span style={{ textAlign: 'center' }}>GATEWAY NETTING</span>
+          <span style={{ textAlign: 'center' }}>IMMUTABLE LEDGER</span>
+          <span style={{ textAlign: 'right' }}>ENTERPRISE GAAP</span>
+        </div>
+      </header>
 
-      {/* Center Cinematic Card */}
-      <div
+      {/* CENTER STAGE: SCULPTURAL GLOW & OFFICIAL RAZORPAY BRANDING */}
+      <main
         style={{
           position: 'relative',
           zIndex: 10,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          textAlign: 'center',
-          maxWidth: '680px',
-          padding: '0 1.5rem',
+          justifyContent: 'center',
+          margin: 'auto 0',
+          width: '100%',
         }}
       >
-        {/* Dual Razorpay & OmniSettle Emblem Badge */}
+        {/* Sculptural Lighting Installation with warm interior glow */}
         <div
           style={{
+            position: 'relative',
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '1.25rem',
-            marginBottom: '1.75rem',
+            marginBottom: '2rem',
           }}
         >
-          {/* Razorpay Logo Box */}
-          <div
+          {/* Luminous undulating wave sculpture SVG inspired by the reference light fixture */}
+          <svg
+            width="420"
+            height="180"
+            viewBox="0 0 420 180"
+            fill="none"
             style={{
-              background: 'rgba(255, 255, 255, 0.95)',
-              padding: '0.6rem 1.1rem',
-              borderRadius: '10px',
-              boxShadow: '0 0 35px rgba(2, 132, 199, 0.35)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              filter: 'drop-shadow(0 15px 35px rgba(245, 180, 140, 0.35))',
             }}
           >
-            <img
-              src="/razorpay-logo.png"
-              alt="Razorpay"
-              style={{ height: '26px', objectFit: 'contain' }}
+            <defs>
+              <linearGradient id="sculptureSurface" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#FFF7EE" />
+                <stop offset="45%" stopColor="#F5D9C4" />
+                <stop offset="100%" stopColor="#DF9F82" />
+              </linearGradient>
+              <linearGradient id="warmInteriorGlow" x1="0%" y1="100%" x2="0%" y2="0%">
+                <stop offset="0%" stopColor="#EA580C" stopOpacity="0.85" />
+                <stop offset="50%" stopColor="#F59E0B" stopOpacity="0.7" />
+                <stop offset="100%" stopColor="#FDE68A" stopOpacity="0.3" />
+              </linearGradient>
+            </defs>
+
+            {/* Left Sculptural Wave Lamp */}
+            <path
+              d="M 30 90 Q 60 40, 110 50 Q 160 60, 190 100 Q 170 145, 120 140 Q 60 135, 30 90 Z"
+              fill="url(#sculptureSurface)"
             />
-          </div>
+            <ellipse cx="110" cy="100" rx="45" ry="22" fill="url(#warmInteriorGlow)" />
 
-          <span className="font-mono" style={{ color: '#64748b', fontSize: '1.1rem' }}>✕</span>
+            {/* Right Sculptural Wave Lamp */}
+            <path
+              d="M 170 95 Q 210 45, 270 55 Q 330 65, 370 105 Q 340 150, 280 145 Q 210 140, 170 95 Z"
+              fill="url(#sculptureSurface)"
+            />
+            <ellipse cx="270" cy="105" rx="55" ry="25" fill="url(#warmInteriorGlow)" />
 
-          {/* OmniSettle Shield Emblem */}
+            {/* Suspension cords */}
+            <line x1="110" y1="0" x2="110" y2="50" stroke="rgba(244, 236, 228, 0.4)" strokeWidth="1" />
+            <line x1="270" y1="0" x2="270" y2="55" stroke="rgba(244, 236, 228, 0.4)" strokeWidth="1" />
+          </svg>
+
+          {/* PROMINENT OFFICIAL RAZORPAY BRANDING */}
           <div
             style={{
-              width: '46px',
-              height: '46px',
-              borderRadius: '12px',
-              background: 'linear-gradient(135deg, rgba(2, 132, 199, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%)',
-              border: '1px solid rgba(56, 189, 248, 0.4)',
-              boxShadow: '0 0 25px rgba(56, 189, 248, 0.25)',
+              marginTop: '1.25rem',
               display: 'flex',
+              flexDirection: 'column',
               alignItems: 'center',
-              justifyContent: 'center',
+              gap: '0.75rem',
             }}
           >
-            <ShieldCheck size={26} color="#38bdf8" />
+            {/* High-Resolution Razorpay Presentation Card */}
+            <div
+              style={{
+                background: '#FFFFFF',
+                padding: '0.9rem 2.4rem',
+                borderRadius: '12px',
+                boxShadow: '0 20px 45px rgba(0, 0, 0, 0.45), 0 0 35px rgba(12, 131, 253, 0.25)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '1rem',
+              }}
+            >
+              <img
+                src="/razorpay-logo.png"
+                alt="Razorpay"
+                style={{
+                  height: '38px',
+                  width: 'auto',
+                  objectFit: 'contain',
+                  display: 'block',
+                }}
+              />
+            </div>
+
+            <div
+              style={{
+                fontSize: '0.75rem',
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                color: 'rgba(244, 236, 228, 0.7)',
+                marginTop: '0.4rem',
+              }}
+            >
+              OFFICIAL SETTLEMENT ENGINE PARTNER
+            </div>
           </div>
         </div>
 
-        {/* Project Title */}
-        <h1
-          className="font-mono"
+        {/* 3-COLUMN EDITORIAL METADATA (Matching the reference layout) */}
+        <div
           style={{
-            fontSize: 'clamp(2.4rem, 5vw, 3.6rem)',
-            fontWeight: 900,
-            letterSpacing: '0.08em',
-            color: '#ffffff',
-            margin: '0 0 0.5rem 0',
-            textShadow: '0 0 40px rgba(56, 189, 248, 0.4)',
-          }}
-        >
-          OMNISETTLE<span style={{ color: '#38bdf8' }}>.AI</span>
-        </h1>
-
-        {/* Subtitle */}
-        <p
-          className="font-mono"
-          style={{
-            fontSize: '0.85rem',
-            letterSpacing: '0.18em',
-            color: '#94a3b8',
-            margin: '0 0 2.5rem 0',
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr 1fr',
+            width: '100%',
+            maxWidth: '1200px',
+            marginTop: '1rem',
+            fontSize: '0.8rem',
+            letterSpacing: '0.12em',
             textTransform: 'uppercase',
+            color: 'rgba(244, 236, 228, 0.6)',
+            alignItems: 'flex-end',
           }}
         >
-          Autonomous 3-Way Financial Reconciliation Engine
-        </p>
+          {/* Left Column */}
+          <div style={{ textAlign: 'left', lineHeight: 1.5 }}>
+            <span style={{ display: 'block', color: '#F4ECE4', fontWeight: 600 }}>AUTONOMOUS 3-WAY AUDIT</span>
+            <span style={{ fontSize: '0.72rem', color: 'rgba(244, 236, 228, 0.45)' }}>FOR HIGH-VOLUME SETTLEMENTS</span>
+          </div>
 
-        {/* Progress Bar Container */}
+          {/* Center Column */}
+          <div style={{ textAlign: 'center', fontStyle: 'italic', textTransform: 'none', fontSize: '0.95rem', color: '#F5D9C4', fontFamily: 'serif' }}>
+            Proving the math behind every rupee.
+          </div>
+
+          {/* Right Column */}
+          <div style={{ textAlign: 'right', lineHeight: 1.5 }}>
+            <span style={{ display: 'block', color: '#F4ECE4', fontWeight: 600 }}>100% GROUND TRUTH MATCH</span>
+            <span style={{ fontSize: '0.72rem', color: 'rgba(244, 236, 228, 0.45)' }}>ZERO TOKEN OVERHEAD ON CLEAN 1:1</span>
+          </div>
+        </div>
+      </main>
+
+      {/* BOTTOM SECTION: GIANT "OMNISETTLE" DISPLAY TYPOGRAPHY & ELEGANT LOADING BAR */}
+      <footer style={{ position: 'relative', zIndex: 10, width: '100%' }}>
+        {/* Giant Monolith Title (Inspired by "LUXUMINOS" in the reference image) */}
         <div
           style={{
             width: '100%',
-            maxWidth: '440px',
-            marginBottom: '1.25rem',
+            textAlign: 'center',
+            overflow: 'hidden',
+            lineHeight: 0.85,
+            paddingBottom: '0.5rem',
           }}
         >
-          {/* Progress Bar Track */}
+          <h1
+            style={{
+              margin: 0,
+              fontSize: 'clamp(4rem, 13vw, 11rem)',
+              fontWeight: 900,
+              letterSpacing: '0.04em',
+              color: '#F4ECE4',
+              textTransform: 'uppercase',
+              userSelect: 'none',
+              textShadow: '0 4px 30px rgba(0, 0, 0, 0.35)',
+            }}
+          >
+            OMNISETTLE
+          </h1>
+        </div>
+
+        {/* Refined Hairline Loading Bar & Precision Counter */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.4rem',
+            width: '100%',
+            maxWidth: '100%',
+            marginTop: '1.25rem',
+            paddingTop: '0.75rem',
+            borderTop: '1px solid rgba(244, 236, 228, 0.1)',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              fontSize: '0.72rem',
+              letterSpacing: '0.15em',
+              color: 'rgba(244, 236, 228, 0.6)',
+              textTransform: 'uppercase',
+            }}
+          >
+            <span>SYSTEM INITIALIZATION</span>
+            <span style={{ color: '#F5D9C4', fontWeight: 600 }}>{progress}%</span>
+          </div>
+
+          {/* Hairline Progress Track */}
           <div
             style={{
               width: '100%',
-              height: '5px',
-              background: 'rgba(255, 255, 255, 0.08)',
-              borderRadius: '9999px',
-              overflow: 'hidden',
+              height: '2px',
+              backgroundColor: 'rgba(244, 236, 228, 0.1)',
               position: 'relative',
-              boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.5)',
+              overflow: 'hidden',
             }}
           >
             <div
               style={{
                 width: `${progress}%`,
                 height: '100%',
-                background: 'linear-gradient(90deg, #0284c7 0%, #38bdf8 50%, #a855f7 100%)',
-                boxShadow: '0 0 16px #38bdf8',
-                borderRadius: '9999px',
+                background: 'linear-gradient(90deg, #DF9F82 0%, #F5D9C4 50%, #FFF7EE 100%)',
+                boxShadow: '0 0 10px rgba(245, 217, 196, 0.8)',
                 transition: 'width 0.1s linear',
               }}
             />
           </div>
         </div>
-
-        {/* Live Telemetry Status Line */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            width: '100%',
-            maxWidth: '440px',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.75rem',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', color: '#38bdf8' }}>
-            <Activity size={13} className="pulse-indicator" />
-            <span style={{ letterSpacing: '0.04em' }}>{STATUS_MESSAGES[statusIndex]}</span>
-          </div>
-
-          <span style={{ color: '#e2e8f0', fontWeight: 'bold', letterSpacing: '0.05em' }}>
-            {progress}%
-          </span>
-        </div>
-      </div>
-
-      {/* Bottom Footer Credits */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '2rem',
-          fontFamily: 'var(--font-mono)',
-          fontSize: '0.7rem',
-          color: '#64748b',
-          letterSpacing: '0.08em',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.5rem',
-        }}
-      >
-        <Zap size={12} color="#0284c7" />
-        <span>SECURE HIGH-FREQUENCY LEDGER CLEARING FOR RAZORPAY MERCHANTS</span>
-      </div>
+      </footer>
     </div>
   );
 };
