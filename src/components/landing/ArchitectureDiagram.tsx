@@ -9,7 +9,7 @@ export const ArchitectureDiagram: React.FC = () => {
     <div
       style={{
         width: '100%',
-        maxWidth: '1280px',
+        maxWidth: 'min(94vw, 1560px)',
         margin: '2.5rem auto 0',
         padding: '0 2rem',
         position: 'relative',

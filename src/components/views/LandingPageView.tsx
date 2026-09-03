@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { RazorpayIntroSplash } from '../landing/RazorpayIntroSplash';
 import { GlobalSpaceBackground } from '../landing/GlobalSpaceBackground';
 import { Navbar } from '../landing/Navbar';
+import { LateralTelemetryRails } from '../landing/LateralTelemetryRails';
 import { UnifiedHero3D } from '../landing/UnifiedHero3D';
 import { ArchitectureDiagram } from '../landing/ArchitectureDiagram';
 import { BottleneckVisual } from '../landing/BottleneckVisual';
@@ -36,6 +37,9 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
       {/* Global Cosmic Space Background Everywhere */}
       <GlobalSpaceBackground />
 
+      {/* Widescreen Lateral Telemetry Rails (Left Feeds + Right Quick-Nav) */}
+      <LateralTelemetryRails />
+
       {/* Redesigned Floating Glassmorphic Header Bar with Multi-Theme Switcher */}
       <Navbar
         onJudgePass={() => onAuthSuccess('dashboard')}
@@ -43,7 +47,7 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
       />
 
       {/* ========================================================================= */}
-      {/* 1. MONUMENTAL 3D HERO (TIGHTENED & IMPACTFUL)                             */}
+      {/* 1. MONUMENTAL 3D HERO (FLUID WIDESCREEN)                                   */}
       {/* ========================================================================= */}
       <section
         style={{
@@ -65,7 +69,7 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
             left: '50%',
             transform: 'translate(-50%, -50%)',
             fontFamily: 'var(--font-mono)',
-            fontSize: 'clamp(4.5rem, 16vw, 14rem)',
+            fontSize: 'clamp(4.5rem, 16vw, 15rem)',
             fontWeight: 900,
             color: 'rgba(255, 255, 255, 0.015)',
             letterSpacing: '0.12em',
@@ -84,13 +88,13 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
             position: 'relative',
             zIndex: 10,
             width: '100%',
-            maxWidth: '1380px',
+            maxWidth: 'min(94vw, 1560px)',
             margin: '0 auto',
-            padding: '1.5rem 2rem 0',
+            padding: '1.5rem clamp(1rem, 3vw, 2.5rem) 0',
             display: 'grid',
-            gridTemplateColumns: 'minmax(320px, 500px) 1fr',
+            gridTemplateColumns: 'minmax(320px, 520px) 1fr',
             alignItems: 'center',
-            gap: '1.5rem',
+            gap: '2rem',
           }}
         >
           {/* Left Column: Headline & Action Buttons */}
@@ -144,13 +148,14 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
                 color: '#8E8E93',
                 lineHeight: 1.55,
                 marginBottom: '1.75rem',
-                maxWidth: '460px',
+                maxWidth: '480px',
               }}
             >
               Autonomous 3-way financial reconciliation across bank statements, payment gateways, and ERP records. 
               Sub-millisecond deterministic checks for clean 1:1 records. Agentic Claude 3.5 reasoning with zero-delta mathematical proof for complex bundles.
             </p>
 
+            {/* Redesigned Realistic Hero Action Buttons */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
               <button
                 onClick={() => setIsAuthModalOpen(true)}
@@ -317,8 +322,8 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
       <section
         id="problem"
         style={{
-          padding: '4.5rem 2rem 2rem',
-          maxWidth: '1280px',
+          padding: '4.5rem clamp(1rem, 3vw, 2.5rem) 2rem',
+          maxWidth: 'min(94vw, 1560px)',
           margin: '0 auto',
           position: 'relative',
           zIndex: 10,
@@ -344,7 +349,7 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
             <span style={{ color: themeConfig.primaryAccent }}>IT HAS A VERIFICATION PROBLEM.</span>
           </h2>
 
-          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '700px', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '720px', lineHeight: 1.6 }}>
             Modern financial operations generate millions of transactional records every day, yet still rely heavily on 
             manual spreadsheets to verify discrepancies across disconnected systems.
           </p>
@@ -365,8 +370,8 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
       <section
         id="pipeline"
         style={{
-          padding: '4.5rem 2rem 2rem',
-          maxWidth: '1280px',
+          padding: '4.5rem clamp(1rem, 3vw, 2.5rem) 2rem',
+          maxWidth: 'min(94vw, 1560px)',
           margin: '0 auto',
           position: 'relative',
           zIndex: 10,
@@ -379,7 +384,7 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
           <h2 style={{ fontSize: 'clamp(2rem, 4.2vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 0.75rem' }}>
             5 STAGES TO VERIFIED PROOF
           </h2>
-          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '650px', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '680px', lineHeight: 1.6 }}>
             Click any gate on the conveyor to inspect real-time canonical schema transformations and mathematical guardrails.
           </p>
         </div>
@@ -394,8 +399,8 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
       <section
         id="hybrid"
         style={{
-          padding: '4.5rem 2rem 2rem',
-          maxWidth: '1280px',
+          padding: '4.5rem clamp(1rem, 3vw, 2.5rem) 2rem',
+          maxWidth: 'min(94vw, 1560px)',
           margin: '0 auto',
           position: 'relative',
           zIndex: 10,
@@ -408,7 +413,7 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
           <h2 style={{ fontSize: 'clamp(2rem, 4.2vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 0.75rem' }}>
             DUAL-PATH EXECUTION ENGINE
           </h2>
-          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '650px', margin: '0 auto', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '680px', margin: '0 auto', lineHeight: 1.6 }}>
             Deterministic sub-millisecond precision for the majority. Claude 3.5 Sonnet agentic intelligence for difficult non-linear edge cases.
           </p>
         </div>
@@ -423,8 +428,8 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
       <section
         id="bundle"
         style={{
-          padding: '4.5rem 2rem 2rem',
-          maxWidth: '1280px',
+          padding: '4.5rem clamp(1rem, 3vw, 2.5rem) 2rem',
+          maxWidth: 'min(94vw, 1560px)',
           margin: '0 auto',
           position: 'relative',
           zIndex: 10,
@@ -437,7 +442,7 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
           <h2 style={{ fontSize: 'clamp(2rem, 4.2vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 0.75rem' }}>
             INTERACTIVE BUNDLE MATH PROOF
           </h2>
-          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '650px', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '680px', lineHeight: 1.6 }}>
             Demonstrating how 1 payment gateway settlement matches across 8 disparate customer invoices while rigorously calculating deductions.
           </p>
         </div>
@@ -452,8 +457,8 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
       <section
         id="exceptions"
         style={{
-          padding: '4.5rem 2rem 2rem',
-          maxWidth: '1280px',
+          padding: '4.5rem clamp(1rem, 3vw, 2.5rem) 2rem',
+          maxWidth: 'min(94vw, 1560px)',
           margin: '0 auto',
           position: 'relative',
           zIndex: 10,
@@ -466,7 +471,7 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
           <h2 style={{ fontSize: 'clamp(2rem, 4.2vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 0.75rem' }}>
             HONEST EXCEPTION REMEDIATION
           </h2>
-          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '650px', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '680px', lineHeight: 1.6 }}>
             Never force bad matches. OmniSettle isolates genuine financial anomalies into 5 strict categories for automated 1-click remediation.
           </p>
         </div>
@@ -481,8 +486,8 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
       <section
         id="modules"
         style={{
-          padding: '4.5rem 2rem 2.5rem',
-          maxWidth: '1280px',
+          padding: '4.5rem clamp(1rem, 3vw, 2.5rem) 2.5rem',
+          maxWidth: 'min(94vw, 1560px)',
           margin: '0 auto',
           position: 'relative',
           zIndex: 10,
@@ -495,7 +500,7 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
           <h2 style={{ fontSize: 'clamp(2rem, 4.2vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 0.75rem' }}>
             COMPLETE PRODUCTION SUITE
           </h2>
-          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '650px', margin: '0 auto', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '680px', margin: '0 auto', lineHeight: 1.6 }}>
             Click any module below to jump directly into the live working terminal.
           </p>
         </div>
@@ -510,8 +515,8 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
       <footer
         style={{
           borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-          padding: '2.5rem 2rem',
-          maxWidth: '1280px',
+          padding: '2.5rem clamp(1rem, 3vw, 2.5rem)',
+          maxWidth: 'min(94vw, 1560px)',
           margin: '0 auto',
           display: 'flex',
           alignItems: 'center',
