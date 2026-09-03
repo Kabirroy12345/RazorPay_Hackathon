@@ -6,17 +6,16 @@ import {
   AlertTriangle, 
   FileText, 
   X, 
-  Sparkles, 
-  Database,
-  TrendingUp,
-  LayoutDashboard,
-  CheckCircle2,
-  ChevronRight,
-  Calculator,
-  ArrowUpRight,
-  Activity
+  Database, 
+  TrendingUp, 
+  LayoutDashboard, 
+  CheckCircle2, 
+  ChevronRight, 
+  Calculator, 
+  ArrowUpRight, 
+  Activity 
 } from 'lucide-react';
-import { HeroCanvas3D } from '../landing/HeroCanvas3D';
+import { FinancialMachine3D } from '../landing/FinancialMachine3D';
 import type { AppView } from '../../types/finance';
 
 interface LandingPageViewProps {
@@ -33,13 +32,13 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
   const [name, setName] = useState('');
   const [error, setError] = useState('');
 
-  // Section 2 Interactive Pipeline Step
+  // Interactive Pipeline Step in Section 2
   const [activePipelineStep, setActivePipelineStep] = useState(2);
 
-  // Section 4 Bundle Math Step
+  // Bundle Math Step in Section 4
   const [bundleMathStep, setBundleMathStep] = useState<1 | 2 | 3 | 4>(4);
 
-  // Section 6 Exception Inspector Selection
+  // Exception Selection in Section 6
   const [selectedExceptionIndex, setSelectedExceptionIndex] = useState(0);
 
   const handleAuthSubmit = (e: React.FormEvent) => {
@@ -153,10 +152,10 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
   ];
 
   return (
-    <div style={{ backgroundColor: '#070709', color: '#EDEDED', minHeight: '100vh', overflowX: 'hidden' }}>
+    <div style={{ backgroundColor: '#070709', color: '#EDEDED', minHeight: '100vh', overflowX: 'hidden', position: 'relative' }}>
       
       {/* ========================================================================= */}
-      {/* 1. TOP STICKY NAVIGATION BAR                                              */}
+      {/* 1. MINIMALIST EDITORIAL NAVIGATION                                        */}
       {/* ========================================================================= */}
       <nav
         style={{
@@ -164,11 +163,11 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
           top: 0,
           left: 0,
           right: 0,
-          height: '68px',
-          backgroundColor: 'rgba(7, 7, 9, 0.82)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+          height: '64px',
+          backgroundColor: 'rgba(7, 7, 9, 0.75)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
           zIndex: 100,
           display: 'flex',
           alignItems: 'center',
@@ -177,72 +176,53 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
         }}
       >
         {/* Brand Lockup */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <div
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '8px',
-                background: 'linear-gradient(135deg, #00D2FF 0%, #0284C7 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 0 20px rgba(0, 210, 255, 0.35)',
-              }}
-            >
-              <ShieldCheck size={18} color="#000" />
-            </div>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.05rem', fontWeight: 800, letterSpacing: '0.06em', color: '#FFFFFF' }}>
-              OMNISETTLE<span style={{ color: '#00D2FF' }}>.AI</span>
-            </span>
-          </div>
-
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
           <div
             style={{
-              fontSize: '0.68rem',
-              padding: '0.2rem 0.6rem',
-              borderRadius: '9999px',
-              backgroundColor: 'rgba(16, 185, 129, 0.1)',
-              border: '1px solid rgba(16, 185, 129, 0.3)',
-              color: '#10B981',
-              fontFamily: 'var(--font-mono)',
+              width: '28px',
+              height: '28px',
+              borderRadius: '6px',
+              background: '#00D2FF',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.35rem',
+              justifyContent: 'center',
             }}
           >
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10B981' }} />
-            LIVE PIPELINE ONLINE
+            <ShieldCheck size={16} color="#000" />
           </div>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.95rem', fontWeight: 800, letterSpacing: '0.08em', color: '#FFFFFF' }}>
+            OMNISETTLE<span style={{ color: '#00D2FF' }}>.AI</span>
+          </span>
+          <span style={{ color: 'rgba(255, 255, 255, 0.2)', fontSize: '0.8rem' }}>/</span>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: '#8E8E93', letterSpacing: '0.05em' }} className="desktop-nav-links">
+            AUTONOMOUS 3-WAY ENGINE
+          </span>
         </div>
 
-        {/* Story Section Links */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-          <div style={{ display: 'flex', gap: '1.75rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem' }} className="desktop-nav-links">
-            <a href="#problem" style={{ color: '#8E8E93', textDecoration: 'none', transition: 'color 0.2s' }}>PROBLEM</a>
-            <a href="#pipeline" style={{ color: '#8E8E93', textDecoration: 'none', transition: 'color 0.2s' }}>PIPELINE</a>
-            <a href="#hybrid" style={{ color: '#8E8E93', textDecoration: 'none', transition: 'color 0.2s' }}>HYBRID ENGINE</a>
-            <a href="#bundle" style={{ color: '#8E8E93', textDecoration: 'none', transition: 'color 0.2s' }}>BUNDLE SOLVER</a>
-            <a href="#exceptions" style={{ color: '#8E8E93', textDecoration: 'none', transition: 'color 0.2s' }}>EXCEPTIONS</a>
-            <a href="#modules" style={{ color: '#8E8E93', textDecoration: 'none', transition: 'color 0.2s' }}>SYSTEM MODULES</a>
+        {/* Minimal Navigation & CTAs */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          <div style={{ display: 'flex', gap: '1.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }} className="desktop-nav-links">
+            <a href="#problem" style={{ color: '#8E8E93', textDecoration: 'none', transition: 'color 0.2s' }}>01. PROBLEM</a>
+            <a href="#pipeline" style={{ color: '#8E8E93', textDecoration: 'none', transition: 'color 0.2s' }}>02. PIPELINE</a>
+            <a href="#hybrid" style={{ color: '#8E8E93', textDecoration: 'none', transition: 'color 0.2s' }}>03. HYBRID</a>
+            <a href="#bundle" style={{ color: '#8E8E93', textDecoration: 'none', transition: 'color 0.2s' }}>04. BUNDLE</a>
+            <a href="#exceptions" style={{ color: '#8E8E93', textDecoration: 'none', transition: 'color 0.2s' }}>05. EXCEPTIONS</a>
+            <a href="#modules" style={{ color: '#8E8E93', textDecoration: 'none', transition: 'color 0.2s' }}>06. MODULES</a>
           </div>
 
-          {/* Action CTAs */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             {onOpenMovableUI && (
               <button
                 onClick={onOpenMovableUI}
                 style={{
-                  background: 'rgba(255, 255, 255, 0.05)',
+                  background: 'transparent',
                   border: '1px solid rgba(0, 210, 255, 0.3)',
                   color: '#00D2FF',
                   fontFamily: 'var(--font-mono)',
-                  fontSize: '0.75rem',
-                  padding: '0.45rem 0.85rem',
-                  borderRadius: '6px',
+                  fontSize: '0.72rem',
+                  padding: '0.4rem 0.75rem',
+                  borderRadius: '4px',
                   cursor: 'pointer',
-                  transition: 'all 0.2s',
                 }}
               >
                 🎨 MOVABLE TILES
@@ -252,34 +232,33 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             <button
               onClick={() => onAuthSuccess('dashboard')}
               style={{
-                background: 'linear-gradient(135deg, #00D2FF 0%, #0284C7 100%)',
+                background: '#00D2FF',
                 border: 'none',
                 color: '#000000',
                 fontFamily: 'var(--font-mono)',
-                fontWeight: 700,
-                fontSize: '0.78rem',
-                padding: '0.5rem 1rem',
-                borderRadius: '6px',
+                fontWeight: 800,
+                fontSize: '0.75rem',
+                padding: '0.45rem 0.9rem',
+                borderRadius: '4px',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.4rem',
-                boxShadow: '0 0 20px rgba(0, 210, 255, 0.3)',
+                gap: '0.35rem',
               }}
             >
-              <Zap size={14} /> 1-CLICK JUDGE PASS
+              <Zap size={13} /> 1-CLICK JUDGE PASS
             </button>
 
             <button
               onClick={() => setIsAuthModalOpen(true)}
               style={{
                 background: 'transparent',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
                 color: '#EDEDED',
                 fontFamily: 'var(--font-mono)',
-                fontSize: '0.78rem',
-                padding: '0.5rem 0.9rem',
-                borderRadius: '6px',
+                fontSize: '0.75rem',
+                padding: '0.45rem 0.8rem',
+                borderRadius: '4px',
                 cursor: 'pointer',
               }}
             >
@@ -290,178 +269,182 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
       </nav>
 
       {/* ========================================================================= */}
-      {/* 2. HERO SECTION: CINEMATIC 3D FINANCIAL NETWORK STREAM                    */}
+      {/* 2. HERO: ASYMMETRIC EDITORIAL WITH DOMINANT 3D KINETIC FINANCIAL MACHINE  */}
       {/* ========================================================================= */}
       <section
         style={{
           position: 'relative',
           minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          paddingTop: '80px',
-          paddingBottom: '3rem',
-          textAlign: 'center',
+          width: '100%',
           overflow: 'hidden',
+          display: 'flex',
+          alignItems: 'center',
+          paddingTop: '64px',
         }}
       >
-        {/* Interactive 3D Canvas Background */}
-        <HeroCanvas3D />
-
-        <div style={{ position: 'relative', zIndex: 10, maxWidth: '920px', padding: '0 1.5rem', margin: '0 auto' }}>
-          
-          {/* Announcement Pill */}
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.6rem',
-              padding: '0.4rem 1rem',
-              borderRadius: '9999px',
-              backgroundColor: 'rgba(255, 255, 255, 0.04)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              backdropFilter: 'blur(12px)',
-              fontSize: '0.75rem',
-              fontFamily: 'var(--font-mono)',
-              letterSpacing: '0.08em',
-              color: '#8E8E93',
-              marginBottom: '1.75rem',
-            }}
-          >
-            <Sparkles size={13} color="#00D2FF" />
-            <span>BUILT FOR RAZORPAY BUILDATHON 2026 • TRACK 04: FINTECH AI</span>
-          </div>
-
-          {/* Monumental Headline */}
-          <h1
-            style={{
-              fontSize: 'clamp(2.8rem, 6.5vw, 5.2rem)',
-              fontWeight: 900,
-              lineHeight: 1.05,
-              letterSpacing: '-0.03em',
-              color: '#FFFFFF',
-              margin: '0 0 1.5rem 0',
-              textShadow: '0 0 60px rgba(0, 210, 255, 0.15)',
-            }}
-          >
-            Reconcile Everything.<br />
-            <span style={{ color: '#00D2FF' }}>Trust the Numbers.</span>
-          </h1>
-
-          {/* Supporting Text */}
-          <p
-            style={{
-              fontSize: 'clamp(1.05rem, 2vw, 1.25rem)',
-              color: '#8E8E93',
-              lineHeight: 1.6,
-              maxWidth: '720px',
-              margin: '0 auto 2.5rem',
-            }}
-          >
-            Autonomous 3-way financial reconciliation across bank statements, payment gateways, and ERP records. 
-            AI-powered reasoning for complex settlements. Deterministic verification for everything else.
-          </p>
-
-          {/* Action CTAs */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-            <button
-              onClick={() => onAuthSuccess('dashboard')}
-              style={{
-                background: 'linear-gradient(135deg, #00D2FF 0%, #0284C7 100%)',
-                color: '#000000',
-                fontWeight: 800,
-                fontSize: '0.95rem',
-                padding: '0.9rem 2.2rem',
-                borderRadius: '8px',
-                border: 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                boxShadow: '0 0 35px rgba(0, 210, 255, 0.4)',
-                transition: 'transform 0.2s ease',
-              }}
-            >
-              Launch System <ArrowRight size={17} />
-            </button>
-
-            <a
-              href="#problem"
-              style={{
-                background: 'rgba(255, 255, 255, 0.05)',
-                color: '#EDEDED',
-                fontWeight: 600,
-                fontSize: '0.95rem',
-                padding: '0.9rem 2rem',
-                borderRadius: '8px',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                transition: 'background 0.2s ease',
-              }}
-            >
-              Explore Engine ↓
-            </a>
-          </div>
+        {/* Layer 0: Monumental Watermark Typography Behind 3D Objects */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            fontFamily: 'var(--font-mono)',
+            fontSize: 'clamp(5rem, 16vw, 15rem)',
+            fontWeight: 900,
+            color: 'rgba(255, 255, 255, 0.018)',
+            letterSpacing: '0.12em',
+            pointerEvents: 'none',
+            zIndex: 0,
+            userSelect: 'none',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          OMNISETTLE
         </div>
 
-        {/* Live Empirical Stat Ticker */}
+        {/* Layer 1: DOMINANT 3D KINETIC FINANCIAL MACHINE (OCCUPIES SCREEN) */}
+        <FinancialMachine3D />
+
+        {/* Layer 2: Asymmetric Left-Side Editorial Content */}
         <div
           style={{
             position: 'relative',
             zIndex: 10,
             width: '100%',
-            maxWidth: '1100px',
-            marginTop: '4.5rem',
-            padding: '1.25rem 2rem',
-            borderRadius: '12px',
-            backgroundColor: 'rgba(13, 13, 17, 0.75)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            backdropFilter: 'blur(16px)',
+            maxWidth: '1360px',
+            margin: '0 auto',
+            padding: '3rem 2.5rem',
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '1.5rem',
-            textAlign: 'center',
+            gridTemplateColumns: 'minmax(320px, 540px) 1fr',
+            pointerEvents: 'none', // Allows cursor to pass through empty regions to canvas
           }}
+          className="hero-asymmetric-grid"
         >
-          <div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.75rem', fontWeight: 800, color: '#00D2FF' }}>
-              ₹4.8M+
+          {/* Left Column: Monumental Headline & Control Actions */}
+          <div style={{ pointerEvents: 'auto' }}>
+            
+            {/* Metadata Tags */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.75rem', flexWrap: 'wrap' }}>
+              <span
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.68rem',
+                  color: '#00D2FF',
+                  padding: '0.2rem 0.6rem',
+                  borderRadius: '3px',
+                  border: '1px solid rgba(0, 210, 255, 0.3)',
+                  background: 'rgba(0, 210, 255, 0.05)',
+                  letterSpacing: '0.08em',
+                }}
+              >
+                TRACK 04: FINTECH AI
+              </span>
+              <span
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.68rem',
+                  color: '#8E8E93',
+                  letterSpacing: '0.05em',
+                }}
+              >
+                RAZORPAY BUILDATHON 2026
+              </span>
             </div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#8E8E93', letterSpacing: '0.08em', marginTop: '0.2rem' }}>
-              RECONCILED VOLUME
+
+            {/* Monumental Asymmetric Editorial Headline */}
+            <h1
+              style={{
+                fontSize: 'clamp(2.8rem, 5.5vw, 4.6rem)',
+                fontWeight: 900,
+                lineHeight: 1.05,
+                letterSpacing: '-0.03em',
+                color: '#FFFFFF',
+                margin: '0 0 1.75rem 0',
+              }}
+            >
+              Reconcile<br />
+              <span style={{ color: '#00D2FF' }}>Everything.</span><br />
+              Trust<br />
+              The Numbers.
+            </h1>
+
+            {/* Supporting Copy */}
+            <p
+              style={{
+                fontSize: '1.05rem',
+                color: '#8E8E93',
+                lineHeight: 1.6,
+                marginBottom: '2.5rem',
+                maxWidth: '460px',
+              }}
+            >
+              Autonomous 3-way financial reconciliation across bank statements, payment gateways, and ERP records. 
+              AI reasoning for complex bundles. Deterministic proof for everything else.
+            </p>
+
+            {/* Primary Action Buttons */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
+              <button
+                onClick={() => onAuthSuccess('dashboard')}
+                style={{
+                  background: '#00D2FF',
+                  color: '#000000',
+                  fontWeight: 800,
+                  fontSize: '0.9rem',
+                  padding: '0.85rem 2rem',
+                  borderRadius: '6px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  boxShadow: '0 0 25px rgba(0, 210, 255, 0.25)',
+                }}
+              >
+                Launch System <ArrowRight size={16} />
+              </button>
+
+              <a
+                href="#problem"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.04)',
+                  color: '#EDEDED',
+                  fontWeight: 600,
+                  fontSize: '0.9rem',
+                  padding: '0.85rem 1.75rem',
+                  borderRadius: '6px',
+                  border: '1px solid rgba(255, 255, 255, 0.12)',
+                  textDecoration: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                }}
+              >
+                Explore Engine ↓
+              </a>
             </div>
+
+            {/* Spatial Telemetry Chips (Integrated into the scene, not a card) */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#8E8E93' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#00D2FF' }} />
+                <span>FAST-PATH LATENCY: <strong style={{ color: '#00D2FF' }}>&lt;1.2ms</strong> (0 LLM Tokens)</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10B981' }} />
+                <span>MATCH PRECISION: <strong style={{ color: '#10B981' }}>99.98%</strong> (Verified Ground Truth)</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#F59E0B' }} />
+                <span>STREAM CAPACITY: <strong style={{ color: '#EDEDED' }}>10,000+ TXNS/SEC</strong></span>
+              </div>
+            </div>
+
           </div>
 
-          <div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.75rem', fontWeight: 800, color: '#10B981' }}>
-              99.98%
-            </div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#8E8E93', letterSpacing: '0.08em', marginTop: '0.2rem' }}>
-              PRECISION ACCURACY
-            </div>
-          </div>
-
-          <div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.75rem', fontWeight: 800, color: '#F59E0B' }}>
-              &lt;1.2ms
-            </div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#8E8E93', letterSpacing: '0.08em', marginTop: '0.2rem' }}>
-              FAST-PATH LATENCY
-            </div>
-          </div>
-
-          <div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.75rem', fontWeight: 800, color: '#EDEDED' }}>
-              82%
-            </div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#8E8E93', letterSpacing: '0.08em', marginTop: '0.2rem' }}>
-              TOKEN COST REDUCTION
-            </div>
-          </div>
+          {/* Right Column: Spatial Canvas Presence */}
+          <div style={{ minHeight: '400px' }} />
         </div>
       </section>
 
@@ -471,22 +454,23 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
       <section
         id="problem"
         style={{
-          padding: '7rem 2rem',
-          maxWidth: '1100px',
+          padding: '8rem 2.5rem',
+          maxWidth: '1200px',
           margin: '0 auto',
           position: 'relative',
+          zIndex: 10,
         }}
       >
-        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF', letterSpacing: '0.18em', marginBottom: '1rem' }}>
-            [ 01 / THE CORE FINANCIAL BOTTLENECK ]
+        <div style={{ marginBottom: '4rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF', letterSpacing: '0.15em', marginBottom: '1.25rem' }}>
+            [ 01 / THE RECONCILIATION BOTTLENECK ]
           </div>
 
           <h2
             style={{
-              fontSize: 'clamp(2.2rem, 4.5vw, 3.8rem)',
+              fontSize: 'clamp(2.2rem, 5vw, 4.2rem)',
               fontWeight: 900,
-              lineHeight: 1.12,
+              lineHeight: 1.1,
               letterSpacing: '-0.02em',
               color: '#FFFFFF',
               margin: '0 0 1.5rem',
@@ -497,17 +481,17 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             <span style={{ color: '#00D2FF' }}>IT HAS A VERIFICATION PROBLEM.</span>
           </h2>
 
-          <p style={{ fontSize: '1.1rem', color: '#8E8E93', maxWidth: '680px', margin: '0 auto', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '1.15rem', color: '#8E8E93', maxWidth: '700px', lineHeight: 1.6 }}>
             Modern financial operations generate millions of transactional records every day, yet still rely heavily on 
-            manual spreadsheets to reconcile discrepancies across disconnected systems.
+            manual spreadsheets to verify discrepancies across disconnected systems.
           </p>
         </div>
 
-        {/* 3 Disconnected Silos Moving Toward Verification */}
+        {/* 3 Disconnected Systems Visual */}
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
             gap: '1.5rem',
           }}
         >
@@ -516,27 +500,22 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             style={{
               background: '#0D0D11',
               border: '1px solid rgba(0, 210, 255, 0.25)',
-              borderRadius: '12px',
-              padding: '2rem',
-              position: 'relative',
-              overflow: 'hidden',
+              borderRadius: '8px',
+              padding: '2.25rem',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#00D2FF' }} />
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF', letterSpacing: '0.1em' }}>
-                SOURCE 01: BANK STATEMENT
-              </span>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#00D2FF', marginBottom: '0.75rem' }}>
+              SOURCE 01 // BANK STATEMENT
             </div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, margin: '0 0 0.5rem', color: '#FFFFFF' }}>
+            <h3 style={{ fontSize: '1.35rem', fontWeight: 800, margin: '0 0 0.75rem', color: '#FFFFFF' }}>
               Net Lump-Sum Payouts
             </h3>
-            <p style={{ fontSize: '0.88rem', color: '#8E8E93', lineHeight: 1.5 }}>
+            <p style={{ fontSize: '0.9rem', color: '#8E8E93', lineHeight: 1.6 }}>
               Bank accounts reflect deposited net cash (e.g. ₹48,272.80) after withholding fees, deductions, and batch timings. 
-              Zero invoice-level metadata.
+              Zero invoice-level metadata is included in the wire feed.
             </p>
-            <div style={{ marginTop: '1.5rem', padding: '0.75rem', background: '#14141A', borderRadius: '6px', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF' }}>
-              HDFC / ICICI MT940 / CAMT.053
+            <div style={{ marginTop: '1.75rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF' }}>
+              HDFC / ICICI MT940 & CAMT.053
             </div>
           </div>
 
@@ -545,27 +524,22 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             style={{
               background: '#0D0D11',
               border: '1px solid rgba(245, 158, 11, 0.25)',
-              borderRadius: '12px',
-              padding: '2rem',
-              position: 'relative',
-              overflow: 'hidden',
+              borderRadius: '8px',
+              padding: '2.25rem',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#F59E0B' }} />
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#F59E0B', letterSpacing: '0.1em' }}>
-                SOURCE 02: PAYMENT GATEWAY
-              </span>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#F59E0B', marginBottom: '0.75rem' }}>
+              SOURCE 02 // PAYMENT GATEWAY
             </div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, margin: '0 0 0.5rem', color: '#FFFFFF' }}>
+            <h3 style={{ fontSize: '1.35rem', fontWeight: 800, margin: '0 0 0.75rem', color: '#FFFFFF' }}>
               MDR Fees, GST & Refunds
             </h3>
-            <p style={{ fontSize: '0.88rem', color: '#8E8E93', lineHeight: 1.5 }}>
+            <p style={{ fontSize: '0.9rem', color: '#8E8E93', lineHeight: 1.6 }}>
               Gateways bundle dozens of customer orders into single batch settlements, docking 2% fee tiers, 18% GST on fees, 
-              and reversing partial customer refunds.
+              and reversing partial customer refunds before bank transfer.
             </p>
-            <div style={{ marginTop: '1.5rem', padding: '0.75rem', background: '#14141A', borderRadius: '6px', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#F59E0B' }}>
-              Razorpay Settlement Webhooks
+            <div style={{ marginTop: '1.75rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#F59E0B' }}>
+              Razorpay Settlement Batches
             </div>
           </div>
 
@@ -574,27 +548,22 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             style={{
               background: '#0D0D11',
               border: '1px solid rgba(168, 85, 247, 0.25)',
-              borderRadius: '12px',
-              padding: '2rem',
-              position: 'relative',
-              overflow: 'hidden',
+              borderRadius: '8px',
+              padding: '2.25rem',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#A855F7' }} />
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#A855F7', letterSpacing: '0.1em' }}>
-                SOURCE 03: ERP INVOICES
-              </span>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#A855F7', marginBottom: '0.75rem' }}>
+              SOURCE 03 // ERP INVOICES
             </div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, margin: '0 0 0.5rem', color: '#FFFFFF' }}>
+            <h3 style={{ fontSize: '1.35rem', fontWeight: 800, margin: '0 0 0.75rem', color: '#FFFFFF' }}>
               Gross Accounts Receivable
             </h3>
-            <p style={{ fontSize: '0.88rem', color: '#8E8E93', lineHeight: 1.5 }}>
+            <p style={{ fontSize: '0.9rem', color: '#8E8E93', lineHeight: 1.6 }}>
               Internal billing records show individual customer orders at gross contract value (e.g. ₹5,000.00 each) 
-              with no awareness of payment gateway fee deductions.
+              with no direct awareness of payment gateway fee deductions.
             </p>
-            <div style={{ marginTop: '1.5rem', padding: '0.75rem', background: '#14141A', borderRadius: '6px', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#A855F7' }}>
-              SAP / NetSuite / Tally Prime
+            <div style={{ marginTop: '1.75rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#A855F7' }}>
+              SAP / NetSuite / Tally
             </div>
           </div>
         </div>
@@ -606,21 +575,23 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
       <section
         id="pipeline"
         style={{
-          padding: '6rem 2rem',
+          padding: '7rem 2.5rem',
           backgroundColor: '#0A0A0E',
           borderTop: '1px solid rgba(255, 255, 255, 0.06)',
           borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+          position: 'relative',
+          zIndex: 10,
         }}
       >
-        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF', letterSpacing: '0.18em', marginBottom: '0.75rem' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{ marginBottom: '3.5rem' }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF', letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
               [ 02 / RECONCILIATION ARCHITECTURE ]
             </div>
-            <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: 0 }}>
+            <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.4rem)', fontWeight: 900, color: '#FFFFFF', margin: 0 }}>
               Three Sources. One Truth.
             </h2>
-            <p style={{ fontSize: '1rem', color: '#8E8E93', marginTop: '0.75rem' }}>
+            <p style={{ fontSize: '1.05rem', color: '#8E8E93', marginTop: '0.75rem' }}>
               How records stream through ingestion, normalization, matching, mathematical verification, and GAAP ledgering.
             </p>
           </div>
@@ -629,7 +600,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
               gap: '0.75rem',
               marginBottom: '2rem',
             }}
@@ -643,17 +614,17 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
                   style={{
                     background: isActive ? '#14141A' : '#0D0D11',
                     border: isActive ? '1px solid #00D2FF' : '1px solid rgba(255, 255, 255, 0.08)',
-                    borderRadius: '8px',
-                    padding: '1rem',
+                    borderRadius: '6px',
+                    padding: '1.25rem',
                     textAlign: 'left',
                     cursor: 'pointer',
                     transition: 'all 0.2s',
                   }}
                 >
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', fontWeight: 700, color: isActive ? '#00D2FF' : '#EDEDED' }}>
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', fontWeight: 700, color: isActive ? '#00D2FF' : '#EDEDED' }}>
                     {stage.title}
                   </div>
-                  <div style={{ fontSize: '0.72rem', color: '#8E8E93', marginTop: '0.2rem' }}>
+                  <div style={{ fontSize: '0.75rem', color: '#8E8E93', marginTop: '0.25rem' }}>
                     {stage.subtitle}
                   </div>
                 </button>
@@ -665,22 +636,22 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
           <div
             style={{
               background: '#0D0D11',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              borderRadius: '12px',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: '8px',
               padding: '2.5rem',
               display: 'flex',
               flexDirection: 'column',
-              gap: '1rem',
+              gap: '1.25rem',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255, 255, 255, 0.06)', paddingBottom: '1rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <Activity size={20} color="#00D2FF" />
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.1rem', fontWeight: 800, color: '#FFFFFF' }}>
+                <Activity size={18} color="#00D2FF" />
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.05rem', fontWeight: 800, color: '#FFFFFF' }}>
                   {pipelineStages[activePipelineStep].title} — {pipelineStages[activePipelineStep].subtitle}
                 </span>
               </div>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#10B981' }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#10B981' }}>
                 STAGE ACTIVE
               </span>
             </div>
@@ -694,12 +665,12 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
               style={{
                 background: '#070709',
                 border: '1px solid rgba(255, 255, 255, 0.06)',
-                borderRadius: '8px',
+                borderRadius: '6px',
                 padding: '1rem 1.25rem',
                 fontFamily: 'var(--font-mono)',
-                fontSize: '0.8rem',
+                fontSize: '0.82rem',
                 color: '#8E8E93',
-                lineHeight: 1.6,
+                lineHeight: 1.7,
               }}
             >
               {activePipelineStep === 0 && (
@@ -746,32 +717,34 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
       <section
         id="hybrid"
         style={{
-          padding: '7rem 2rem',
-          maxWidth: '1100px',
+          padding: '8rem 2.5rem',
+          maxWidth: '1200px',
           margin: '0 auto',
+          position: 'relative',
+          zIndex: 10,
         }}
       >
-        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF', letterSpacing: '0.18em', marginBottom: '0.75rem' }}>
+        <div style={{ marginBottom: '4rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF', letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
             [ 03 / HYBRID ARCHITECTURE ]
           </div>
-          <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 0.5rem' }}>
+          <h2 style={{ fontSize: 'clamp(2.2rem, 4.5vw, 3.6rem)', fontWeight: 900, color: '#FFFFFF', margin: 0 }}>
             Fast When It's Easy.<br />
             <span style={{ color: '#00D2FF' }}>Intelligent When It's Hard.</span>
           </h2>
-          <p style={{ fontSize: '1rem', color: '#8E8E93', maxWidth: '650px', margin: '0.5rem auto 0' }}>
+          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '680px', marginTop: '0.75rem' }}>
             Most transactions don't need expensive LLM calls. OmniSettle routes clean payouts through sub-millisecond 
             deterministic rules, preserving AI reasoning power for complex bundles and FX float anomalies.
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '2rem' }}>
           {/* Fast Path Engine */}
           <div
             style={{
               background: '#0D0D11',
               border: '1px solid rgba(0, 210, 255, 0.3)',
-              borderRadius: '12px',
+              borderRadius: '8px',
               padding: '2.5rem',
               display: 'flex',
               flexDirection: 'column',
@@ -809,7 +782,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
               </ul>
             </div>
 
-            <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#8E8E93' }}>
+            <div style={{ marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#8E8E93' }}>
               STATUS: 35 / 35 GROUND TRUTH PASS (100%)
             </div>
           </div>
@@ -819,7 +792,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             style={{
               background: '#0D0D11',
               border: '1px solid rgba(245, 158, 11, 0.3)',
-              borderRadius: '12px',
+              borderRadius: '8px',
               padding: '2.5rem',
               display: 'flex',
               flexDirection: 'column',
@@ -857,7 +830,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
               </ul>
             </div>
 
-            <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#8E8E93' }}>
+            <div style={{ marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#8E8E93' }}>
               STATUS: 4 / 4 ADVERSARIAL CASES RESOLVED
             </div>
           </div>
@@ -870,21 +843,23 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
       <section
         id="bundle"
         style={{
-          padding: '6rem 2rem',
+          padding: '7rem 2.5rem',
           backgroundColor: '#0A0A0E',
           borderTop: '1px solid rgba(255, 255, 255, 0.06)',
           borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+          position: 'relative',
+          zIndex: 10,
         }}
       >
-        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF', letterSpacing: '0.18em', marginBottom: '0.75rem' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{ marginBottom: '3.5rem' }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF', letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
               [ 04 / MATHEMATICAL DECOMPOSITION ]
             </div>
-            <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: 0 }}>
+            <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.4rem)', fontWeight: 900, color: '#FFFFFF', margin: 0 }}>
               Bundled Settlements Are Not Simple.
             </h2>
-            <p style={{ fontSize: '1rem', color: '#8E8E93', maxWidth: '680px', margin: '0.75rem auto 0' }}>
+            <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '700px', marginTop: '0.75rem' }}>
               How OmniSettle mathematically decomposes a single lump-sum bank deposit of ₹48,272.80 into 8 invoices, 
               accounting for gateway deductions, GST, and customer refunds.
             </p>
@@ -894,18 +869,18 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
           <div
             style={{
               background: '#0D0D11',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              borderRadius: '12px',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: '8px',
               padding: '2.5rem',
             }}
           >
             {/* Header with Bank Payout ID */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '1.25rem', marginBottom: '2rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255, 255, 255, 0.06)', paddingBottom: '1.5rem', marginBottom: '2rem' }}>
               <div>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF' }}>
                   BANK CREDIT TARGET #SET-BUNDLE-88412
                 </div>
-                <div style={{ fontSize: '1.75rem', fontWeight: 900, color: '#FFFFFF', marginTop: '0.2rem' }}>
+                <div style={{ fontSize: '1.85rem', fontWeight: 900, color: '#FFFFFF', marginTop: '0.2rem' }}>
                   ₹48,272.80
                 </div>
               </div>
@@ -920,8 +895,8 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
                       background: bundleMathStep === stepNum ? '#00D2FF' : '#14141A',
                       color: bundleMathStep === stepNum ? '#000000' : '#8E8E93',
                       border: 'none',
-                      padding: '0.4rem 0.8rem',
-                      borderRadius: '6px',
+                      padding: '0.45rem 0.9rem',
+                      borderRadius: '4px',
                       fontFamily: 'var(--font-mono)',
                       fontSize: '0.75rem',
                       fontWeight: 700,
@@ -935,29 +910,29 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             </div>
 
             {/* Step Explanation */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-              <div style={{ background: '#070709', padding: '1.25rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem', marginBottom: '2rem' }}>
+              <div style={{ background: '#070709', padding: '1.25rem', borderRadius: '6px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#8E8E93' }}>1. GROSS ERP SUM (8 INVOICES)</div>
                 <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#FFFFFF', marginTop: '0.25rem' }}>₹52,000.00</div>
-                <div style={{ fontSize: '0.75rem', color: '#8E8E93', marginTop: '0.4rem' }}>INV-BUN-01 through INV-BUN-08</div>
+                <div style={{ fontSize: '0.75rem', color: '#8E8E93', marginTop: '0.35rem' }}>INV-BUN-01 through INV-BUN-08</div>
               </div>
 
-              <div style={{ background: '#070709', padding: '1.25rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+              <div style={{ background: '#070709', padding: '1.25rem', borderRadius: '6px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#F59E0B' }}>2. CONTRACT GATEWAY FEE (2.0%)</div>
                 <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#F59E0B', marginTop: '0.25rem' }}>-₹1,040.00</div>
-                <div style={{ fontSize: '0.75rem', color: '#8E8E93', marginTop: '0.4rem' }}>2.00% on ₹52,000 gross volume</div>
+                <div style={{ fontSize: '0.75rem', color: '#8E8E93', marginTop: '0.35rem' }}>2.00% on ₹52,000 gross volume</div>
               </div>
 
-              <div style={{ background: '#070709', padding: '1.25rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+              <div style={{ background: '#070709', padding: '1.25rem', borderRadius: '6px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#A855F7' }}>3. GST ON FEE (18.0%)</div>
                 <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#A855F7', marginTop: '0.25rem' }}>-₹187.20</div>
-                <div style={{ fontSize: '0.75rem', color: '#8E8E93', marginTop: '0.4rem' }}>18% of ₹1,040 fee amount</div>
+                <div style={{ fontSize: '0.75rem', color: '#8E8E93', marginTop: '0.35rem' }}>18% of ₹1,040 fee amount</div>
               </div>
 
-              <div style={{ background: '#070709', padding: '1.25rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+              <div style={{ background: '#070709', padding: '1.25rem', borderRadius: '6px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#EF4444' }}>4. REFUND ON ORD-BUN-04</div>
                 <div style={{ fontSize: '1.3rem', fontWeight: 800, color: '#EF4444', marginTop: '0.25rem' }}>-₹2,500.00</div>
-                <div style={{ fontSize: '0.75rem', color: '#8E8E93', marginTop: '0.4rem' }}>Gateway customer refund reversal</div>
+                <div style={{ fontSize: '0.75rem', color: '#8E8E93', marginTop: '0.35rem' }}>Gateway customer refund reversal</div>
               </div>
             </div>
 
@@ -966,7 +941,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
               style={{
                 background: '#070709',
                 border: '1px solid rgba(16, 185, 129, 0.3)',
-                borderRadius: '8px',
+                borderRadius: '6px',
                 padding: '1.25rem 1.75rem',
                 display: 'flex',
                 alignItems: 'center',
@@ -1011,26 +986,28 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
       {/* ========================================================================= */}
       <section
         style={{
-          padding: '7rem 2rem',
-          maxWidth: '1100px',
+          padding: '8rem 2.5rem',
+          maxWidth: '1200px',
           margin: '0 auto',
+          position: 'relative',
+          zIndex: 10,
         }}
       >
-        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF', letterSpacing: '0.18em', marginBottom: '0.75rem' }}>
+        <div style={{ marginBottom: '4rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF', letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
             [ 05 / VERIFICATION PRINCIPLES ]
           </div>
-          <h2 style={{ fontSize: 'clamp(2.2rem, 4.5vw, 3.8rem)', fontWeight: 900, color: '#FFFFFF', margin: 0 }}>
+          <h2 style={{ fontSize: 'clamp(2.2rem, 5vw, 4rem)', fontWeight: 900, color: '#FFFFFF', margin: 0 }}>
             Don't Guess. <span style={{ color: '#00D2FF' }}>Prove.</span>
           </h2>
-          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '650px', margin: '0.75rem auto 0' }}>
+          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '680px', marginTop: '0.75rem' }}>
             OmniSettle treats financial reconciliation with cryptographic rigor. A match is never accepted on similarity; 
             it must be proven down to the exact paisa.
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-          <div style={{ background: '#0D0D11', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '12px', padding: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+          <div style={{ background: '#0D0D11', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '2.25rem' }}>
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF', marginBottom: '0.5rem' }}>
               CRITERIA 01
             </div>
@@ -1043,7 +1020,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             </p>
           </div>
 
-          <div style={{ background: '#0D0D11', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '12px', padding: '2rem' }}>
+          <div style={{ background: '#0D0D11', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '2.25rem' }}>
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#10B981', marginBottom: '0.5rem' }}>
               CRITERIA 02
             </div>
@@ -1056,7 +1033,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             </p>
           </div>
 
-          <div style={{ background: '#0D0D11', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '12px', padding: '2rem' }}>
+          <div style={{ background: '#0D0D11', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '2.25rem' }}>
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#A855F7', marginBottom: '0.5rem' }}>
               CRITERIA 03
             </div>
@@ -1076,28 +1053,30 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
       <section
         id="exceptions"
         style={{
-          padding: '6rem 2rem',
+          padding: '7rem 2.5rem',
           backgroundColor: '#0A0A0E',
           borderTop: '1px solid rgba(255, 255, 255, 0.06)',
           borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+          position: 'relative',
+          zIndex: 10,
         }}
       >
-        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#EF4444', letterSpacing: '0.18em', marginBottom: '0.75rem' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{ marginBottom: '3.5rem' }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#EF4444', letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
               [ 06 / HONEST EXCEPTION ENGINE ]
             </div>
-            <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: 0 }}>
+            <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.4rem)', fontWeight: 900, color: '#FFFFFF', margin: 0 }}>
               When We Can't Resolve It,<br />
               <span style={{ color: '#EF4444' }}>We Don't Hide It.</span>
             </h2>
-            <p style={{ fontSize: '1rem', color: '#8E8E93', maxWidth: '680px', margin: '0.75rem auto 0' }}>
+            <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '700px', marginTop: '0.75rem' }}>
               Unlike generic AI tools that hallucinate false matches, OmniSettle quarantines unresolved discrepancies 
               and generates 1-click webhook remediation stubs.
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>
             {/* Left: Exception Case List */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {exceptionsData.map((exc, index) => {
@@ -1109,8 +1088,8 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
                     style={{
                       background: isSelected ? '#14141A' : '#0D0D11',
                       border: isSelected ? '1px solid #EF4444' : '1px solid rgba(255, 255, 255, 0.08)',
-                      borderRadius: '8px',
-                      padding: '1rem 1.25rem',
+                      borderRadius: '6px',
+                      padding: '1.25rem',
                       textAlign: 'left',
                       cursor: 'pointer',
                       display: 'flex',
@@ -1128,7 +1107,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
                           #{exc.id}
                         </span>
                       </div>
-                      <div style={{ fontSize: '0.85rem', color: '#EDEDED', marginTop: '0.2rem' }}>
+                      <div style={{ fontSize: '0.88rem', color: '#EDEDED', marginTop: '0.25rem' }}>
                         {exc.discrepancy}
                       </div>
                     </div>
@@ -1144,15 +1123,15 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
               style={{
                 background: '#0D0D11',
                 border: '1px solid rgba(239, 68, 68, 0.3)',
-                borderRadius: '12px',
-                padding: '2rem',
+                borderRadius: '8px',
+                padding: '2.25rem',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
               }}
             >
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '1rem', marginBottom: '1.25rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255, 255, 255, 0.06)', paddingBottom: '1rem', marginBottom: '1.25rem' }}>
                   <div>
                     <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#EF4444' }}>
                       SOURCE: {exceptionsData[selectedExceptionIndex].source}
@@ -1181,6 +1160,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
                     fontSize: '0.75rem',
                     color: '#8E8E93',
                     marginBottom: '1.5rem',
+                    lineHeight: 1.6,
                   }}
                 >
                   <span style={{ color: '#EF4444' }}>// Diagnostic Telemetry Payload:</span><br />
@@ -1195,7 +1175,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
                   background: 'rgba(239, 68, 68, 0.15)',
                   border: '1px solid #EF4444',
                   color: '#EF4444',
-                  padding: '0.75rem 1.25rem',
+                  padding: '0.8rem 1.25rem',
                   borderRadius: '6px',
                   fontFamily: 'var(--font-mono)',
                   fontSize: '0.78rem',
@@ -1220,68 +1200,70 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
       {/* ========================================================================= */}
       <section
         style={{
-          padding: '7rem 2rem',
-          maxWidth: '1100px',
+          padding: '8rem 2.5rem',
+          maxWidth: '1200px',
           margin: '0 auto',
+          position: 'relative',
+          zIndex: 10,
         }}
       >
-        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF', letterSpacing: '0.18em', marginBottom: '0.75rem' }}>
+        <div style={{ marginBottom: '4rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF', letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
             [ 07 / EMPIRICAL BENCHMARK PERFORMANCE ]
           </div>
-          <h2 style={{ fontSize: 'clamp(2.2rem, 4.5vw, 3.8rem)', fontWeight: 900, color: '#FFFFFF', margin: 0 }}>
+          <h2 style={{ fontSize: 'clamp(2.2rem, 5vw, 4rem)', fontWeight: 900, color: '#FFFFFF', margin: 0 }}>
             The Numbers.
           </h2>
-          <p style={{ fontSize: '1rem', color: '#8E8E93', maxWidth: '650px', margin: '0.75rem auto 0' }}>
+          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '680px', marginTop: '0.75rem' }}>
             Verified on our ground truth synthetic test vectors (53 records, 45 vectors) without statistical fabrication.
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem' }}>
-          <div style={{ background: '#0D0D11', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '12px', padding: '2rem' }}>
-            <div style={{ fontSize: '2.8rem', fontWeight: 900, color: '#00D2FF', fontFamily: 'var(--font-mono)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem' }}>
+          <div style={{ background: '#0D0D11', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '2.25rem' }}>
+            <div style={{ fontSize: '3rem', fontWeight: 900, color: '#00D2FF', fontFamily: 'var(--font-mono)' }}>
               &lt;1.2ms
             </div>
-            <div style={{ fontSize: '1rem', fontWeight: 700, color: '#FFFFFF', margin: '0.5rem 0 0.25rem' }}>
+            <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#FFFFFF', margin: '0.5rem 0 0.25rem' }}>
               Fast-Path Latency
             </div>
-            <p style={{ fontSize: '0.82rem', color: '#8E8E93', lineHeight: 1.5 }}>
+            <p style={{ fontSize: '0.85rem', color: '#8E8E93', lineHeight: 1.5 }}>
               Deterministic 1:1 matching completes instantaneously with zero LLM API network roundtrips.
             </p>
           </div>
 
-          <div style={{ background: '#0D0D11', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '12px', padding: '2rem' }}>
-            <div style={{ fontSize: '2.8rem', fontWeight: 900, color: '#10B981', fontFamily: 'var(--font-mono)' }}>
+          <div style={{ background: '#0D0D11', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '2.25rem' }}>
+            <div style={{ fontSize: '3rem', fontWeight: 900, color: '#10B981', fontFamily: 'var(--font-mono)' }}>
               99.98%
             </div>
-            <div style={{ fontSize: '1rem', fontWeight: 700, color: '#FFFFFF', margin: '0.5rem 0 0.25rem' }}>
+            <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#FFFFFF', margin: '0.5rem 0 0.25rem' }}>
               Precision Match Rate
             </div>
-            <p style={{ fontSize: '0.82rem', color: '#8E8E93', lineHeight: 1.5 }}>
+            <p style={{ fontSize: '0.85rem', color: '#8E8E93', lineHeight: 1.5 }}>
               100% verified pass across all ground-truth vectors with zero false positive settlement links.
             </p>
           </div>
 
-          <div style={{ background: '#0D0D11', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '12px', padding: '2rem' }}>
-            <div style={{ fontSize: '2.8rem', fontWeight: 900, color: '#F59E0B', fontFamily: 'var(--font-mono)' }}>
+          <div style={{ background: '#0D0D11', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '2.25rem' }}>
+            <div style={{ fontSize: '3rem', fontWeight: 900, color: '#F59E0B', fontFamily: 'var(--font-mono)' }}>
               82%
             </div>
-            <div style={{ fontSize: '1rem', fontWeight: 700, color: '#FFFFFF', margin: '0.5rem 0 0.25rem' }}>
+            <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#FFFFFF', margin: '0.5rem 0 0.25rem' }}>
               Token Cost Savings
             </div>
-            <p style={{ fontSize: '0.82rem', color: '#8E8E93', lineHeight: 1.5 }}>
+            <p style={{ fontSize: '0.85rem', color: '#8E8E93', lineHeight: 1.5 }}>
               By pre-filtering clean records, 80%+ of transactions bypass LLM calls entirely.
             </p>
           </div>
 
-          <div style={{ background: '#0D0D11', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '12px', padding: '2rem' }}>
-            <div style={{ fontSize: '2.8rem', fontWeight: 900, color: '#EDEDED', fontFamily: 'var(--font-mono)' }}>
+          <div style={{ background: '#0D0D11', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '2.25rem' }}>
+            <div style={{ fontSize: '3rem', fontWeight: 900, color: '#EDEDED', fontFamily: 'var(--font-mono)' }}>
               10,000+
             </div>
-            <div style={{ fontSize: '1rem', fontWeight: 700, color: '#FFFFFF', margin: '0.5rem 0 0.25rem' }}>
+            <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#FFFFFF', margin: '0.5rem 0 0.25rem' }}>
               Txns / Second
             </div>
-            <p style={{ fontSize: '0.82rem', color: '#8E8E93', lineHeight: 1.5 }}>
+            <p style={{ fontSize: '0.85rem', color: '#8E8E93', lineHeight: 1.5 }}>
               Streaming pipeline architecture capable of handling peak flash-sale ledger settlement volumes.
             </p>
           </div>
@@ -1293,22 +1275,24 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
       {/* ========================================================================= */}
       <section
         style={{
-          padding: '6rem 2rem',
+          padding: '7rem 2.5rem',
           backgroundColor: '#0A0A0E',
           borderTop: '1px solid rgba(255, 255, 255, 0.06)',
           borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+          position: 'relative',
+          zIndex: 10,
         }}
       >
-        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF', letterSpacing: '0.18em', marginBottom: '0.75rem' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{ marginBottom: '3.5rem' }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF', letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
               [ 08 / TREASURY FORECASTING ]
             </div>
-            <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: 0 }}>
+            <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.4rem)', fontWeight: 900, color: '#FFFFFF', margin: 0 }}>
               From Reconciliation<br />
               <span style={{ color: '#00D2FF' }}>To Cash Intelligence.</span>
             </h2>
-            <p style={{ fontSize: '1rem', color: '#8E8E93', maxWidth: '650px', margin: '0.75rem auto 0' }}>
+            <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '680px', marginTop: '0.75rem' }}>
               Reconciliation isn't just backwards-looking compliance. Live clearing data feeds our 30-day cash forecaster, 
               giving CFOs precision treasury visibility.
             </p>
@@ -1317,30 +1301,30 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
           <div
             style={{
               background: '#0D0D11',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              borderRadius: '12px',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: '8px',
               padding: '2.5rem',
             }}
           >
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
               <div>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#8E8E93' }}>OPENING TREASURY BALANCE</div>
-                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#FFFFFF', marginTop: '0.2rem' }}>₹14,250,000</div>
+                <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#FFFFFF', marginTop: '0.25rem' }}>₹14,250,000</div>
               </div>
 
               <div>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#10B981' }}>DAILY EXPECTED INFLOWS</div>
-                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#10B981', marginTop: '0.2rem' }}>+₹3,820,000</div>
+                <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#10B981', marginTop: '0.25rem' }}>+₹3,820,000</div>
               </div>
 
               <div>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#F59E0B' }}>PENDING GATEWAY SETTLEMENTS</div>
-                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#F59E0B', marginTop: '0.2rem' }}>₹1,240,000</div>
+                <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#F59E0B', marginTop: '0.25rem' }}>₹1,240,000</div>
               </div>
 
               <div>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#EF4444' }}>DISPUTE & REFUND RISK RESERVE</div>
-                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#EF4444', marginTop: '0.2rem' }}>-₹180,000</div>
+                <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#EF4444', marginTop: '0.25rem' }}>-₹180,000</div>
               </div>
             </div>
 
@@ -1376,10 +1360,10 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
               <button
                 onClick={() => onAuthSuccess('cash_forecast')}
                 style={{
-                  background: 'rgba(255, 255, 255, 0.06)',
+                  background: 'rgba(255, 255, 255, 0.05)',
                   border: '1px solid rgba(0, 210, 255, 0.3)',
                   color: '#00D2FF',
-                  padding: '0.75rem 1.75rem',
+                  padding: '0.8rem 1.85rem',
                   borderRadius: '6px',
                   fontFamily: 'var(--font-mono)',
                   fontSize: '0.82rem',
@@ -1403,20 +1387,22 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
       <section
         id="modules"
         style={{
-          padding: '7rem 2rem',
+          padding: '8rem 2.5rem',
           maxWidth: '1200px',
           margin: '0 auto',
+          position: 'relative',
+          zIndex: 10,
         }}
       >
-        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF', letterSpacing: '0.18em', marginBottom: '0.75rem' }}>
+        <div style={{ marginBottom: '4rem' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#00D2FF', letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
             [ 09 / COMPLETE APPLICATION ECOSYSTEM ]
           </div>
-          <h2 style={{ fontSize: 'clamp(2.2rem, 4.5vw, 3.8rem)', fontWeight: 900, color: '#FFFFFF', margin: 0 }}>
+          <h2 style={{ fontSize: 'clamp(2.2rem, 5vw, 4rem)', fontWeight: 900, color: '#FFFFFF', margin: 0 }}>
             One Controller.<br />
             <span style={{ color: '#00D2FF' }}>Complete Financial Visibility.</span>
           </h2>
-          <p style={{ fontSize: '1rem', color: '#8E8E93', maxWidth: '650px', margin: '0.75rem auto 0' }}>
+          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '680px', marginTop: '0.75rem' }}>
             Click any module below to jump directly into the live operating system.
           </p>
         </div>
@@ -1435,7 +1421,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             style={{
               background: '#0D0D11',
               border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: '12px',
+              borderRadius: '8px',
               padding: '2rem',
               cursor: 'pointer',
               transition: 'all 0.2s',
@@ -1443,7 +1429,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             onMouseEnter={e => { e.currentTarget.style.borderColor = '#00D2FF'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'; e.currentTarget.style.transform = 'translateY(0)'; }}
           >
-            <LayoutDashboard size={26} color="#00D2FF" style={{ marginBottom: '1rem' }} />
+            <LayoutDashboard size={24} color="#00D2FF" style={{ marginBottom: '1rem' }} />
             <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF', margin: '0 0 0.5rem' }}>
               Executive Dashboard
             </h3>
@@ -1461,7 +1447,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             style={{
               background: '#0D0D11',
               border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: '12px',
+              borderRadius: '8px',
               padding: '2rem',
               cursor: 'pointer',
               transition: 'all 0.2s',
@@ -1469,7 +1455,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             onMouseEnter={e => { e.currentTarget.style.borderColor = '#00D2FF'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'; e.currentTarget.style.transform = 'translateY(0)'; }}
           >
-            <Zap size={26} color="#00D2FF" style={{ marginBottom: '1rem' }} />
+            <Zap size={24} color="#00D2FF" style={{ marginBottom: '1rem' }} />
             <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF', margin: '0 0 0.5rem' }}>
               Streaming Reconciler
             </h3>
@@ -1487,7 +1473,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             style={{
               background: '#0D0D11',
               border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: '12px',
+              borderRadius: '8px',
               padding: '2rem',
               cursor: 'pointer',
               transition: 'all 0.2s',
@@ -1495,7 +1481,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             onMouseEnter={e => { e.currentTarget.style.borderColor = '#F59E0B'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'; e.currentTarget.style.transform = 'translateY(0)'; }}
           >
-            <Calculator size={26} color="#F59E0B" style={{ marginBottom: '1rem' }} />
+            <Calculator size={24} color="#F59E0B" style={{ marginBottom: '1rem' }} />
             <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF', margin: '0 0 0.5rem' }}>
               1-to-N Bundle Math Lab
             </h3>
@@ -1513,7 +1499,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             style={{
               background: '#0D0D11',
               border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: '12px',
+              borderRadius: '8px',
               padding: '2rem',
               cursor: 'pointer',
               transition: 'all 0.2s',
@@ -1521,7 +1507,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             onMouseEnter={e => { e.currentTarget.style.borderColor = '#EF4444'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'; e.currentTarget.style.transform = 'translateY(0)'; }}
           >
-            <AlertTriangle size={26} color="#EF4444" style={{ marginBottom: '1rem' }} />
+            <AlertTriangle size={24} color="#EF4444" style={{ marginBottom: '1rem' }} />
             <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF', margin: '0 0 0.5rem' }}>
               Exception Center
             </h3>
@@ -1539,7 +1525,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             style={{
               background: '#0D0D11',
               border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: '12px',
+              borderRadius: '8px',
               padding: '2rem',
               cursor: 'pointer',
               transition: 'all 0.2s',
@@ -1547,7 +1533,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             onMouseEnter={e => { e.currentTarget.style.borderColor = '#00D2FF'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'; e.currentTarget.style.transform = 'translateY(0)'; }}
           >
-            <TrendingUp size={26} color="#00D2FF" style={{ marginBottom: '1rem' }} />
+            <TrendingUp size={24} color="#00D2FF" style={{ marginBottom: '1rem' }} />
             <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF', margin: '0 0 0.5rem' }}>
               30-Day Cash Forecaster
             </h3>
@@ -1565,7 +1551,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             style={{
               background: '#0D0D11',
               border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: '12px',
+              borderRadius: '8px',
               padding: '2rem',
               cursor: 'pointer',
               transition: 'all 0.2s',
@@ -1573,7 +1559,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             onMouseEnter={e => { e.currentTarget.style.borderColor = '#A855F7'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'; e.currentTarget.style.transform = 'translateY(0)'; }}
           >
-            <Database size={26} color="#A855F7" style={{ marginBottom: '1rem' }} />
+            <Database size={24} color="#A855F7" style={{ marginBottom: '1rem' }} />
             <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF', margin: '0 0 0.5rem' }}>
               Data Hub & Test Batches
             </h3>
@@ -1591,7 +1577,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             style={{
               background: '#0D0D11',
               border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: '12px',
+              borderRadius: '8px',
               padding: '2rem',
               cursor: 'pointer',
               transition: 'all 0.2s',
@@ -1599,7 +1585,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             onMouseEnter={e => { e.currentTarget.style.borderColor = '#10B981'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'; e.currentTarget.style.transform = 'translateY(0)'; }}
           >
-            <FileText size={26} color="#10B981" style={{ marginBottom: '1rem' }} />
+            <FileText size={24} color="#10B981" style={{ marginBottom: '1rem' }} />
             <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF', margin: '0 0 0.5rem' }}>
               GAAP Audit Center
             </h3>
@@ -1618,7 +1604,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
       {/* ========================================================================= */}
       <footer
         style={{
-          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+          borderTop: '1px solid rgba(255, 255, 255, 0.06)',
           padding: '3rem 2.5rem',
           display: 'flex',
           justifyContent: 'space-between',
@@ -1627,6 +1613,8 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
           gap: '1.5rem',
           maxWidth: '1200px',
           margin: '0 auto',
+          position: 'relative',
+          zIndex: 10,
         }}
       >
         <div>
@@ -1641,7 +1629,7 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem' }}>
           <button
             onClick={() => onAuthSuccess('dashboard')}
-            style={{ background: 'none', border: 'none', color: '#00D2FF', cursor: 'pointer' }}
+            style={{ background: 'none', border: 'none', color: '#00D2FF', cursor: 'pointer', fontFamily: 'var(--font-mono)' }}
           >
             [ LAUNCH SYSTEM ]
           </button>
@@ -1663,9 +1651,9 @@ export const LandingPageView: React.FC<LandingPageViewProps> = ({ onAuthSuccess,
             </button>
 
             <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-              <ShieldCheck size={40} color="#00D2FF" style={{ margin: '0 auto 0.5rem' }} />
-              <h2 className="font-mono" style={{ fontSize: '1.25rem', color: '#FFFFFF' }}>OPERATOR_AUTHENTICATION</h2>
-              <p className="font-mono" style={{ fontSize: '0.75rem', color: '#8E8E93' }}>[ ACCESS_CONTROL_LEVEL_4 ]</p>
+              <ShieldCheck size={36} color="#00D2FF" style={{ margin: '0 auto 0.5rem' }} />
+              <h2 className="font-mono" style={{ fontSize: '1.2rem', color: '#FFFFFF' }}>OPERATOR_AUTHENTICATION</h2>
+              <p className="font-mono" style={{ fontSize: '0.72rem', color: '#8E8E93' }}>[ ACCESS_CONTROL_LEVEL_4 ]</p>
             </div>
 
             {/* PRESET ROLE SHORTCUTS FOR JUDGES */}

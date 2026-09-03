@@ -610,6 +610,9 @@ html {
   .desktop-nav-links {
     display: none !important;
   }
+  .hero-asymmetric-grid {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 @media (max-width: 768px) {
