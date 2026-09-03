@@ -17,7 +17,7 @@ import { AdobeMaxMosaicView } from './components/views/AdobeMaxMosaicView';
 import './styles/index.css';
 
 export function App() {
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(false);
   const [currentView, setCurrentView] = useState<AppView>('dashboard');
   const [activeDataset, setActiveDataset] = useState<FinancialDataset>(ALL_DATASETS.CORE_BENCHMARK);
   const [isSimulatingFault, setIsSimulatingFault] = useState(false);
@@ -152,7 +152,10 @@ export function App() {
   if (!isAuthenticated) {
     return (
       <LandingPageView 
-        onAuthSuccess={() => setIsAuthenticated(true)} 
+        onAuthSuccess={(targetView?: AppView) => {
+          if (targetView) setCurrentView(targetView);
+          setIsAuthenticated(true);
+        }} 
         onOpenMovableUI={() => setShowSplash(true)}
       />
     );
