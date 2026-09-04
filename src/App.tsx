@@ -16,10 +16,11 @@ import { DataHubView } from './components/views/DataHubView';
 import { GAAPAuditView } from './components/views/GAAPAuditView';
 import { LandingPageView } from './components/views/LandingPageView';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { authService } from './services/authService';
 import './styles/index.css';
 
 function AppContent() {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, demoLogin } = useAuth();
   const [currentView, setCurrentView] = useState<AppView>('dashboard');
   const [activeDataset, setActiveDataset] = useState<FinancialDataset>(ALL_DATASETS.CORE_BENCHMARK);
   const [isSimulatingFault, setIsSimulatingFault] = useState(false);
@@ -144,8 +145,11 @@ function AppContent() {
   if (!isAuthenticated) {
     return (
       <LandingPageView 
-        onAuthSuccess={(targetView?: AppView) => {
+        onAuthSuccess={async (targetView?: AppView) => {
           if (targetView) setCurrentView(targetView);
+          if (!authService.getToken()) {
+            await demoLogin('judge');
+          }
         }} 
       />
     );

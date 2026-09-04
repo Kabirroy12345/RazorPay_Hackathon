@@ -7,7 +7,9 @@ import {
   KeyRound, 
   CheckCircle2, 
   AlertCircle,
-  ShieldCheck
+  ShieldCheck,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -24,6 +26,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
 
   const [activeTab, setActiveTab] = useState<AuthTab>('PASSWORD');
   const [isSignUp, setIsSignUp] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
@@ -57,14 +60,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
     try {
       if (isSignUp) {
         await signup(name, email, password);
+        setSuccessMsg('Operator account created! Initializing session...');
       } else {
         await login(email, password);
+        setSuccessMsg('Authentication verified. Establishing terminal session...');
       }
-      setSuccessMsg('Authentication verified. Generating JWT token...');
       setTimeout(() => {
         onSuccess();
         onClose();
-      }, 500);
+      }, 400);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Authentication failed');
     } finally {
@@ -373,17 +377,71 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
         {/* TAB 1: PASSWORD */}
         {activeTab === 'PASSWORD' && (
           <div>
+            {/* Quick Demo Credentials Autofill Bar */}
+            <div style={{ marginBottom: '1.1rem', background: 'rgba(0, 210, 255, 0.04)', border: '1px solid rgba(0, 210, 255, 0.16)', borderRadius: '8px', padding: '0.6rem 0.75rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.45rem' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.64rem', color: '#8E8E93', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                  QUICK PRESET CREDENTIALS:
+                </span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', color: '#00D2FF', fontWeight: 700 }}>
+                  AUTOFILL
+                </span>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.35rem' }}>
+                {[
+                  { label: 'Judge', email: 'judge@razorpay.com', pass: 'judge2026', color: '#00D2FF' },
+                  { label: 'Auditor', email: 'auditor@big4.com', pass: 'auditor2026', color: '#F59E0B' },
+                  { label: 'CFO', email: 'cfo@enterprise.com', pass: 'cfo2026', color: '#10B981' },
+                  { label: 'Operator', email: 'operator@omnisettle.ai', pass: 'operator2026', color: '#A855F7' },
+                ].map(p => (
+                  <button
+                    key={p.label}
+                    type="button"
+                    onClick={() => {
+                      setEmail(p.email);
+                      setPassword(p.pass);
+                      setIsSignUp(false);
+                      setError(null);
+                    }}
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.03)',
+                      border: `1px solid ${p.color}44`,
+                      color: p.color,
+                      borderRadius: '5px',
+                      padding: '0.35rem 0.2rem',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '0.68rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      textAlign: 'center',
+                      transition: 'all 0.15s ease',
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.background = `${p.color}1f`;
+                      e.currentTarget.style.borderColor = p.color;
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
+                      e.currentTarget.style.borderColor = `${p.color}44`;
+                    }}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <form onSubmit={handleSubmitPasswordAuth} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {isSignUp && (
                 <div>
                   <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#8E8E93', marginBottom: '0.35rem' }}>
-                    OPERATOR NAME
+                    OPERATOR FULL NAME
                   </label>
                   <div style={{ position: 'relative' }}>
                     <User size={15} color="#00D2FF" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)' }} />
                     <input
                       type="text"
-                      placeholder="Kabir Roy"
+                      placeholder="e.g. Kabir Roy"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       required={isSignUp}
@@ -406,7 +464,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
 
               <div>
                 <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#8E8E93', marginBottom: '0.35rem' }}>
-                  OPERATOR EMAIL
+                  OPERATOR EMAIL ADDRESS
                 </label>
                 <div style={{ position: 'relative' }}>
                   <Mail size={15} color="#00D2FF" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)' }} />
@@ -433,14 +491,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
               </div>
 
               <div>
-                <label style={{ display: 'block', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#8E8E93', marginBottom: '0.35rem' }}>
-                  PASSWORD / ACCESS KEY
-                </label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+                  <label style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#8E8E93' }}>
+                    {isSignUp ? 'CREATE SECURE PASSWORD' : 'PASSWORD / ACCESS KEY'}
+                  </label>
+                  {isSignUp && (
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.62rem', color: '#00D2FF' }}>
+                      MIN 4 CHARS
+                    </span>
+                  )}
+                </div>
                 <div style={{ position: 'relative' }}>
                   <Lock size={15} color="#00D2FF" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)' }} />
                   <input
-                    type="password"
-                    placeholder="••••••••••••"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder={isSignUp ? '••••••••••••' : '••••••••••••'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -449,7 +514,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                       backgroundColor: '#070A14',
                       border: '1px solid rgba(0, 210, 255, 0.3)',
                       borderRadius: '7px',
-                      padding: '0.7rem 0.85rem 0.7rem 2.4rem',
+                      padding: '0.7rem 2.5rem 0.7rem 2.4rem',
                       color: '#FFFFFF',
                       fontFamily: 'var(--font-mono)',
                       fontSize: '0.85rem',
@@ -457,6 +522,26 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                       boxSizing: 'border-box',
                     }}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{
+                      position: 'absolute',
+                      right: '0.75rem',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      background: 'none',
+                      border: 'none',
+                      color: '#8E8E93',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: 0,
+                    }}
+                    title={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                  </button>
                 </div>
               </div>
 
@@ -481,18 +566,27 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                   boxShadow: '0 0 25px rgba(0, 210, 255, 0.4)',
                 }}
               >
-                {isLoading ? 'VERIFYING...' : isSignUp ? 'CREATE ACCOUNT & ISSUE JWT' : 'INITIALIZE SESSION ➔'}
+                {isLoading ? (
+                  <>
+                    <div style={{ width: '13px', height: '13px', border: '2px solid #000', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                    <span>AUTHENTICATING...</span>
+                  </>
+                ) : isSignUp ? (
+                  'CREATE ACCOUNT & ISSUE JWT'
+                ) : (
+                  'INITIALIZE SESSION ➔'
+                )}
               </button>
             </form>
 
             <div style={{ textAlign: 'center', marginTop: '1rem' }}>
               <button
                 onClick={() => { setIsSignUp(!isSignUp); setError(null); }}
-                style={{ background: 'none', border: 'none', color: '#8E8E93', fontFamily: 'var(--font-mono)', fontSize: '0.72rem', cursor: 'pointer' }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = '#00D2FF')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = '#8E8E93')}
+                style={{ background: 'none', border: 'none', color: '#00D2FF', fontFamily: 'var(--font-mono)', fontSize: '0.74rem', cursor: 'pointer', fontWeight: 700 }}
+                onMouseEnter={(e) => (e.currentTarget.style.textDecoration = 'underline')}
+                onMouseLeave={(e) => (e.currentTarget.style.textDecoration = 'none')}
               >
-                {isSignUp ? '[ ALREADY REGISTERED? LOG IN HERE ]' : '[ NEW OPERATOR? REGISTER HERE ]'}
+                {isSignUp ? '← Already registered? Log in with your credentials' : 'New operator? Click here to register your account →'}
               </button>
             </div>
           </div>

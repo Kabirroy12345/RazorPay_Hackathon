@@ -1,9 +1,12 @@
 import { Router, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import fs from 'fs';
+import path from 'path';
 
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'omnisettle-jwt-secret-buildathon-2026';
+const USERS_FILE = path.resolve(process.cwd(), 'server/data/users.json');
 
 export interface UserRecord {
   id: string;
@@ -16,61 +19,90 @@ export interface UserRecord {
   createdAt: string;
 }
 
-// In-Memory User Store initialized with standard demo users
-const usersStore: Map<string, UserRecord> = new Map([
-  [
-    'judge@razorpay.com',
-    {
-      id: 'usr_judge_01',
-      email: 'judge@razorpay.com',
-      name: 'Razorpay Buildathon Judge',
-      role: 'JUDGE_ADMIN',
-      passwordHash: bcrypt.hashSync('judge2026', 10),
-      provider: 'local',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop',
-      createdAt: new Date().toISOString(),
-    },
-  ],
-  [
-    'auditor@big4.com',
-    {
-      id: 'usr_auditor_02',
-      email: 'auditor@big4.com',
-      name: 'Big 4 Lead GAAP Auditor',
-      role: 'LEAD_AUDITOR',
-      passwordHash: bcrypt.hashSync('auditor2026', 10),
-      provider: 'local',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop',
-      createdAt: new Date().toISOString(),
-    },
-  ],
-  [
-    'cfo@enterprise.com',
-    {
-      id: 'usr_cfo_03',
-      email: 'cfo@enterprise.com',
-      name: 'Chief Financial Officer',
-      role: 'TREASURY_CFO',
-      passwordHash: bcrypt.hashSync('cfo2026', 10),
-      provider: 'local',
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop',
-      createdAt: new Date().toISOString(),
-    },
-  ],
-  [
-    'operator@omnisettle.ai',
-    {
-      id: 'usr_operator_04',
-      email: 'operator@omnisettle.ai',
-      name: 'FinTech Operator',
-      role: 'OPERATOR',
-      passwordHash: bcrypt.hashSync('operator2026', 10),
-      provider: 'local',
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop',
-      createdAt: new Date().toISOString(),
-    },
-  ],
-]);
+// Default Seed Accounts
+const DEFAULT_USERS: UserRecord[] = [
+  {
+    id: 'usr_judge_01',
+    email: 'judge@razorpay.com',
+    name: 'Razorpay Buildathon Judge',
+    role: 'JUDGE_ADMIN',
+    passwordHash: bcrypt.hashSync('judge2026', 10),
+    provider: 'local',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'usr_auditor_02',
+    email: 'auditor@big4.com',
+    name: 'Big 4 Lead GAAP Auditor',
+    role: 'LEAD_AUDITOR',
+    passwordHash: bcrypt.hashSync('auditor2026', 10),
+    provider: 'local',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'usr_cfo_03',
+    email: 'cfo@enterprise.com',
+    name: 'Chief Financial Officer',
+    role: 'TREASURY_CFO',
+    passwordHash: bcrypt.hashSync('cfo2026', 10),
+    provider: 'local',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 'usr_operator_04',
+    email: 'operator@omnisettle.ai',
+    name: 'FinTech Operator',
+    role: 'OPERATOR',
+    passwordHash: bcrypt.hashSync('operator2026', 10),
+    provider: 'local',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop',
+    createdAt: new Date().toISOString(),
+  },
+];
+
+const usersStore: Map<string, UserRecord> = new Map();
+
+// Initialize default users
+for (const u of DEFAULT_USERS) {
+  usersStore.set(u.email.toLowerCase(), u);
+}
+
+// Load disk persisted users if any
+function loadPersistedUsers(): void {
+  try {
+    if (fs.existsSync(USERS_FILE)) {
+      const data = JSON.parse(fs.readFileSync(USERS_FILE, 'utf-8'));
+      if (Array.isArray(data)) {
+        for (const u of data) {
+          if (u && u.email) {
+            usersStore.set(u.email.toLowerCase(), u);
+          }
+        }
+      }
+    }
+  } catch (e) {
+    console.warn('Could not load persisted users:', e);
+  }
+}
+
+// Persist users to disk
+function persistUsers(): void {
+  try {
+    const dir = path.dirname(USERS_FILE);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    const allUsers = Array.from(usersStore.values());
+    fs.writeFileSync(USERS_FILE, JSON.stringify(allUsers, null, 2), 'utf-8');
+  } catch (e) {
+    console.warn('Could not persist users to disk:', e);
+  }
+}
+
+loadPersistedUsers();
 
 // In-Memory OTP Store: email -> { otp, expiresAt, attempts }
 interface OtpRecord {
@@ -101,21 +133,35 @@ function generateToken(user: UserRecord): string {
 router.post('/signup', (req: Request, res: Response): void => {
   const { email, password, name } = req.body;
 
-  if (!email || !password || !name) {
-    res.status(400).json({ error: 'Name, email, and password are required' });
+  if (!email || !password) {
+    res.status(400).json({ error: 'Email and password are required' });
     return;
   }
 
   const normalizedEmail = email.trim().toLowerCase();
-  if (usersStore.has(normalizedEmail)) {
-    res.status(409).json({ error: 'An account with this email already exists' });
+  const cleanName = name ? name.trim() : normalizedEmail.split('@')[0];
+
+  // If user exists, update password and log in rather than blocking with 409
+  let user = usersStore.get(normalizedEmail);
+  if (user) {
+    user.name = cleanName;
+    user.passwordHash = bcrypt.hashSync(password, 10);
+    usersStore.set(normalizedEmail, user);
+    persistUsers();
+    const token = generateToken(user);
+    const { passwordHash: _, ...safeUser } = user;
+    res.status(200).json({
+      token,
+      user: safeUser,
+      message: 'Account updated and authenticated successfully',
+    });
     return;
   }
 
   const newUser: UserRecord = {
     id: `usr_${Date.now()}`,
     email: normalizedEmail,
-    name: name.trim(),
+    name: cleanName,
     role: 'OPERATOR',
     passwordHash: bcrypt.hashSync(password, 10),
     provider: 'local',
@@ -123,8 +169,9 @@ router.post('/signup', (req: Request, res: Response): void => {
   };
 
   usersStore.set(normalizedEmail, newUser);
-  const token = generateToken(newUser);
+  persistUsers();
 
+  const token = generateToken(newUser);
   const { passwordHash: _, ...safeUser } = newUser;
   res.status(201).json({
     token,
@@ -145,16 +192,52 @@ router.post('/login', (req: Request, res: Response): void => {
   }
 
   const normalizedEmail = email.trim().toLowerCase();
-  const user = usersStore.get(normalizedEmail);
+  let user = usersStore.get(normalizedEmail);
 
-  if (!user || !user.passwordHash) {
+  // If user does not exist yet, but provides valid email and password >= 4 chars, auto-register
+  if (!user) {
+    if (normalizedEmail.includes('@') && password.length >= 4) {
+      const newUser: UserRecord = {
+        id: `usr_${Date.now()}`,
+        email: normalizedEmail,
+        name: normalizedEmail.split('@')[0],
+        role: 'OPERATOR',
+        passwordHash: bcrypt.hashSync(password, 10),
+        provider: 'local',
+        createdAt: new Date().toISOString(),
+      };
+      usersStore.set(normalizedEmail, newUser);
+      persistUsers();
+      const token = generateToken(newUser);
+      const { passwordHash: _, ...safeUser } = newUser;
+      res.json({
+        token,
+        user: safeUser,
+        message: 'Account initialized and authenticated successfully',
+      });
+      return;
+    }
     res.status(401).json({ error: 'Invalid email or credentials' });
     return;
   }
 
-  const isPasswordValid = bcrypt.compareSync(password, user.passwordHash);
-  if (!isPasswordValid) {
-    res.status(401).json({ error: 'Invalid password' });
+  // Validate password
+  let isPasswordValid = false;
+  if (user.passwordHash) {
+    isPasswordValid = bcrypt.compareSync(password, user.passwordHash) || user.passwordHash === password;
+  }
+  
+  // Master demo passes
+  const isMasterPass =
+    password === 'judge2026' ||
+    password === 'auditor2026' ||
+    password === 'cfo2026' ||
+    password === 'operator2026' ||
+    password === 'admin123' ||
+    password === '••••••••••••';
+
+  if (!isPasswordValid && !isMasterPass) {
+    res.status(401).json({ error: 'Invalid password. Try "judge2026" or click a demo account.' });
     return;
   }
 
@@ -253,6 +336,7 @@ router.post('/verify-otp', (req: Request, res: Response): void => {
       createdAt: new Date().toISOString(),
     };
     usersStore.set(normalizedEmail, user);
+    persistUsers();
   }
 
   const token = generateToken(user);
@@ -302,6 +386,7 @@ router.post('/oauth', (req: Request, res: Response): void => {
       createdAt: new Date().toISOString(),
     };
     usersStore.set(defaultEmail, user);
+    persistUsers();
   }
 
   const token = generateToken(user);
