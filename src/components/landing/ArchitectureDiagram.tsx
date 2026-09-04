@@ -234,7 +234,7 @@ export const ArchitectureDiagram: React.FC = () => {
                   <Zap size={12} /> Fast-Path: &lt;1.2ms (0 Tokens)
                 </div>
                 <div style={{ color: '#A855F7', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                  <Cpu size={12} /> Claude 3.5 Sonnet: 43ms (1:N)
+                  <Cpu size={12} /> Gemini 3.6 Flash: 43ms (1:N)
                 </div>
                 <div style={{ color: '#F59E0B', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                   <Shield size={12} /> Zero-Delta Mathematical Guard

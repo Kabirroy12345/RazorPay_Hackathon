@@ -109,6 +109,23 @@ export const BundleMathLabView: React.FC = () => {
 
   const handleRunProver = () => {
     setIsProving(true);
+    setTimeout(() => {
+      const candidates = getCandidateInvoices();
+      const result = solveBranchAndBoundSubsetSum({
+        targetNetPayout: bankTarget,
+        candidateInvoices: candidates,
+        feeRatePct: activeFeeRate,
+        gstEnabled: activeGstEnabled,
+        refundDeduction: activeRefund,
+        tolerance: 0.05,
+      });
+      setTelemetry(result);
+      setIsProving(false);
+    }, 250);
+  };
+
+  // Run on mount and parameter change so telemetry is always populated
+  React.useEffect(() => {
     const candidates = getCandidateInvoices();
     const result = solveBranchAndBoundSubsetSum({
       targetNetPayout: bankTarget,
@@ -119,8 +136,7 @@ export const BundleMathLabView: React.FC = () => {
       tolerance: 0.05,
     });
     setTelemetry(result);
-    setIsProving(false);
-  };
+  }, [activeGross, activeCount, activeFeeRate, activeGstEnabled, activeRefund, activeTab, selectedPreset]);
 
   const handleCopyProof = () => {
     const proofText = telemetry

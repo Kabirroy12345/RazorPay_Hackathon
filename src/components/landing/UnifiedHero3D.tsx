@@ -442,7 +442,7 @@ export const UnifiedHero3D: React.FC = () => {
               <strong style={{ letterSpacing: '0.05em' }}>DELTA: 0.0000 INR</strong>
             </div>
             <span style={{ color: '#00D2FF', fontSize: '0.68rem' }}>
-              LATENCY: 43ms (Claude 3.5)
+              LATENCY: 43ms (Gemini 3.6)
             </span>
           </div>
         </motion.div>

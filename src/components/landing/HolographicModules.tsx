@@ -91,7 +91,7 @@ export const HolographicModules: React.FC<HolographicModulesProps> = ({ onSelect
         </div>
       ),
       metricLabel: 'AI SOLVE LATENCY',
-      metricValue: '43ms (Claude 3.5)',
+      metricValue: '43ms (Gemini 3.6)',
     },
     {
       id: 'exceptions' as AppView,

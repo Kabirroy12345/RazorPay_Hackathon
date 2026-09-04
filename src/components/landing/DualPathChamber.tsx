@@ -18,7 +18,7 @@ export const DualPathChamber: React.FC = () => {
         setIsSimulating(false);
       }, 700);
     } else {
-      setSimulationLog('Injecting blended settlement SET-88412 (₹48,272.80)... Discovered 8 candidate invoices... Routing to Claude 3.5 Sonnet...');
+      setSimulationLog('Injecting blended settlement SET-88412 (₹48,272.80)... Discovered 8 candidate invoices... Routing to Google Gemini 3.6 Flash...');
       setTimeout(() => {
         setSimulationLog('✓ BUNDLE SOLVED in 43ms: Identified exact 8-invoice subset [INV-BUN-01..08]. Recalculated 2% MDR & GST. Delta: 0.0000 INR.');
         setIsSimulating(false);
@@ -92,7 +92,7 @@ export const DualPathChamber: React.FC = () => {
               gap: '0.4rem',
             }}
           >
-            <Cpu size={14} /> TEST 1:N BUNDLE (CLAUDE 3.5)
+            <Cpu size={14} /> TEST 1:N BUNDLE (GEMINI 3.6)
           </button>
         </div>
       </div>
@@ -169,7 +169,7 @@ export const DualPathChamber: React.FC = () => {
           </div>
         </div>
 
-        {/* Track B: Claude 3.5 Sonnet Chamber */}
+        {/* Track B: Gemini 3.6 Flash Chamber */}
         <div
           style={{
             background: activeMode === 'AGENTIC_BUNDLE' ? 'rgba(168, 85, 247, 0.08)' : '#0A0C16',
@@ -188,7 +188,7 @@ export const DualPathChamber: React.FC = () => {
               </div>
               <div>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#A855F7', fontWeight: 800 }}>
-                  PATH B // CLAUDE 3.5 REASONING
+                  PATH B // GEMINI 3.6 FLASH REASONING
                 </div>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: '#8E8E93' }}>
                   ADVERSARIAL 1:N BUNDLES

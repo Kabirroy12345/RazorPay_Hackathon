@@ -152,7 +152,7 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
               }}
             >
               Autonomous 3-way financial reconciliation across bank statements, payment gateways, and ERP records. 
-              Sub-millisecond deterministic checks for clean 1:1 records. Agentic Claude 3.5 reasoning with zero-delta mathematical proof for complex bundles.
+              Sub-millisecond deterministic checks for clean 1:1 records. Agentic Google Gemini 3.6 Flash reasoning with zero-delta mathematical proof for complex bundles.
             </p>
 
             {/* Redesigned Realistic Hero Action Buttons */}
@@ -434,7 +434,7 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
             DUAL-PATH EXECUTION ENGINE
           </h2>
           <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '680px', margin: '0 auto', lineHeight: 1.6 }}>
-            Deterministic sub-millisecond precision for the majority. Claude 3.5 Sonnet agentic intelligence for difficult non-linear edge cases.
+            Deterministic sub-millisecond precision for the majority. Google Gemini 3.6 Flash agentic intelligence for difficult non-linear edge cases.
           </p>
         </div>
 

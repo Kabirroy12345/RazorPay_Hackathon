@@ -369,7 +369,7 @@ export const GAAPAuditView: React.FC<GAAPAuditViewProps> = ({ output, activeData
                 MERKLE ROOT HASH
               </span>
               <div className="font-mono" style={{ fontSize: '0.82rem', color: '#FFFFFF', marginTop: '0.3rem', wordBreak: 'break-all' }}>
-                0x{auditHash}8f9b2c4e1a6d3e8f
+                0x{auditHash}
               </div>
             </div>
 

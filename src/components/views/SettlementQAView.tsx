@@ -17,6 +17,129 @@ interface SettlementQAViewProps {
   activeDataset: FinancialDataset;
 }
 
+const renderInlineMarkdown = (text: string) => {
+  const parts = text.split(/(`[^`]+`)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith('`') && part.endsWith('`')) {
+      return (
+        <code
+          key={i}
+          style={{
+            background: 'rgba(5, 7, 15, 0.9)',
+            border: '1px solid rgba(229, 184, 105, 0.25)',
+            padding: '0.12rem 0.35rem',
+            borderRadius: '4px',
+            color: '#F5D061',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.85em',
+          }}
+        >
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+    const boldParts = part.split(/(\*\*[^*]+\*\*)/g);
+    return boldParts.map((bPart, j) => {
+      if (bPart.startsWith('**') && bPart.endsWith('**')) {
+        return (
+          <strong key={j} style={{ color: '#FFFFFF', fontWeight: 800 }}>
+            {bPart.slice(2, -2)}
+          </strong>
+        );
+      }
+      const italicParts = bPart.split(/(\*[^*]+\*)/g);
+      return italicParts.map((iPart, k) => {
+        if (iPart.startsWith('*') && iPart.endsWith('*')) {
+          return (
+            <em key={k} style={{ color: '#CBD5E1', fontStyle: 'italic' }}>
+              {iPart.slice(1, -1)}
+            </em>
+          );
+        }
+        return iPart;
+      });
+    });
+  });
+};
+
+const FormattedChatMessage: React.FC<{ text: string }> = ({ text }) => {
+  const lines = text.split('\n');
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+      {lines.map((line, idx) => {
+        const trimmed = line.trim();
+        if (trimmed.startsWith('### ')) {
+          return (
+            <h4
+              key={idx}
+              style={{
+                fontSize: '0.98rem',
+                fontWeight: 800,
+                color: '#F5D061',
+                marginTop: idx > 0 ? '0.6rem' : '0',
+                marginBottom: '0.2rem',
+                fontFamily: 'var(--font-mono)',
+                letterSpacing: '0.02em',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+              }}
+            >
+              <Sparkles size={13} color="#F5D061" />
+              {trimmed.slice(4)}
+            </h4>
+          );
+        }
+        if (trimmed.startsWith('> ')) {
+          return (
+            <blockquote
+              key={idx}
+              style={{
+                borderLeft: '3px solid #0C8CE9',
+                margin: '0.25rem 0',
+                color: '#CBD5E1',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.82rem',
+                background: 'rgba(12, 140, 233, 0.06)',
+                padding: '0.4rem 0.65rem',
+                borderRadius: '0 4px 4px 0',
+              }}
+            >
+              {renderInlineMarkdown(trimmed.slice(2))}
+            </blockquote>
+          );
+        }
+        if (trimmed.startsWith('• ') || trimmed.startsWith('- ') || /^\d+\.\s/.test(trimmed)) {
+          const bulletContent = trimmed.replace(/^(•\s*|-\s*|\d+\.\s*)/, '');
+          return (
+            <div
+              key={idx}
+              style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '0.45rem',
+                marginLeft: '0.25rem',
+                lineHeight: '1.5',
+              }}
+            >
+              <span style={{ color: '#F5D061', fontWeight: 800, fontSize: '0.85rem' }}>▸</span>
+              <span>{renderInlineMarkdown(bulletContent)}</span>
+            </div>
+          );
+        }
+        if (trimmed === '') {
+          return <div key={idx} style={{ height: '0.2rem' }} />;
+        }
+        return (
+          <p key={idx} style={{ margin: 0, lineHeight: '1.6' }}>
+            {renderInlineMarkdown(line)}
+          </p>
+        );
+      })}
+    </div>
+  );
+};
+
 export const SettlementQAView: React.FC<SettlementQAViewProps> = ({ output, activeDataset }) => {
   const { metrics, allMatches, exceptionMatches } = output;
   const [query, setQuery] = useState('');
@@ -241,7 +364,7 @@ Select a preset question below or ask me any custom query regarding settlement b
           text: data.responseText,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           category: 'GENERAL',
-          ledgerCitations: [data.modelProvider || 'Gemini 1.5 Flash'],
+          ledgerCitations: [data.modelProvider || 'Google Gemini 3.6 Flash'],
         };
         setMessages(prev => [...prev, agentMsg]);
         setIsThinking(false);
@@ -463,7 +586,7 @@ Select a preset question below or ask me any custom query regarding settlement b
                   boxShadow: '0 4px 18px rgba(0, 0, 0, 0.35)',
                 }}
               >
-                {msg.text}
+                <FormattedChatMessage text={msg.text} />
               </div>
 
               {msg.ledgerCitations && msg.ledgerCitations.length > 0 && (

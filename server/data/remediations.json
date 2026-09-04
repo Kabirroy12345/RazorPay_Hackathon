@@ -1,5 +1,17 @@
 [
   {
+    "matchId": "EXC-TEST-AUDIT-999",
+    "exceptionType": "EXCEPTION_FEE_MISMATCH",
+    "discrepancyAmount": 142.5,
+    "suggestedAction": "Submit Razorpay Fee Dispute",
+    "targetCategory": "GATEWAY_OPS",
+    "targetEndpoint": "http://localhost:3001/api/remediate/webhook-listener",
+    "hmacSignature": "sha256=19b47afcee889ade36f54e29...",
+    "receiptId": "RZP-RECEIPT-1788550255339-T89AV",
+    "status": "DELIVERED_200_OK",
+    "deliveredAt": "2026-09-04T19:30:55.335Z"
+  },
+  {
     "matchId": "EXC-FEE-TEST-001",
     "exceptionType": "EXCEPTION_FEE_MISMATCH",
     "discrepancyAmount": 320,

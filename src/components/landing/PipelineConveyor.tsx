@@ -41,8 +41,8 @@ export const PipelineConveyor: React.FC = () => {
       tagline: 'Deterministic vs Agentic AI',
       metric: '92% FAST-PATH / 8% AI',
       color: '#10B981',
-      description: 'Clean 1:1 records execute on deterministic rule trees in <1.2ms with zero LLM token cost. Complex 1-to-N bundles route to Claude 3.5 Sonnet.',
-      payload: '{\n  "routingDecision": "AGENTIC_AI_BUNDLE",\n  "reasoningEngine": "Claude 3.5 Sonnet",\n  "candidatePoolSize": 8,\n  "latency": "43ms",\n  "aiMatchConfidence": 0.9998\n}',
+      description: 'Clean 1:1 records execute on deterministic rule trees in <1.2ms with zero LLM token cost. Complex 1-to-N bundles route to Google Gemini 3.6 Flash.',
+      payload: '{\n  "routingDecision": "AGENTIC_AI_BUNDLE",\n  "reasoningEngine": "Google Gemini 3.6 Flash",\n  "candidatePoolSize": 8,\n  "latency": "43ms",\n  "aiMatchConfidence": 0.9998\n}',
     },
     {
       id: 3,
