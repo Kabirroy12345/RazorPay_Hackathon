@@ -210,20 +210,57 @@ Select a preset question below or ask me any custom query regarding settlement b
     setQuery('');
     setIsThinking(true);
 
-    setTimeout(() => {
-      const { responseText, citations, category } = answerQuery(messageText);
-      messageCounter.current += 1;
-      const agentMsg: Message = {
-        id: `agt-${messageCounter.current}`,
-        sender: 'agent',
-        text: responseText,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        category,
-        ledgerCitations: citations,
-      };
-      setMessages(prev => [...prev, agentMsg]);
-      setIsThinking(false);
-    }, 450);
+    fetch('http://localhost:3001/api/resolve/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query: messageText,
+        context: {
+          datasetName: activeDataset.name,
+          totalRecords: metrics.totalRecords,
+          reconciliationRate: metrics.reconciliationRate,
+          totalReconciledINR: metrics.totalReconciledINR,
+          totalGrossProcessedINR: metrics.totalGrossProcessedINR,
+          totalTaxDeductedINR: metrics.totalTaxDeductedINR,
+          totalGatewayFeesINR: metrics.totalGatewayFeesINR,
+          exceptionCount: metrics.exceptionCount,
+          humanReviewCount: metrics.humanReviewCount,
+        },
+      }),
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('API_FALLBACK');
+        return res.json();
+      })
+      .then(data => {
+        if (!data.responseText) throw new Error('EMPTY_RESPONSE');
+        messageCounter.current += 1;
+        const agentMsg: Message = {
+          id: `agt-${messageCounter.current}`,
+          sender: 'agent',
+          text: data.responseText,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          category: 'GENERAL',
+          ledgerCitations: [data.modelProvider || 'Gemini 1.5 Flash'],
+        };
+        setMessages(prev => [...prev, agentMsg]);
+        setIsThinking(false);
+      })
+      .catch(() => {
+        // Fallback to dynamic local ledger search
+        const { responseText, citations, category } = answerQuery(messageText);
+        messageCounter.current += 1;
+        const agentMsg: Message = {
+          id: `agt-${messageCounter.current}`,
+          sender: 'agent',
+          text: responseText,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          category,
+          ledgerCitations: citations,
+        };
+        setMessages(prev => [...prev, agentMsg]);
+        setIsThinking(false);
+      });
   };
 
   const handleCopyMessage = (msg: Message) => {

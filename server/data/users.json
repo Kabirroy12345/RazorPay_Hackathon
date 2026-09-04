@@ -1,0 +1,51 @@
+[
+  {
+    "id": "usr_judge_01",
+    "email": "judge@razorpay.com",
+    "name": "Razorpay Buildathon Judge",
+    "role": "JUDGE_ADMIN",
+    "passwordHash": "$2b$10$sKDN7M177tG/RSaEfVHrjeJB7vzgIC0zlXN.xfDERUopSBCpA3TCi",
+    "provider": "local",
+    "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop",
+    "createdAt": "2026-09-04T11:07:34.733Z"
+  },
+  {
+    "id": "usr_auditor_02",
+    "email": "auditor@big4.com",
+    "name": "Big 4 Lead GAAP Auditor",
+    "role": "LEAD_AUDITOR",
+    "passwordHash": "$2b$10$jc5r7fCsThZ7W/YjJm/JuO9kvjhHUu69pg1FNY0NHl./pE9HSKHb.",
+    "provider": "local",
+    "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
+    "createdAt": "2026-09-04T11:07:34.796Z"
+  },
+  {
+    "id": "usr_cfo_03",
+    "email": "cfo@enterprise.com",
+    "name": "Chief Financial Officer",
+    "role": "TREASURY_CFO",
+    "passwordHash": "$2b$10$DOcK1Rh3uf/4U.s7FGX6Uev9tytRHIwN8VmLDM/lo752xfPYvP9Hu",
+    "provider": "local",
+    "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    "createdAt": "2026-09-04T11:07:34.861Z"
+  },
+  {
+    "id": "usr_operator_04",
+    "email": "operator@omnisettle.ai",
+    "name": "FinTech Operator",
+    "role": "OPERATOR",
+    "passwordHash": "$2b$10$aiRuSaVvBOv/II530UOg..dvxVl6PpboYSE7poSFF.rDDGDR5djDS",
+    "provider": "local",
+    "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
+    "createdAt": "2026-09-04T11:07:34.924Z"
+  },
+  {
+    "id": "usr_1788520363973",
+    "email": "rakeshkabir@gmail.com",
+    "name": "rakeshkabir",
+    "role": "OPERATOR",
+    "passwordHash": "$2b$10$0GpmwEVsrzZB1DdtCH6RXOx1DXp35NUmo6DGZ6uCH6EMjnqPDFNkO",
+    "provider": "local",
+    "createdAt": "2026-09-04T11:12:44.075Z"
+  }
+]
