@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TrendingUp, Sliders, AlertTriangle, ShieldCheck, Crown } from 'lucide-react';
+import { TrendingUp, Sliders, AlertTriangle, ShieldCheck } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import type { FinancialDataset } from '../../types/finance';
 
@@ -45,7 +45,7 @@ export const CashForecasterView: React.FC<CashForecasterViewProps> = ({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      {/* Royal Title */}
+      {/* Header */}
       <div
         className="terminal-panel"
         style={{
@@ -81,15 +81,15 @@ export const CashForecasterView: React.FC<CashForecasterViewProps> = ({
               <span
                 className="badge"
                 style={{
-                  background: 'rgba(245, 208, 97, 0.1)',
-                  border: '1px solid rgba(245, 208, 97, 0.35)',
-                  color: '#F5D061',
+                  background: 'rgba(12, 140, 233, 0.1)',
+                  border: '1px solid rgba(12, 140, 233, 0.35)',
+                  color: '#38BDF8',
                   fontSize: '0.7rem',
                   fontWeight: 800,
                 }}
               >
-                <Crown size={11} style={{ marginRight: '0.25rem' }} />
-                ROYAL TREASURY
+                <ShieldCheck size={11} style={{ marginRight: '0.25rem' }} />
+                TREASURY INTELLIGENCE
               </span>
             </div>
             <p style={{ color: '#94A3B8', fontSize: '0.82rem', marginTop: '0.2rem' }}>

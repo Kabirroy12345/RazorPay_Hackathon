@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Database, Upload, FileSpreadsheet, ArrowRight, Crown, ShieldCheck } from 'lucide-react';
+import { Database, Upload, FileSpreadsheet, ArrowRight, ShieldCheck } from 'lucide-react';
 import { DATASET_LIST } from '../../data/datasets';
 import { parseCustomCSVText } from '../../utils/csvParser';
 import type { FinancialDataset } from '../../types/finance';
@@ -22,14 +22,14 @@ export const DataHubView: React.FC<DataHubViewProps> = ({ activeDataset, onSelec
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      {/* Royal Header */}
+      {/* Header */}
       <div
         className="terminal-panel"
         style={{
           padding: '1.35rem 1.6rem',
           background: 'linear-gradient(135deg, rgba(19, 26, 48, 0.75) 0%, rgba(8, 11, 22, 0.85) 100%)',
-          border: '1px solid rgba(245, 208, 97, 0.25)',
-          borderLeft: '4px solid #F5D061',
+          border: '1px solid rgba(12, 140, 233, 0.25)',
+          borderLeft: '4px solid #0C8CE9',
           boxShadow: '0 8px 30px rgba(0, 0, 0, 0.45)',
         }}
       >
@@ -39,13 +39,13 @@ export const DataHubView: React.FC<DataHubViewProps> = ({ activeDataset, onSelec
               width: '36px',
               height: '36px',
               borderRadius: '8px',
-              background: 'rgba(245, 208, 97, 0.12)',
-              border: '1px solid rgba(245, 208, 97, 0.35)',
+              background: 'rgba(12, 140, 233, 0.12)',
+              border: '1px solid rgba(12, 140, 233, 0.35)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#F5D061',
-              boxShadow: '0 0 12px rgba(245, 208, 97, 0.25)',
+              color: '#38BDF8',
+              boxShadow: '0 0 12px rgba(12, 140, 233, 0.25)',
             }}
           >
             <Database size={20} />
@@ -53,20 +53,20 @@ export const DataHubView: React.FC<DataHubViewProps> = ({ activeDataset, onSelec
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
               <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#FFFFFF', fontFamily: 'var(--font-mono)' }}>
-                FINANCIAL_DATA_HUB & VAULT_MANAGER
+                FINANCIAL_DATA_HUB & DATASET_REPOSITORY
               </h2>
               <span
                 className="badge"
                 style={{
-                  background: 'rgba(245, 208, 97, 0.1)',
-                  border: '1px solid rgba(245, 208, 97, 0.35)',
-                  color: '#F5D061',
+                  background: 'rgba(12, 140, 233, 0.1)',
+                  border: '1px solid rgba(12, 140, 233, 0.35)',
+                  color: '#38BDF8',
                   fontSize: '0.7rem',
                   fontWeight: 800,
                 }}
               >
-                <Crown size={11} style={{ marginRight: '0.25rem' }} />
-                ROYAL VAULT
+                <Database size={11} style={{ marginRight: '0.25rem' }} />
+                DATASET REPOSITORY
               </span>
             </div>
             <p style={{ color: '#94A3B8', fontSize: '0.82rem', marginTop: '0.2rem' }}>
@@ -80,7 +80,7 @@ export const DataHubView: React.FC<DataHubViewProps> = ({ activeDataset, onSelec
       <div>
         <h3 style={{ fontSize: '1.05rem', fontWeight: 800, marginBottom: '1rem', color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <span>Enterprise Synthetic Benchmark Suites</span>
-          <span style={{ fontSize: '0.7rem', color: '#E5B869', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>(50+ VECTORS GROUND TRUTH)</span>
+          <span style={{ fontSize: '0.7rem', color: '#38BDF8', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>(50+ VECTORS GROUND TRUTH)</span>
         </h3>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.15rem' }}>
@@ -93,9 +93,9 @@ export const DataHubView: React.FC<DataHubViewProps> = ({ activeDataset, onSelec
                 className="terminal-panel"
                 style={{
                   padding: '1.35rem',
-                  border: isActive ? '2px solid #F5D061' : '1px solid rgba(255, 255, 255, 0.08)',
+                  border: isActive ? '2px solid #0C8CE9' : '1px solid rgba(255, 255, 255, 0.08)',
                   background: isActive
-                    ? 'linear-gradient(135deg, rgba(245, 208, 97, 0.1) 0%, rgba(12, 16, 30, 0.9) 100%)'
+                    ? 'linear-gradient(135deg, rgba(12, 140, 233, 0.12) 0%, rgba(12, 16, 30, 0.9) 100%)'
                     : 'linear-gradient(135deg, rgba(12, 16, 30, 0.8) 0%, rgba(5, 7, 15, 0.9) 100%)',
                   cursor: 'pointer',
                   display: 'flex',
@@ -103,7 +103,7 @@ export const DataHubView: React.FC<DataHubViewProps> = ({ activeDataset, onSelec
                   justifyContent: 'space-between',
                   gap: '1rem',
                   borderRadius: '8px',
-                  boxShadow: isActive ? '0 0 25px rgba(245, 208, 97, 0.25), 0 8px 25px rgba(0,0,0,0.5)' : '0 4px 15px rgba(0,0,0,0.3)',
+                  boxShadow: isActive ? '0 0 25px rgba(12, 140, 233, 0.25), 0 8px 25px rgba(0,0,0,0.5)' : '0 4px 15px rgba(0,0,0,0.3)',
                   transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
                 }}
               >
@@ -112,9 +112,9 @@ export const DataHubView: React.FC<DataHubViewProps> = ({ activeDataset, onSelec
                     <span
                       className="badge"
                       style={{
-                        background: isActive ? 'rgba(245, 208, 97, 0.15)' : 'rgba(255, 255, 255, 0.05)',
-                        border: isActive ? '1px solid rgba(245, 208, 97, 0.4)' : '1px solid rgba(255, 255, 255, 0.1)',
-                        color: isActive ? '#F5D061' : '#94A3B8',
+                        background: isActive ? 'rgba(12, 140, 233, 0.18)' : 'rgba(255, 255, 255, 0.05)',
+                        border: isActive ? '1px solid rgba(12, 140, 233, 0.45)' : '1px solid rgba(255, 255, 255, 0.1)',
+                        color: isActive ? '#38BDF8' : '#94A3B8',
                         fontWeight: 800,
                         fontSize: '0.7rem',
                       }}
@@ -138,8 +138,8 @@ export const DataHubView: React.FC<DataHubViewProps> = ({ activeDataset, onSelec
 
                 <button
                   style={{
-                    background: isActive ? 'linear-gradient(135deg, #FFE082 0%, #F5D061 100%)' : 'rgba(255,255,255,0.06)',
-                    color: isActive ? '#050711' : '#F8FAFC',
+                    background: isActive ? 'linear-gradient(135deg, #0C8CE9 0%, #0284C7 100%)' : 'rgba(255,255,255,0.06)',
+                    color: '#FFFFFF',
                     border: 'none',
                     padding: '0.6rem 0.95rem',
                     borderRadius: '6px',
@@ -151,11 +151,11 @@ export const DataHubView: React.FC<DataHubViewProps> = ({ activeDataset, onSelec
                     justifyContent: 'center',
                     gap: '0.45rem',
                     fontFamily: 'var(--font-mono)',
-                    boxShadow: isActive ? '0 0 12px rgba(245, 208, 97, 0.35)' : 'none',
+                    boxShadow: isActive ? '0 0 12px rgba(12, 140, 233, 0.35)' : 'none',
                     transition: 'all 0.15s ease',
                   }}
                 >
-                  {isActive ? 'ACTIVE VAULT' : 'MOUNT DATASET'} <ArrowRight size={14} />
+                  {isActive ? 'ACTIVE DATASET' : 'LOAD DATASET'} <ArrowRight size={14} />
                 </button>
               </div>
             );

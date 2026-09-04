@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldAlert, CheckCircle2, FileText, Wrench, Crown, Copy, Check } from 'lucide-react';
+import { ShieldAlert, CheckCircle2, FileText, Wrench, Copy, Check } from 'lucide-react';
 import type { FullReconciliationOutput } from '../../engine/reconciler';
 import type { MatchResult } from '../../types/finance';
 
@@ -43,7 +43,7 @@ export const ExceptionResolutionView: React.FC<ExceptionResolutionViewProps> = (
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      {/* Royal Header */}
+      {/* Header */}
       <div
         className="terminal-panel"
         style={{
@@ -86,7 +86,7 @@ export const ExceptionResolutionView: React.FC<ExceptionResolutionViewProps> = (
                   fontSize: '0.7rem',
                 }}
               >
-                <Crown size={11} style={{ marginRight: '0.25rem' }} />
+                <ShieldAlert size={11} style={{ marginRight: '0.25rem' }} />
                 HONEST LIST (ZERO FORCE-FIT)
               </span>
             </div>
@@ -186,7 +186,7 @@ export const ExceptionResolutionView: React.FC<ExceptionResolutionViewProps> = (
         })}
       </div>
 
-      {/* Royal Webhook Payload Artifact Modal */}
+      {/* Webhook Payload Artifact Modal */}
       {artifactModalText && (
         <div
           style={{

@@ -68,7 +68,7 @@ body {
   gap: 1.5rem;
 }
 
-/* Base structural panel with Cascade Animation & Royal Glassmorphism */
+/* Base structural panel with Cascade Animation & Enterprise Glassmorphism */
 .terminal-panel {
   background: rgba(12, 16, 30, 0.78);
   backdrop-filter: blur(16px);
@@ -136,7 +136,7 @@ body {
   box-shadow: 0 0 10px rgba(244, 63, 94, 0.12);
 }
 
-/* Royal action buttons with hover/active animations */
+/* Enterprise action buttons with hover/active animations */
 .btn-terminal {
   background: rgba(15, 21, 38, 0.7);
   backdrop-filter: blur(8px);

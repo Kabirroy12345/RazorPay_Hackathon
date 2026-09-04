@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Bot, Send, Sparkles, RefreshCw, Crown, ShieldCheck } from 'lucide-react';
+import { Bot, Send, Sparkles, RefreshCw, ShieldCheck } from 'lucide-react';
 import type { FullReconciliationOutput } from '../../engine/reconciler';
 import type { FinancialDataset } from '../../types/finance';
 
@@ -27,7 +27,7 @@ export const SettlementQAView: React.FC<SettlementQAViewProps> = ({ output, acti
     {
       id: 'msg-init-1',
       sender: 'agent',
-      text: `Greetings, Chief Controller. I am OmniSettle's autonomous Settlement Q&A Agent.
+      text: `Welcome to OmniSettle AI. I am your autonomous Settlement & Reconciliation Assistant.
 I have completed 3-way ledger cross-verification for **${metrics.totalRecords} synthetic records** from the **${activeDataset.name}** batch.
 
 • **Reconciliation Match Rate:** ${metrics.reconciliationRate}% (${metrics.fastPathCount + metrics.agenticCount}/${metrics.totalRecords} matched)
@@ -212,7 +212,7 @@ OmniSettle features an autonomous **Tax-Line Matcher** that verifies every fee w
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', height: 'calc(100vh - 6rem)' }}>
-      {/* Royal Header Bar */}
+      {/* Header Bar */}
       <div
         className="terminal-panel"
         style={{
@@ -249,15 +249,15 @@ OmniSettle features an autonomous **Tax-Line Matcher** that verifies every fee w
                 <span
                   className="badge"
                   style={{
-                    background: 'rgba(245, 208, 97, 0.1)',
-                    border: '1px solid rgba(245, 208, 97, 0.35)',
-                    color: '#F5D061',
+                    background: 'rgba(12, 140, 233, 0.1)',
+                    border: '1px solid rgba(12, 140, 233, 0.35)',
+                    color: '#38BDF8',
                     fontSize: '0.68rem',
                     fontWeight: 800,
                   }}
                 >
-                  <Crown size={11} style={{ marginRight: '0.25rem' }} />
-                  AUTONOMOUS CONTROLLER
+                  <ShieldCheck size={11} style={{ marginRight: '0.25rem' }} />
+                  AUTONOMOUS AGENT
                 </span>
               </div>
               <p style={{ color: '#94A3B8', fontSize: '0.82rem', marginTop: '0.2rem' }}>

@@ -10,7 +10,7 @@ import {
   Bot,
   Lock,
   LogOut,
-  Crown,
+  ShieldCheck,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import type { AppView, FinancialDataset } from '../types/finance';
@@ -50,10 +50,10 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         width: '270px',
         minWidth: '220px',
         maxWidth: '420px',
-        background: 'linear-gradient(180deg, rgba(10, 14, 26, 0.94) 0%, rgba(5, 7, 15, 0.96) 100%)',
+        background: 'linear-gradient(180deg, rgba(10, 14, 26, 0.96) 0%, rgba(5, 7, 15, 0.98) 100%)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        borderRight: '1px solid rgba(229, 184, 105, 0.16)',
+        borderRight: '1px solid rgba(255, 255, 255, 0.08)',
         padding: '1.5rem 1rem',
         display: 'flex',
         flexDirection: 'column',
@@ -64,70 +64,68 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         overflowX: 'hidden',
         overflowY: 'auto',
         resize: 'horizontal',
-        boxShadow: '4px 0 25px rgba(0, 0, 0, 0.5), inset -1px 0 0 rgba(229, 184, 105, 0.08)',
+        boxShadow: '4px 0 25px rgba(0, 0, 0, 0.5)',
         zIndex: 100,
       }}
     >
       <div>
-        {/* Royal Brand Crest & Emblem Header */}
+        {/* Modern Enterprise Brand Header */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
             gap: '0.85rem',
             padding: '0 0.5rem 1.4rem 0.5rem',
-            borderBottom: '1px solid rgba(229, 184, 105, 0.14)',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
             marginBottom: '1.25rem',
           }}
         >
-          {/* Imperial Geometric Monogram Crest */}
+          {/* Razorpay-Inspired Modern Interlocking Geometric Ledger Crest */}
           <div
             style={{
               position: 'relative',
-              width: '42px',
-              height: '42px',
+              width: '40px',
+              height: '40px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            <svg width="42" height="42" viewBox="0 0 44 44" fill="none" style={{ filter: 'drop-shadow(0 0 10px rgba(245, 208, 97, 0.45))' }}>
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
               <defs>
-                <linearGradient id="royalGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#FFE082" />
-                  <stop offset="50%" stopColor="#F5D061" />
-                  <stop offset="100%" stopColor="#C4973B" />
-                </linearGradient>
-                <linearGradient id="royalBlueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <linearGradient id="fintechBlueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stopColor="#38BDF8" />
                   <stop offset="100%" stopColor="#0C8CE9" />
                 </linearGradient>
+                <linearGradient id="fintechGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#F5D061" />
+                  <stop offset="100%" stopColor="#D97706" />
+                </linearGradient>
               </defs>
 
-              {/* Royal Shield Perimeter */}
+              {/* Precision Interlocking Hexagon Frame */}
               <polygon
-                points="22,3 40,11 40,27 22,41 4,27 4,11"
-                stroke="url(#royalGoldGrad)"
-                strokeWidth="1.6"
-                fill="rgba(245, 208, 97, 0.06)"
+                points="20,3 35,11.5 35,28.5 20,37 5,28.5 5,11.5"
+                stroke="url(#fintechBlueGrad)"
+                strokeWidth="1.8"
+                fill="rgba(12, 140, 233, 0.06)"
               />
 
-              {/* Inner Gilded Geometric Core */}
-              <polygon points="22,10 32,20 22,30 12,20" fill="url(#royalBlueGrad)" opacity="0.85" />
-              <circle cx="22" cy="20" r="4" fill="#FFFFFF" style={{ filter: 'drop-shadow(0 0 6px #FFE082)' }} />
+              {/* Core Verification Node */}
+              <polygon points="20,11 28,16 28,24 20,29 12,24 12,16" stroke="url(#fintechGoldGrad)" strokeWidth="1.4" fill="rgba(245, 208, 97, 0.1)" />
+              <circle cx="20" cy="20" r="3.5" fill="#0C8CE9" />
             </svg>
           </div>
 
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
               <span
                 style={{
                   fontSize: '1.18rem',
                   fontWeight: 800,
                   color: '#FFFFFF',
-                  letterSpacing: '0.06em',
+                  letterSpacing: '0.04em',
                   fontFamily: 'var(--font-mono)',
-                  textShadow: '0 2px 10px rgba(0,0,0,0.8)',
                 }}
               >
                 OMNISETTLE
@@ -136,9 +134,8 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 style={{
                   fontSize: '1.18rem',
                   fontWeight: 900,
-                  color: '#F5D061',
+                  color: '#0C8CE9',
                   fontFamily: 'var(--font-mono)',
-                  textShadow: '0 0 12px rgba(245, 208, 97, 0.6)',
                 }}
               >
                 .AI
@@ -146,19 +143,19 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             </div>
             <div
               style={{
-                fontSize: '0.64rem',
-                color: '#E5B869',
+                fontSize: '0.66rem',
+                color: '#94A3B8',
                 fontWeight: 700,
-                letterSpacing: '0.12em',
+                letterSpacing: '0.08em',
                 fontFamily: 'var(--font-mono)',
                 textTransform: 'uppercase',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.3rem',
-                marginTop: '0.1rem',
+                gap: '0.35rem',
+                marginTop: '0.15rem',
               }}
             >
-              <Crown size={11} color="#F5D061" /> ROYAL FINANCE CONTROLLER
+              <ShieldCheck size={11} color="#0C8CE9" /> AI FINANCE CONTROLLER
             </div>
           </div>
         </div>
@@ -169,7 +166,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             className="glitch-shake"
             style={{
               background: 'rgba(244, 63, 94, 0.1)',
-              border: '1px solid rgba(244, 63, 94, 0.4)',
+              border: '1px solid rgba(244, 63, 94, 0.35)',
               borderRadius: '6px',
               padding: '0.5rem 0.75rem',
               marginBottom: '1.25rem',
@@ -186,12 +183,12 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
           </div>
         )}
 
-        {/* Imperial Vault Dataset Card */}
+        {/* Active Dataset Batch Card */}
         <div
           onClick={() => onSelectView('data_hub')}
           style={{
-            background: 'linear-gradient(135deg, rgba(245, 208, 97, 0.08) 0%, rgba(12, 16, 30, 0.7) 100%)',
-            border: '1px solid rgba(245, 208, 97, 0.22)',
+            background: 'linear-gradient(135deg, rgba(12, 140, 233, 0.08) 0%, rgba(12, 16, 30, 0.7) 100%)',
+            border: '1px solid rgba(12, 140, 233, 0.22)',
             borderRadius: '8px',
             padding: '0.75rem 0.9rem',
             marginBottom: '1.4rem',
@@ -200,20 +197,20 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             transition: 'all 0.2s ease',
           }}
           onMouseEnter={e => {
-            e.currentTarget.style.borderColor = 'rgba(245, 208, 97, 0.5)';
-            e.currentTarget.style.boxShadow = '0 6px 20px rgba(245, 208, 97, 0.15)';
+            e.currentTarget.style.borderColor = 'rgba(12, 140, 233, 0.5)';
+            e.currentTarget.style.boxShadow = '0 6px 20px rgba(12, 140, 233, 0.15)';
           }}
           onMouseLeave={e => {
-            e.currentTarget.style.borderColor = 'rgba(245, 208, 97, 0.22)';
+            e.currentTarget.style.borderColor = 'rgba(12, 140, 233, 0.22)';
             e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.35)';
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.62rem', color: '#E5B869', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.08em', fontFamily: 'var(--font-mono)' }}>
-              ROYAL VAULT
+            <span style={{ fontSize: '0.64rem', color: '#38BDF8', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.08em', fontFamily: 'var(--font-mono)' }}>
+              ACTIVE BATCH
             </span>
             <span style={{ fontSize: '0.58rem', color: '#10B981', background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '0.1rem 0.4rem', borderRadius: '3px', fontWeight: 700 }}>
-              MOUNTED
+              ONLINE
             </span>
           </div>
           <div
@@ -241,8 +238,8 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
               gap: '0.4rem',
             }}
           >
-            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#F5D061', boxShadow: '0 0 6px #F5D061' }} />
-            <span>{activeDataset.recordCount} AUDIT VECTORS</span>
+            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#0C8CE9', boxShadow: '0 0 6px #0C8CE9' }} />
+            <span>{activeDataset.recordCount} RECORDS MOUNTED</span>
           </div>
         </div>
 
@@ -256,13 +253,13 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 onClick={() => onSelectView(item.id)}
                 style={{
                   background: isActive
-                    ? 'linear-gradient(90deg, rgba(245, 208, 97, 0.16) 0%, rgba(245, 208, 97, 0.03) 100%)'
+                    ? 'linear-gradient(90deg, rgba(12, 140, 233, 0.14) 0%, rgba(12, 140, 233, 0.02) 100%)'
                     : 'transparent',
                   border: isActive
-                    ? '1px solid rgba(245, 208, 97, 0.3)'
+                    ? '1px solid rgba(12, 140, 233, 0.3)'
                     : '1px solid transparent',
                   borderLeft: isActive
-                    ? '3px solid #F5D061'
+                    ? '3px solid #0C8CE9'
                     : '3px solid transparent',
                   borderRadius: '6px',
                   color: isActive ? '#FFFFFF' : '#94A3B8',
@@ -275,7 +272,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                   justifyContent: 'space-between',
                   fontFamily: 'var(--font-sans)',
                   transition: 'all 0.18s cubic-bezier(0.16, 1, 0.3, 1)',
-                  boxShadow: isActive ? '0 2px 10px rgba(0, 0, 0, 0.3)' : 'none',
+                  boxShadow: isActive ? '0 2px 8px rgba(0, 0, 0, 0.3)' : 'none',
                 }}
                 onMouseEnter={e => {
                   if (!isActive) {
@@ -295,10 +292,9 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                   <span
                     style={{
-                      color: isActive ? '#F5D061' : '#64748B',
+                      color: isActive ? '#0C8CE9' : '#64748B',
                       display: 'flex',
                       alignItems: 'center',
-                      filter: isActive ? 'drop-shadow(0 0 6px rgba(245, 208, 97, 0.5))' : 'none',
                     }}
                   >
                     {item.icon}
@@ -329,13 +325,13 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         </nav>
       </div>
 
-      {/* Royal Operator Card & Security Seals */}
-      <div style={{ borderTop: '1px solid rgba(229, 184, 105, 0.14)', paddingTop: '0.9rem' }}>
+      {/* Enterprise Operator Card & Security Seals */}
+      <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '0.9rem' }}>
         {/* Authenticated Operator Badge & Logout */}
         <div
           style={{
-            background: 'linear-gradient(135deg, rgba(245, 208, 97, 0.07) 0%, rgba(12, 16, 30, 0.8) 100%)',
-            border: '1px solid rgba(245, 208, 97, 0.25)',
+            background: 'linear-gradient(135deg, rgba(12, 140, 233, 0.06) 0%, rgba(12, 16, 30, 0.8) 100%)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
             borderRadius: '8px',
             padding: '0.75rem 0.85rem',
             marginBottom: '0.85rem',
@@ -348,16 +344,15 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 style={{
                   width: '32px',
                   height: '32px',
-                  borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #FFE082 0%, #C4973B 100%)',
-                  color: '#050711',
+                  borderRadius: '6px',
+                  background: 'linear-gradient(135deg, #0C8CE9 0%, #0284C7 100%)',
+                  color: '#FFFFFF',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: '0.85rem',
                   fontWeight: 900,
-                  boxShadow: '0 0 12px rgba(245, 208, 97, 0.45)',
-                  border: '1px solid #FFF8E1',
+                  boxShadow: '0 0 10px rgba(12, 140, 233, 0.35)',
                 }}
               >
                 {user?.name?.[0]?.toUpperCase() || 'C'}
@@ -373,18 +368,18 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                     textOverflow: 'ellipsis',
                   }}
                 >
-                  {user?.name || 'Chief Controller'}
+                  {user?.name || 'Finance Controller'}
                 </div>
                 <div
                   style={{
                     fontSize: '0.62rem',
-                    color: '#F5D061',
+                    color: '#38BDF8',
                     fontFamily: 'var(--font-mono)',
-                    letterSpacing: '0.06em',
+                    letterSpacing: '0.04em',
                     fontWeight: 700,
                   }}
                 >
-                  [{user?.role || 'CHIEF_CONTROLLER'}]
+                  [{user?.role || 'FINANCE_CONTROLLER'}]
                 </div>
               </div>
             </div>
@@ -393,7 +388,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 logout();
                 onLogout?.();
               }}
-              title="Sign Out (Invalidate JWT)"
+              title="Sign Out (Invalidate Session)"
               style={{
                 background: 'rgba(244, 63, 94, 0.1)',
                 border: '1px solid rgba(244, 63, 94, 0.25)',
@@ -432,8 +427,8 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-            <Lock size={12} color="#F5D061" />
-            <span style={{ color: '#E5B869', fontWeight: 600 }}>ROYAL VAULT • 256-BIT</span>
+            <Lock size={12} color="#0C8CE9" />
+            <span style={{ color: '#94A3B8', fontWeight: 600 }}>ENTERPRISE • 256-BIT</span>
           </div>
           <span>SOC-2 TYPE II</span>
         </div>

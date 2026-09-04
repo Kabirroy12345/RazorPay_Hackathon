@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Crown,
+  Layers,
   Clock,
   ShieldCheck,
   Play,
@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import type { AppView, FinancialDataset } from '../types/finance';
 
-interface RoyalTopNavProps {
+interface TopNavProps {
   currentView: AppView;
   activeDataset: FinancialDataset;
   onSelectView: (view: AppView) => void;
@@ -28,7 +28,7 @@ const VIEW_TITLES: Record<AppView, { title: string; subtitle: string }> = {
   gaap_audit: { title: 'GAAP Reconciliation Statement', subtitle: 'Cryptographic Audit Certificate' },
 };
 
-export const RoyalTopNav: React.FC<RoyalTopNavProps> = ({
+export const TopNav: React.FC<TopNavProps> = ({
   currentView,
   activeDataset,
   onSelectView,
@@ -64,7 +64,7 @@ export const RoyalTopNav: React.FC<RoyalTopNavProps> = ({
         background: 'rgba(5, 7, 17, 0.88)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(229, 184, 105, 0.18)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
         padding: '0.75rem 1.75rem',
         display: 'flex',
         alignItems: 'center',
@@ -73,31 +73,31 @@ export const RoyalTopNav: React.FC<RoyalTopNavProps> = ({
         marginBottom: '1.25rem',
       }}
     >
-      {/* Left: Royal Imperial Breadcrumbs & Title */}
+      {/* Left: Breadcrumbs & Title */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
             gap: '0.45rem',
-            background: 'rgba(245, 208, 97, 0.08)',
-            border: '1px solid rgba(245, 208, 97, 0.22)',
-            padding: '0.25rem 0.6rem',
+            background: 'rgba(12, 140, 233, 0.1)',
+            border: '1px solid rgba(12, 140, 233, 0.28)',
+            padding: '0.25rem 0.65rem',
             borderRadius: '20px',
           }}
         >
-          <Crown size={14} color="#F5D061" style={{ filter: 'drop-shadow(0 0 4px rgba(245, 208, 97, 0.6))' }} />
+          <Layers size={13} color="#0C8CE9" />
           <span
             style={{
               fontSize: '0.7rem',
               fontWeight: 800,
-              color: '#F5D061',
+              color: '#38BDF8',
               letterSpacing: '0.08em',
               fontFamily: 'var(--font-mono)',
               textTransform: 'uppercase',
             }}
           >
-            SOVEREIGN TERMINAL
+            FINANCE OPS // TERMINAL
           </span>
         </div>
 
@@ -130,21 +130,21 @@ export const RoyalTopNav: React.FC<RoyalTopNavProps> = ({
                 HOTKEY [{currentView === 'dashboard' ? '1' : currentView === 'reconciler' ? '2' : currentView === 'bundle_lab' ? '3' : currentView === 'exceptions' ? '4' : currentView === 'settlement_qa' ? '5' : currentView === 'cash_forecast' ? '6' : currentView === 'data_hub' ? '7' : '8'}]
               </span>
             </div>
-            <div style={{ fontSize: '0.7rem', color: '#E5B869', fontFamily: 'var(--font-mono)', marginTop: '0.05rem' }}>
+            <div style={{ fontSize: '0.7rem', color: '#94A3B8', fontFamily: 'var(--font-mono)', marginTop: '0.05rem' }}>
               {viewMeta.subtitle}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Center: Real-Time Sovereign Pulse & Ledger Clock */}
+      {/* Center: Real-Time Engine Telemetry & Ledger Clock */}
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
           gap: '1.25rem',
           background: 'linear-gradient(135deg, rgba(12, 16, 30, 0.85) 0%, rgba(5, 7, 15, 0.95) 100%)',
-          border: '1px solid rgba(229, 184, 105, 0.15)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
           padding: '0.35rem 1rem',
           borderRadius: '30px',
           boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.05)',
@@ -170,7 +170,7 @@ export const RoyalTopNav: React.FC<RoyalTopNavProps> = ({
               letterSpacing: '0.04em',
             }}
           >
-            MAINNET ONLINE
+            SYSTEM ONLINE
           </span>
         </div>
 
@@ -178,7 +178,7 @@ export const RoyalTopNav: React.FC<RoyalTopNavProps> = ({
 
         {/* Dual Clocks */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <Clock size={12} color="#F5D061" />
+          <Clock size={12} color="#0C8CE9" />
           <span
             style={{
               fontFamily: 'var(--font-mono)',
@@ -198,25 +198,25 @@ export const RoyalTopNav: React.FC<RoyalTopNavProps> = ({
         <span style={{ color: 'rgba(255, 255, 255, 0.15)' }}>|</span>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-          <ShieldCheck size={13} color="#F5D061" />
-          <span style={{ fontSize: '0.68rem', color: '#E5B869', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
-            SHA-256 SEALED
+          <ShieldCheck size={13} color="#0C8CE9" />
+          <span style={{ fontSize: '0.68rem', color: '#94A3B8', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
+            SHA-256 AUDIT LOG
           </span>
         </div>
       </div>
 
-      {/* Right: Active Vault Quick Pill & Batch Execute CTA */}
+      {/* Right: Active Dataset Quick Pill & Batch Execute CTA */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
         {/* Active Dataset Pill */}
         <button
           onClick={() => onSelectView('data_hub')}
-          title="Switch Active Dataset Vault"
+          title="Switch Active Financial Dataset"
           style={{
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem',
-            background: 'rgba(245, 208, 97, 0.08)',
-            border: '1px solid rgba(245, 208, 97, 0.25)',
+            background: 'rgba(12, 140, 233, 0.08)',
+            border: '1px solid rgba(12, 140, 233, 0.25)',
             borderRadius: '6px',
             padding: '0.4rem 0.75rem',
             color: '#F8FAFC',
@@ -227,16 +227,16 @@ export const RoyalTopNav: React.FC<RoyalTopNavProps> = ({
             transition: 'all 0.15s ease',
           }}
           onMouseEnter={e => {
-            e.currentTarget.style.background = 'rgba(245, 208, 97, 0.15)';
-            e.currentTarget.style.borderColor = 'rgba(245, 208, 97, 0.5)';
+            e.currentTarget.style.background = 'rgba(12, 140, 233, 0.16)';
+            e.currentTarget.style.borderColor = 'rgba(12, 140, 233, 0.5)';
           }}
           onMouseLeave={e => {
-            e.currentTarget.style.background = 'rgba(245, 208, 97, 0.08)';
-            e.currentTarget.style.borderColor = 'rgba(245, 208, 97, 0.25)';
+            e.currentTarget.style.background = 'rgba(12, 140, 233, 0.08)';
+            e.currentTarget.style.borderColor = 'rgba(12, 140, 233, 0.25)';
           }}
         >
-          <Database size={13} color="#F5D061" />
-          <span style={{ color: '#E5B869', fontWeight: 700 }}>VAULT:</span>
+          <Database size={13} color="#0C8CE9" />
+          <span style={{ color: '#38BDF8', fontWeight: 700 }}>BATCH:</span>
           <span>{activeDataset.id.replace('_', ' ')}</span>
           <span style={{ fontSize: '0.62rem', color: '#94A3B8' }}>({activeDataset.recordCount})</span>
         </button>
@@ -250,40 +250,40 @@ export const RoyalTopNav: React.FC<RoyalTopNavProps> = ({
               display: 'flex',
               alignItems: 'center',
               gap: '0.45rem',
-              background: 'linear-gradient(135deg, #FFE082 0%, #F5D061 50%, #C4973B 100%)',
-              color: '#050711',
+              background: 'linear-gradient(135deg, #0C8CE9 0%, #0284C7 100%)',
+              color: '#FFFFFF',
               border: 'none',
               borderRadius: '6px',
-              padding: '0.45rem 0.9rem',
+              padding: '0.45rem 0.95rem',
               fontSize: '0.78rem',
               fontFamily: 'var(--font-mono)',
               fontWeight: 800,
               cursor: isProcessing ? 'not-allowed' : 'pointer',
               letterSpacing: '0.04em',
-              boxShadow: '0 0 16px rgba(245, 208, 97, 0.45), 0 2px 4px rgba(0, 0, 0, 0.4)',
+              boxShadow: '0 0 16px rgba(12, 140, 233, 0.35), 0 2px 4px rgba(0, 0, 0, 0.4)',
               transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
             }}
             onMouseEnter={e => {
               if (!isProcessing) {
                 e.currentTarget.style.transform = 'translateY(-1px)';
-                e.currentTarget.style.boxShadow = '0 0 22px rgba(245, 208, 97, 0.6), 0 4px 10px rgba(0, 0, 0, 0.5)';
+                e.currentTarget.style.boxShadow = '0 0 22px rgba(12, 140, 233, 0.55), 0 4px 10px rgba(0, 0, 0, 0.5)';
               }
             }}
             onMouseLeave={e => {
               if (!isProcessing) {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 0 16px rgba(245, 208, 97, 0.45), 0 2px 4px rgba(0, 0, 0, 0.4)';
+                e.currentTarget.style.boxShadow = '0 0 16px rgba(12, 140, 233, 0.35), 0 2px 4px rgba(0, 0, 0, 0.4)';
               }
             }}
           >
             {isProcessing ? (
               <>
-                <div style={{ width: '12px', height: '12px', border: '2px solid #050711', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-                <span>AUDITING...</span>
+                <div style={{ width: '12px', height: '12px', border: '2px solid #FFFFFF', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                <span>RECONCILING...</span>
               </>
             ) : (
               <>
-                <Play size={13} fill="#050711" />
+                <Play size={13} fill="#FFFFFF" />
                 <span>RE-AUDIT BATCH</span>
               </>
             )}

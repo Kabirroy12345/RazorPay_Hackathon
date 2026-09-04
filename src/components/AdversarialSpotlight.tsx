@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, ChevronDown, ChevronUp, Cpu, Crown, CheckCircle2 } from 'lucide-react';
+import { Sparkles, ChevronDown, ChevronUp, Cpu, CheckCircle2 } from 'lucide-react';
 import type { MatchResult } from '../types/finance';
 
 interface AdversarialSpotlightProps {
@@ -48,14 +48,14 @@ export const AdversarialSpotlight: React.FC<AdversarialSpotlightProps> = ({ bund
               <span
                 className="badge"
                 style={{
-                  background: 'rgba(245, 208, 97, 0.12)',
-                  border: '1px solid rgba(245, 208, 97, 0.4)',
-                  color: '#F5D061',
+                  background: 'rgba(12, 140, 233, 0.12)',
+                  border: '1px solid rgba(12, 140, 233, 0.4)',
+                  color: '#38BDF8',
                   fontWeight: 800,
                   fontSize: '0.72rem',
                 }}
               >
-                <Crown size={11} style={{ marginRight: '0.3rem' }} />
+                <Cpu size={11} style={{ marginRight: '0.3rem' }} />
                 AGENTIC PROOFER
               </span>
             </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Pause, RotateCcw, Zap, Crown, Activity } from 'lucide-react';
+import { Play, Pause, RotateCcw, Zap, Activity } from 'lucide-react';
 import type { FullReconciliationOutput } from '../../engine/reconciler';
 
 interface StreamingReconcilerViewProps {
@@ -33,7 +33,7 @@ export const StreamingReconcilerView: React.FC<StreamingReconcilerViewProps> = (
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', paddingBottom: '3rem' }}>
-      {/* Royal Streaming Header */}
+      {/* Streaming Header */}
       <div
         className="terminal-panel"
         style={{
@@ -69,14 +69,14 @@ export const StreamingReconcilerView: React.FC<StreamingReconcilerViewProps> = (
               <span
                 className="badge"
                 style={{
-                  background: 'rgba(245, 208, 97, 0.1)',
-                  border: '1px solid rgba(245, 208, 97, 0.35)',
-                  color: '#F5D061',
+                  background: 'rgba(12, 140, 233, 0.1)',
+                  border: '1px solid rgba(12, 140, 233, 0.35)',
+                  color: '#38BDF8',
                   fontSize: '0.7rem',
                   fontWeight: 800,
                 }}
               >
-                <Crown size={11} style={{ marginRight: '0.25rem' }} />
+                <Activity size={11} style={{ marginRight: '0.25rem' }} />
                 REAL-TIME VECTOR STREAM
               </span>
             </div>
@@ -141,7 +141,7 @@ export const StreamingReconcilerView: React.FC<StreamingReconcilerViewProps> = (
           </div>
         </div>
 
-        {/* Royal Progress Tracker */}
+        {/* Progress Tracker */}
         <div style={{ marginTop: '1.35rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#94A3B8', marginBottom: '0.45rem', fontFamily: 'var(--font-mono)' }}>
             <span style={{ color: '#F8FAFC', fontWeight: 700 }}>
@@ -178,7 +178,7 @@ export const StreamingReconcilerView: React.FC<StreamingReconcilerViewProps> = (
         </div>
       </div>
 
-      {/* Royal Ledger Table */}
+      {/* Ledger Table */}
       <div
         className="terminal-panel"
         style={{
@@ -291,7 +291,7 @@ export const StreamingReconcilerView: React.FC<StreamingReconcilerViewProps> = (
         </table>
       </div>
 
-      {/* Royal Live System Log Ticker */}
+      {/* Live System Log Ticker */}
       <div
         style={{
           position: 'fixed',

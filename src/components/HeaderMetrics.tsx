@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, CheckCircle2, ShieldCheck, Layers, DollarSign, Clock, RefreshCw, Crown, Sparkles } from 'lucide-react';
+import { Play, CheckCircle2, ShieldCheck, Layers, DollarSign, Clock, RefreshCw, Sparkles } from 'lucide-react';
 import type { DualMetrics } from '../types/finance';
 
 interface HeaderMetricsProps {
@@ -21,7 +21,7 @@ export const HeaderMetrics: React.FC<HeaderMetricsProps> = ({
 }) => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-      {/* Royal Sovereign Header Bar */}
+      {/* Header Bar */}
       <div
         style={{
           display: 'flex',
@@ -34,8 +34,8 @@ export const HeaderMetrics: React.FC<HeaderMetricsProps> = ({
       >
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.35rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <Crown size={22} color="#F5D061" style={{ filter: 'drop-shadow(0 0 8px rgba(245, 208, 97, 0.6))' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <ShieldCheck size={22} color="#0C8CE9" style={{ filter: 'drop-shadow(0 0 8px rgba(12, 140, 233, 0.5))' }} />
               <h1
                 className="font-mono"
                 style={{
@@ -46,15 +46,15 @@ export const HeaderMetrics: React.FC<HeaderMetricsProps> = ({
                   textShadow: '0 2px 14px rgba(0,0,0,0.8)',
                 }}
               >
-                OMNISETTLE<span style={{ color: '#F5D061' }}>_AI</span>
+                OMNISETTLE<span style={{ color: '#0C8CE9' }}>_AI</span>
               </h1>
             </div>
             <span
               className="badge"
               style={{
-                background: 'rgba(245, 208, 97, 0.1)',
-                border: '1px solid rgba(245, 208, 97, 0.35)',
-                color: '#F5D061',
+                background: 'rgba(12, 140, 233, 0.1)',
+                border: '1px solid rgba(12, 140, 233, 0.35)',
+                color: '#38BDF8',
                 fontSize: '0.7rem',
                 fontWeight: 700,
               }}
@@ -64,9 +64,9 @@ export const HeaderMetrics: React.FC<HeaderMetricsProps> = ({
             <span
               className="badge"
               style={{
-                background: 'rgba(56, 189, 248, 0.1)',
-                border: '1px solid rgba(56, 189, 248, 0.3)',
-                color: '#38BDF8',
+                background: 'rgba(16, 185, 129, 0.1)',
+                border: '1px solid rgba(16, 185, 129, 0.3)',
+                color: '#10B981',
                 fontSize: '0.7rem',
                 fontWeight: 700,
               }}
@@ -75,7 +75,7 @@ export const HeaderMetrics: React.FC<HeaderMetricsProps> = ({
             </span>
           </div>
           <p className="font-mono" style={{ color: '#94A3B8', fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <span style={{ color: '#E5B869', fontWeight: 600 }}>SOVEREIGN CLOSED-LOOP AUDITOR:</span>
+            <span style={{ color: '#38BDF8', fontWeight: 600 }}>AUTONOMOUS CLOSED-LOOP ENGINE:</span>
             <span>Bank ↔ Gateway ↔ ERP</span>
             <span style={{ color: '#64748B' }}>•</span>
             <span style={{ color: '#F8FAFC' }}>{datasetName || `SYNTHETIC_BATCH_${metrics.totalRecords}`}</span>
@@ -146,7 +146,7 @@ export const HeaderMetrics: React.FC<HeaderMetricsProps> = ({
         </div>
       )}
 
-      {/* 5 Royal Metric Cards */}
+      {/* 5 Core Metric Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '1rem' }}>
         {/* Metric 1: Reconciliation Rate */}
         <div

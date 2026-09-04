@@ -35,13 +35,13 @@ export const VerifiedCashCard: React.FC<VerifiedCashCardProps> = ({
             width: '42px',
             height: '42px',
             borderRadius: '8px',
-            background: 'linear-gradient(135deg, rgba(245, 208, 97, 0.2) 0%, rgba(245, 208, 97, 0.05) 100%)',
-            border: '1px solid rgba(245, 208, 97, 0.4)',
+            background: 'linear-gradient(135deg, rgba(12, 140, 233, 0.2) 0%, rgba(12, 140, 233, 0.05) 100%)',
+            border: '1px solid rgba(12, 140, 233, 0.4)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#F5D061',
-            boxShadow: '0 0 15px rgba(245, 208, 97, 0.25)',
+            color: '#38BDF8',
+            boxShadow: '0 0 15px rgba(12, 140, 233, 0.25)',
           }}
         >
           <ShieldCheck size={22} />
@@ -49,18 +49,18 @@ export const VerifiedCashCard: React.FC<VerifiedCashCardProps> = ({
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
             <span className="font-mono" style={{ fontSize: '1.15rem', fontWeight: 800, color: '#FFFFFF', letterSpacing: '0.04em' }}>
-              ROYAL TREASURY & VERIFIED CASH LOCK
+              TREASURY & VERIFIED CASH POSITION
             </span>
             <span
               style={{
                 fontFamily: 'var(--font-mono)',
                 fontSize: '0.62rem',
                 fontWeight: 800,
-                color: '#050711',
-                background: 'linear-gradient(180deg, #FFE082 0%, #E5B869 100%)',
+                color: '#10B981',
+                background: 'rgba(16, 185, 129, 0.15)',
+                border: '1px solid rgba(16, 185, 129, 0.35)',
                 padding: '0.15rem 0.5rem',
                 borderRadius: '3px',
-                boxShadow: '0 0 10px rgba(245, 208, 97, 0.4)',
                 letterSpacing: '0.08em',
               }}
             >

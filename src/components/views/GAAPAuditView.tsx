@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileCheck, ShieldCheck, Printer, Lock, Crown, Award } from 'lucide-react';
+import { FileCheck, ShieldCheck, Printer, Lock, Award } from 'lucide-react';
 import type { FullReconciliationOutput } from '../../engine/reconciler';
 import type { FinancialDataset } from '../../types/finance';
 
@@ -18,7 +18,7 @@ export const GAAPAuditView: React.FC<GAAPAuditViewProps> = ({ output, activeData
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', paddingBottom: '2rem' }}>
-      {/* Royal Header */}
+      {/* Header */}
       <div
         className="terminal-panel"
         style={{
@@ -55,14 +55,14 @@ export const GAAPAuditView: React.FC<GAAPAuditViewProps> = ({ output, activeData
                 <span
                   className="badge"
                   style={{
-                    background: 'rgba(245, 208, 97, 0.1)',
-                    border: '1px solid rgba(245, 208, 97, 0.35)',
-                    color: '#F5D061',
+                    background: 'rgba(12, 140, 233, 0.1)',
+                    border: '1px solid rgba(12, 140, 233, 0.35)',
+                    color: '#38BDF8',
                     fontSize: '0.7rem',
                     fontWeight: 800,
                   }}
                 >
-                  <Crown size={11} style={{ marginRight: '0.25rem' }} />
+                  <ShieldCheck size={11} style={{ marginRight: '0.25rem' }} />
                   AUDIT COMPLIANT
                 </span>
               </div>
@@ -84,7 +84,7 @@ export const GAAPAuditView: React.FC<GAAPAuditViewProps> = ({ output, activeData
         </div>
       </div>
 
-      {/* Sovereign Imperial Certificate */}
+      {/* Independent Audit Certificate */}
       <div
         className="terminal-panel"
         style={{
@@ -114,7 +114,7 @@ export const GAAPAuditView: React.FC<GAAPAuditViewProps> = ({ output, activeData
                   textTransform: 'uppercase',
                 }}
               >
-                SOVEREIGN RECONCILIATION CERTIFICATE
+                INDEPENDENT RECONCILIATION STATEMENT
               </span>
             </div>
             <div style={{ fontSize: '0.82rem', color: '#F5D061', fontFamily: 'var(--font-mono)', fontWeight: 700, letterSpacing: '0.04em' }}>
@@ -157,7 +157,7 @@ export const GAAPAuditView: React.FC<GAAPAuditViewProps> = ({ output, activeData
           }}
         >
           <div>
-            <span style={{ fontSize: '0.7rem', color: '#E5B869', textTransform: 'uppercase', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>AUDITED DATASET VAULT</span>
+            <span style={{ fontSize: '0.7rem', color: '#E5B869', textTransform: 'uppercase', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>AUDITED DATASET</span>
             <div style={{ fontWeight: 800, color: '#FFFFFF', fontSize: '0.95rem', marginTop: '0.25rem' }}>{activeDataset.name}</div>
             <span style={{ fontSize: '0.68rem', color: '#94A3B8' }}>{activeDataset.recordCount} Transactions Cross-Examined</span>
           </div>

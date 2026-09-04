@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Cpu, Calculator, Sparkles, CheckCircle2, Crown } from 'lucide-react';
+import { Cpu, Calculator, Sparkles, CheckCircle2 } from 'lucide-react';
 
 export const BundleMathLabView: React.FC = () => {
   const [grossSales, setGrossSales] = useState(52000);
@@ -14,7 +14,7 @@ export const BundleMathLabView: React.FC = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      {/* Royal Header */}
+      {/* Header */}
       <div
         className="terminal-panel"
         style={{
@@ -50,15 +50,15 @@ export const BundleMathLabView: React.FC = () => {
               <span
                 className="badge"
                 style={{
-                  background: 'rgba(245, 208, 97, 0.12)',
-                  border: '1px solid rgba(245, 208, 97, 0.4)',
-                  color: '#F5D061',
+                  background: 'rgba(12, 140, 233, 0.12)',
+                  border: '1px solid rgba(12, 140, 233, 0.4)',
+                  color: '#38BDF8',
                   fontWeight: 800,
                   fontSize: '0.7rem',
                 }}
               >
-                <Crown size={11} style={{ marginRight: '0.25rem' }} />
-                ROYAL LAB
+                <Calculator size={11} style={{ marginRight: '0.25rem' }} />
+                PROVER LAB
               </span>
             </div>
             <p style={{ color: '#94A3B8', fontSize: '0.82rem', marginTop: '0.2rem' }}>

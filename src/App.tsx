@@ -5,7 +5,7 @@ import { executeFullReconciliation } from './engine/reconciler';
 import type { FullReconciliationOutput } from './engine/reconciler';
 import type { MatchResult, BankTransaction, FinancialDataset, AppView } from './types/finance';
 import { SidebarNav } from './components/SidebarNav';
-import { RoyalTopNav } from './components/RoyalTopNav';
+import { TopNav } from './components/TopNav';
 import { ExecutiveDashboardView } from './components/views/ExecutiveDashboardView';
 import { StreamingReconcilerView } from './components/views/StreamingReconcilerView';
 import { BundleMathLabView } from './components/views/BundleMathLabView';
@@ -191,7 +191,7 @@ function AppContent() {
 
       {/* Main Active Module Content View */}
       <main style={{ flex: 1, padding: '0 2rem 2.5rem 2rem', overflowX: 'hidden' }}>
-        <RoyalTopNav
+        <TopNav
           currentView={currentView}
           activeDataset={activeDataset}
           onSelectView={view => setCurrentView(view)}
