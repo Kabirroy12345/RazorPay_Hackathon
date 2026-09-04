@@ -72,7 +72,7 @@ Select a preset question below or ask me any custom query regarding settlement b
     },
     {
       label: 'Lookup Specific Transaction',
-      prompt: 'Look up the status and reasoning for transaction INV-BUN-01 and BANK-PAYOUT-01.',
+      prompt: 'Look up the status and reasoning for transaction INV-SET-01 and BANK-SETTLE-88412.',
     },
     {
       label: 'Throughput & Match Rate',
@@ -82,155 +82,113 @@ Select a preset question below or ask me any custom query regarding settlement b
 
   const answerQuery = (userText: string): { responseText: string; citations: string[]; category: Message['category'] } => {
     const q = userText.toLowerCase().trim();
+    const { bankTxns, gatewayRecords, erpInvoices } = activeDataset;
 
-    // 0. Specific ID Lookup across dataset
-    const words = userText.split(/[\s,;:?]+/);
-    const potentialId = words.find(w => 
-      w.startsWith('INV-') || w.startsWith('BANK-') || w.startsWith('RZP-') || w.startsWith('ORD-') || w.startsWith('SET-')
-    );
+    // 1. Entity Search: Look for specific IDs
+    const idRegex = /(INV-|RZP-|BANK-|ORD-|SET-)[A-Z0-9-]+/gi;
+    const foundIds = userText.match(idRegex);
 
-    if (potentialId) {
-      const upperId = potentialId.toUpperCase();
+    if (foundIds && foundIds.length > 0) {
+      const targetId = foundIds[0].toUpperCase();
+      
       const match = allMatches.find(m => 
-        m.id.includes(upperId) || 
-        (m.bankRecordId && m.bankRecordId.includes(upperId)) ||
-        m.gatewayRecordIds.some(g => g.includes(upperId)) ||
-        m.erpInvoiceIds.some(e => e.includes(upperId))
+        m.id.includes(targetId) || 
+        (m.bankRecordId && m.bankRecordId.includes(targetId)) ||
+        m.gatewayRecordIds.some(g => g.includes(targetId)) ||
+        m.erpInvoiceIds.some(e => e.includes(targetId))
       );
 
       if (match) {
+        const gwStr = match.gatewayRecordIds.length > 0 ? match.gatewayRecordIds.map(id => '`' + id + '`').join(', ') : 'None';
+        const erpStr = match.erpInvoiceIds.length > 0 ? match.erpInvoiceIds.map(id => '`' + id + '`').join(', ') : 'None';
+        const traceStr = match.reasoningTrace.map(s => '> ' + s).join('\n');
         return {
           category: 'LOOKUP',
           citations: [match.id, match.bankRecordId || 'NO_BANK', ...match.erpInvoiceIds.slice(0, 3)],
-          responseText: `### Ledger Lookup Result for \`${upperId}\`
-
-• **Match Vector ID:** \`${match.id}\`
-• **Reconciliation Status:** **${match.status}**
-• **Execution Handler:** \`${match.matchType}\`
-• **Reconciled Amount:** **₹${match.reconciledAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })} INR**
-• **Discrepancy / Delta:** ₹${match.discrepancyAmount.toFixed(2)}
-• **Linked Bank Ref:** \`${match.bankRecordId || 'ABSENT_IN_BANK'}\`
-• **Linked Gateway Records:** ${match.gatewayRecordIds.length > 0 ? match.gatewayRecordIds.map(id => `\`${id}\``).join(', ') : 'None'}
-• **Linked ERP Invoices:** ${match.erpInvoiceIds.length > 0 ? match.erpInvoiceIds.map(id => `\`${id}\``).join(', ') : 'None'}
-
-**AI Reasoning Trace:**
-${match.reasoningTrace.map(s => `> ${s}`).join('\n')}`,
+          responseText: `### Ledger Lookup Result for \`${targetId}\`\n\n• **Match Vector ID:** \`${match.id}\`\n• **Reconciliation Status:** **${match.status}**\n• **Execution Handler:** \`${match.matchType}\`\n• **Reconciled Amount:** **₹${match.reconciledAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })} INR**\n• **Discrepancy / Delta:** ₹${match.discrepancyAmount.toFixed(2)}\n• **Linked Bank Ref:** \`${match.bankRecordId || 'ABSENT_IN_BANK'}\`\n• **Linked Gateway Records:** ${gwStr}\n• **Linked ERP Invoices:** ${erpStr}\n\n**AI Reasoning Trace:**\n${traceStr}`,
         };
+      }
+
+      // If not in matches, look in raw data
+      const bank = bankTxns.find(b => b.id.toUpperCase() === targetId);
+      if (bank) {
+        return { category: 'LOOKUP', citations: [bank.id], responseText: `Found Bank Transaction \`${bank.id}\` with amount ₹${bank.amount}. Type: ${bank.type}.` };
+      }
+      const gw = gatewayRecords.find(g => g.id.toUpperCase() === targetId);
+      if (gw) {
+        return { category: 'LOOKUP', citations: [gw.id], responseText: `Found Gateway Record \`${gw.id}\` with net amount ₹${gw.netAmount}. Status: ${gw.status}.` };
+      }
+      const erp = erpInvoices.find(e => e.id.toUpperCase() === targetId);
+      if (erp) {
+        return { category: 'LOOKUP', citations: [erp.id], responseText: `Found ERP Invoice \`${erp.id}\` with amount ₹${erp.amount}. Status: ${erp.status}.` };
       }
     }
 
-    // 1. Bundle Payout / Adversarial Case
-    if (q.includes('bundle') || q.includes('88412') || q.includes('zero delta') || q.includes('1-to-n') || q.includes('prover')) {
-      const bundle = allMatches.find(m => m.status === 'AGENTIC_BUNDLE_MATCHED');
-      const payout = bundle ? bundle.reconciledAmount : 48272.80;
-      const invCount = bundle ? bundle.erpInvoiceIds.length : 8;
-      return {
-        category: 'BUNDLE',
-        citations: ['BANK-SETTLE-88412', 'ORD-BUN-04', 'INV-BUN-01..08'],
-        responseText: `### 1-to-N Bundled Settlement Mathematical Proof (#SET-BUNDLE-88412)
-
-The agent reconciled **1 single Bank Payout** against **${invCount} disparate ERP Invoices**:
-
-1. **Gross ERP Invoice Volume:** ₹52,000.00 (Across ${invCount} invoices)
-2. **Contracted Gateway MDR Fee (2.00%):** -₹1,040.00
-3. **18% GST on Gateway Fee:** -₹187.20 (Total MDR deduction = ₹1,227.20)
-4. **Customer Refund Deduction:** -₹2,500.00 (Customer ORD-BUN-04 return)
-5. **Expected Net Settlement:**
-   $$\\text{Net} = ₹52,000.00 - ₹1,040.00 - ₹187.20 - ₹2,500.00 = \\mathbf{₹48,272.80}$$
-6. **Bank Credit Received:** ₹${payout.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-7. **Net Reconciliation Delta:** **₹0.0000 INR (Zero-Delta Exact Match)**
-
-**Confidence Score:** 99.98% verified by Agentic Subset-Sum Prover. No manual spreadsheets required.`,
-      };
+    // 2. Bundle questions
+    if (q.includes('bundle') || q.includes('1-to-n')) {
+      const bundles = allMatches.filter(m => m.status === 'AGENTIC_BUNDLE_MATCHED');
+      if (bundles.length > 0) {
+        const bundle = bundles[0];
+        const erpsInBundle = erpInvoices.filter(e => bundle.erpInvoiceIds.includes(e.id));
+        const grossErp = erpsInBundle.reduce((sum, e) => sum + e.amount, 0);
+        return {
+          category: 'BUNDLE',
+          citations: [bundle.id, bundle.bankRecordId || '', ...bundle.erpInvoiceIds],
+          responseText: `### 1-to-N Bundled Settlement\n\nFound bundle **${bundle.id}** matching 1 Bank Payout against **${bundle.erpInvoiceIds.length}** ERP Invoices.\n\n1. **Gross ERP Volume:** ₹${grossErp.toLocaleString('en-IN', { minimumFractionDigits: 2 })}\n2. **Bank Credit:** ₹${bundle.reconciledAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}\n3. **Delta:** ₹${bundle.discrepancyAmount.toFixed(2)}\n\n**Reasoning:**\n${bundle.reasoningTrace.map(r => `> ${r}`).join('\n')}`
+        };
+      } else {
+        return { category: 'BUNDLE', citations: [], responseText: 'No agentic bundles found in the current dataset.' };
+      }
     }
 
-    // 2. Honest Exceptions List
-    if (q.includes('exception') || q.includes('unresolved') || q.includes('error') || q.includes('could not resolve') || q.includes('anomaly')) {
+    // 3. Exception questions
+    if (q.includes('exception') || q.includes('unresolved') || q.includes('error')) {
+      if (exceptionMatches.length === 0) {
+        return { category: 'EXCEPTIONS', citations: [], responseText: 'No exceptions found! All records matched perfectly.' };
+      }
       const formattedList = exceptionMatches
-        .map((exc, idx) => `**${idx + 1}. [${exc.status}] ID: \`${exc.id}\`**\n   • Discrepancy Amount: **₹${exc.discrepancyAmount.toFixed(2)}**\n   • Root Cause: *${exc.reasoningTrace[0] || 'Flagged for controller intervention'}*\n   • Recommended Remediation: \`${exc.remediationStub?.actionLabel || 'Inspect'}\``)
+        .slice(0, 10)
+        .map((exc, idx) => `**${idx + 1}. [${exc.status}] ID: \`${exc.id}\`**\n   • Discrepancy Amount: **₹${exc.discrepancyAmount.toFixed(2)}**\n   • Trace: *${exc.reasoningTrace[0] || 'Unknown'}*`)
         .join('\n\n');
 
       return {
         category: 'EXCEPTIONS',
-        citations: exceptionMatches.map(e => e.id),
-        responseText: `### Honest Exception Report (${exceptionMatches.length} Unresolved Records)
-
-In accordance with our zero-hallucination verification bar, OmniSettle does **not** force-fit bad records. The following ${exceptionMatches.length} anomalies could not be resolved automatically and are staged for controller remediation:
-
-${formattedList || 'No unresolved exceptions detected in this dataset.'}
-
-**Compliance Notice:** All exceptions are cryptographically hashed and exported to GAAP audit queues with 1-click webhook remediation stubs.`,
+        citations: exceptionMatches.map(e => e.id).slice(0, 5),
+        responseText: `### Exception Report (${exceptionMatches.length} Unresolved Records)\n\n${formattedList}${exceptionMatches.length > 10 ? '\n\n*...and more.*' : ''}`
       };
     }
 
-    // 3. Verified Cash & Liquidity
-    if (q.includes('cash') || q.includes('liquidity') || q.includes('runway') || q.includes('float') || q.includes('balance') || q.includes('treasury')) {
-      const pendingFloat = activeDataset.gatewayRecords
-        .filter(g => g.status !== 'SETTLED')
-        .reduce((sum, g) => sum + g.netAmount, 0) || (metrics.totalReconciledINR * 0.08);
-
-      const totalLiquidity = metrics.totalReconciledINR + pendingFloat;
-
-      return {
-        category: 'CASH',
-        citations: ['BANK_LEDGER_CORE', 'GATEWAY_UNSETTLED_PIPELINE'],
-        responseText: `### Verified Cash Position & Liquidity Breakdown
-
-• **Reconciled Bank Cash:** ₹${metrics.totalReconciledINR.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-• **Pending Gateway Payout Float:** ₹${pendingFloat.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-• **Total Verified Liquidity Lock:** **₹${totalLiquidity.toLocaleString('en-IN', { minimumFractionDigits: 2 })}**
-
-**Forward Forecast Impact:**
-At baseline burn with zero gateway delay, current liquidity guarantees **>45 days of operational runway**. If gateway payouts experience a T+3 delay, liquidity remains healthy with a projected Day-30 net cash reserve above ₹${(totalLiquidity * 0.85).toFixed(0)}.`,
-      };
+    // 4. Aggregate queries
+    if (q.includes('how many') || q.includes('total') || q.includes('count')) {
+      if (q.includes('cash') || q.includes('reconciled')) {
+        return { category: 'CASH', citations: [], responseText: `Total reconciled cash is ₹${metrics.totalReconciledINR.toLocaleString('en-IN', { minimumFractionDigits: 2 })}.` };
+      }
+      if (q.includes('gst') || q.includes('tax')) {
+        return { category: 'TAX', citations: [], responseText: `Total GST/Tax deducted is ₹${metrics.totalTaxDeductedINR.toLocaleString('en-IN', { minimumFractionDigits: 2 })}.` };
+      }
+      if (q.includes('fee') || q.includes('mdr')) {
+        return { category: 'TAX', citations: [], responseText: `Total Gateway Fees (MDR) is ₹${metrics.totalGatewayFeesINR.toLocaleString('en-IN', { minimumFractionDigits: 2 })}.` };
+      }
+      return { category: 'GENERAL', citations: [], responseText: `I see ${bankTxns.length} bank transactions, ${gatewayRecords.length} gateway records, and ${erpInvoices.length} ERP invoices in this dataset. Total matches processed: ${allMatches.length}.` };
     }
 
-    // 4. Tax-Line GST Matching
-    if (q.includes('tax') || q.includes('gst') || q.includes('fee') || q.includes('mdr')) {
-      return {
-        category: 'TAX',
-        citations: ['GST_RULE_18PCT', 'TAX_LINE_VERIFIER', 'RAZORPAY_MDR_LEDGER'],
-        responseText: `### Tax-Line Matching & GST Audit (18% Statutory Rule)
-
-OmniSettle features an autonomous **Tax-Line Matcher** that verifies every fee withholding line against statutory Indian GST regulations:
-
-1. **Gateway Fee Rate Verification:** Contracted base MDR is verified against merchant agreements (typically 2.00% to 2.50%).
-2. **18% GST Computation:** GST is rigorously calculated on the *fee amount*, never on gross transaction revenue:
-   $$\\text{GST Line} = \\text{MDR Fee} \\times 18\\%$$
-3. **Overcharge Anomaly Guardrail:** When a gateway billed 2.50% instead of the contracted 2.00%, the agent flagged an immediate EXCEPTION_FEE_MISMATCH rather than swallowing the tax difference.
-4. **Total Verified Tax Deductions:** ₹${metrics.totalTaxDeductedINR.toLocaleString('en-IN', { minimumFractionDigits: 2 })} across settled batches.`,
-      };
+    if (q.includes('reconciliation rate') || q.includes('match rate') || q.includes('throughput')) {
+      return { category: 'GENERAL', citations: [], responseText: `The current reconciliation match rate is ${metrics.reconciliationRate}%.` };
+    }
+    
+    if (q.includes('cash') || q.includes('liquidity') || q.includes('float')) {
+       return { category: 'CASH', citations: [], responseText: `Total reconciled cash is ₹${metrics.totalReconciledINR.toLocaleString('en-IN', { minimumFractionDigits: 2 })}.` };
     }
 
-    // 5. Dataset queries
-    if (q.includes('dataset') || q.includes('batch') || q.includes('data') || q.includes('records')) {
-      return {
-        category: 'GENERAL',
-        citations: [activeDataset.id, `COUNT_${activeDataset.recordCount}`],
-        responseText: `### Active Financial Batch Metadata
-• **Mounted Dataset:** **${activeDataset.name}** (${activeDataset.id})
-• **Total Transactions Mounted:** **${activeDataset.recordCount} records**
-• **Bank Statements:** ${activeDataset.bankTxns.length} records
-• **Gateway Settlements:** ${activeDataset.gatewayRecords.length} records
-• **ERP Invoices:** ${activeDataset.erpInvoices.length} invoices
-• **Reconciliation Match Rate:** **${metrics.reconciliationRate}%** closed loop
-
-You can switch to another dataset anytime from the **Data Hub & Datasets (Hotkey 7)** view.`,
-      };
+    if (q.includes('gst') || q.includes('tax') || q.includes('fee') || q.includes('mdr')) {
+       return { category: 'TAX', citations: [], responseText: `Total Gateway Fees (MDR) is ₹${metrics.totalGatewayFeesINR.toLocaleString('en-IN', { minimumFractionDigits: 2 })}, and Total Tax (GST) is ₹${metrics.totalTaxDeductedINR.toLocaleString('en-IN', { minimumFractionDigits: 2 })}.` };
     }
 
-    // 6. General Performance / Match Rate
+    // 5. Fallback
     return {
       category: 'GENERAL',
-      citations: [`RECON_${metrics.reconciliationRate}%`, `SPEED_${metrics.avgLatencyMs}ms`],
-      responseText: `### Engine Performance & Match Rate Summary
-
-• **Reconciliation Rate:** **${metrics.reconciliationRate}%** closed loop (${metrics.fastPathCount + metrics.agenticCount}/${metrics.totalRecords} records)
-• **Ground-Truth Precision:** **${metrics.classificationAccuracy}%** verified match
-• **Fast-Path Throughput:** **${metrics.fastPathCount} records** matched deterministically in **<1.2ms** (0 LLM tokens spent)
-• **Agentic AI Resolvers:** **${metrics.agenticCount} records** handled complex multi-source bundles and foreign currency FX float
-• **Honest Exception Rate:** **${metrics.exceptionCount} records** classified into explicit audit remediation stubs
-• **Average Execution Latency:** **${metrics.avgLatencyMs}ms** total round-trip`,
+      citations: [],
+      responseText: `I am not sure how to answer that specifically. You can ask me about:\n- **Specific IDs** (e.g., INV-001, BANK-123)\n- **Bundles** (e.g., "explain bundle math")\n- **Exceptions** (e.g., "list exceptions")\n- **Aggregates** (e.g., "total cash", "how many records", "match rate", "total tax")\n\nCurrent dataset has ${bankTxns.length} bank txns, ${gatewayRecords.length} gateway txns, and ${erpInvoices.length} ERP invoices.`
     };
   };
 

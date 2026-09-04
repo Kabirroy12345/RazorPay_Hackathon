@@ -1,5 +1,17 @@
 import type { BankTransaction, GatewayRecord, ERPInvoice, MatchResult } from '../types/finance';
 
+/**
+ * Exception Classifier: Logic-Based Financial Anomaly Detection
+ *
+ * Classifies unmatched records into exception categories using REAL financial logic:
+ * - Fee rate comparison against contracted rates
+ * - Orphan detection (records with no cross-source match)
+ * - FX rate deviation analysis against gateway reference rates
+ * - Ambiguity detection (multiple candidate matches)
+ * - Chargeback/dispute status analysis
+ *
+ * NO string-matching on IDs. Works on arbitrary financial data.
+ */
 export function classifyExceptions(
   remainingBankTxns: BankTransaction[],
   remainingGatewayRecords: GatewayRecord[],
@@ -10,31 +22,51 @@ export function classifyExceptions(
   const processedGatewayIds = new Set<string>();
   const processedERPIds = new Set<string>();
 
-  // 1. AMBIGUOUS DUAL CANDIDATE CONFLICT (FLAGGED FOR HUMAN REVIEW)
+  // Helper: find gateway record that references a bank txn
+  const findGatewayForBank = (bTxn: BankTransaction): GatewayRecord | undefined => {
+    return remainingGatewayRecords.find(g => {
+      if (processedGatewayIds.has(g.id)) return false;
+      return g.id === bTxn.referenceNo || bTxn.description.includes(g.id);
+    });
+  };
+
+  // -----------------------------------------------------------------------
+  // 1. AMBIGUOUS DUAL-CANDIDATE CONFLICT (Multiple gateway matches → Human Review)
+  // LOGIC: A bank credit where 2+ unprocessed gateway records match on net amount
+  // -----------------------------------------------------------------------
   for (const bTxn of remainingBankTxns) {
     if (processedBankIds.has(bTxn.id)) continue;
-    if (bTxn.id.includes('AMBIG') || bTxn.description.includes('AMBIG')) {
-      const candidatesG = remainingGatewayRecords.filter(g => g.id.includes('AMBIG'));
-      const candidatesERP = remainingERPInvoices.filter(e => e.id.includes('AMBIG'));
+    if (bTxn.type === 'DEBIT' || bTxn.amount < 0) continue;
 
+    const candidateGateways = remainingGatewayRecords.filter(g => {
+      if (processedGatewayIds.has(g.id)) return false;
+      if (g.status === 'DISPUTED') return false;
+      return Math.abs(bTxn.amount - g.netAmount) < 1.0;
+    });
+
+    if (candidateGateways.length >= 2) {
       processedBankIds.add(bTxn.id);
-      candidatesG.forEach(g => processedGatewayIds.add(g.id));
-      candidatesERP.forEach(e => processedERPIds.add(e.id));
+      const candidateERPs = candidateGateways
+        .map(g => remainingERPInvoices.find(e => !processedERPIds.has(e.id) && e.orderId === g.orderId))
+        .filter((e): e is ERPInvoice => !!e);
+      candidateGateways.forEach(g => processedGatewayIds.add(g.id));
+      candidateERPs.forEach(e => processedERPIds.add(e.id));
 
       exceptionResults.push({
         id: `EXC-AMBIG-${bTxn.id}`,
         bankRecordId: bTxn.id,
-        gatewayRecordIds: candidatesG.map(g => g.id),
-        erpInvoiceIds: candidatesERP.map(e => e.id),
+        gatewayRecordIds: candidateGateways.map(g => g.id),
+        erpInvoiceIds: candidateERPs.map(e => e.id),
         status: 'AMBIGUOUS_HUMAN_REVIEW',
         matchType: 'HUMAN_REVIEW',
-        confidenceScore: 0.54, // Low confidence -> Honest Punt to Human Review
+        confidenceScore: 0.54,
         reconciledAmount: 0,
         discrepancyAmount: bTxn.amount,
         reasoningTrace: [
-          `[Ambiguity Conflict] Dual Candidate Gateway Matches Detected for Bank Credit ₹${bTxn.amount.toLocaleString('en-IN')}`,
-          `[Candidate 1] Order #ORD-AMBIG-A (A. Sharma Enterprise) - Gross ₹30,000 | Timestamp 09:00:00Z`,
-          `[Candidate 2] Order #ORD-AMBIG-B (Anil Sharma Pvt Ltd) - Gross ₹30,000 | Timestamp 09:05:00Z`,
+          `[Ambiguity Conflict] ${candidateGateways.length} Gateway records match Bank Credit ₹${bTxn.amount.toLocaleString('en-IN')} within ±₹1 tolerance`,
+          ...candidateGateways.map((g, i) =>
+            `[Candidate ${i + 1}] Order #${g.orderId} (${g.customerName}) - Gross ₹${g.grossAmount.toLocaleString('en-IN')} | ${g.timestamp}`
+          ),
           `[AI Safety Guardrail] Match Confidence = 54% (Below 85% Auto-Close Threshold). Refusing to auto-reconcile to avoid false positive posting`,
           `[Honest Action] Escalating to Human Controller Review Queue`,
         ],
@@ -49,15 +81,25 @@ export function classifyExceptions(
     }
   }
 
-  // 2. FEE MISMATCH OVERCHARGE (Billed 2.50% vs Contracted 2.00%)
+  // -----------------------------------------------------------------------
+  // 2. FEE MISMATCH OVERCHARGE (Actual fee rate exceeds contracted 2.00% + tolerance)
+  // LOGIC: Find bank↔gateway pairs where gateway fee rate > 205 bps (2.05%)
+  // -----------------------------------------------------------------------
   for (const bTxn of remainingBankTxns) {
     if (processedBankIds.has(bTxn.id)) continue;
+    if (bTxn.type === 'DEBIT' || bTxn.amount < 0) continue;
 
-    const gMatch = remainingGatewayRecords.find(g => g.id === bTxn.referenceNo || bTxn.description.includes(g.id));
-    if (gMatch) {
-      const erpMatch = remainingERPInvoices.find(e => e.orderId === gMatch.orderId);
-      const actualFeeRateBps = Math.round((gMatch.feeAmount / gMatch.grossAmount) * 10000);
-      const contractedFeeRateBps = 200;
+    const gMatch = findGatewayForBank(bTxn);
+    if (!gMatch) continue;
+
+    const actualFeeRateBps = Math.round((gMatch.feeAmount / gMatch.grossAmount) * 10000);
+    const contractedFeeRateBps = 200; // 2.00%
+    const toleranceBps = 5; // 0.05%
+
+    if (actualFeeRateBps > contractedFeeRateBps + toleranceBps) {
+      const erpMatch = remainingERPInvoices.find(e =>
+        !processedERPIds.has(e.id) && e.orderId === gMatch.orderId
+      );
       const feeOverchargeINR = (gMatch.grossAmount * (actualFeeRateBps - contractedFeeRateBps)) / 10000;
 
       processedBankIds.add(bTxn.id);
@@ -78,7 +120,7 @@ export function classifyExceptions(
         reasoningTrace: [
           `[Honest Exception] Gateway Fee Overcharge Detected for Order #${gMatch.orderId}`,
           `[Contract Comparison] Contract Fee Rate: 2.00% (200 bps) | Billed Fee Rate: ${(actualFeeRateBps / 100).toFixed(2)}% (${actualFeeRateBps} bps)`,
-          `[Variance Assessment] Variance = +${actualFeeRateBps - contractedFeeRateBps} bps (Exceeds >10 bps threshold)`,
+          `[Variance Assessment] Variance = +${actualFeeRateBps - contractedFeeRateBps} bps (Exceeds >${toleranceBps} bps threshold)`,
           `[Financial Impact] Excessive Gateway Deduction = ₹${feeOverchargeINR.toFixed(2)} on Gross ₹${gMatch.grossAmount}`,
         ],
         remediationStub: {
@@ -92,39 +134,55 @@ export function classifyExceptions(
     }
   }
 
-  // 3. UNHEDGED FX SLIPPAGE (> ±0.50% float deviation)
+  // -----------------------------------------------------------------------
+  // 3. UNHEDGED FX SLIPPAGE (> ±0.50% rate deviation from gateway reference)
+  // LOGIC: Multi-currency bank↔gateway pair where settled FX rate deviates
+  //        from the gateway's reference fxRate by more than 0.5%
+  // -----------------------------------------------------------------------
   for (const bTxn of remainingBankTxns) {
     if (processedBankIds.has(bTxn.id)) continue;
-    if (!bTxn.id.includes('FX-SLIP') && !bTxn.description.includes('SLIPPAGE')) continue;
+    if (bTxn.type === 'DEBIT' || bTxn.amount < 0) continue;
 
-    const gMatch = remainingGatewayRecords.find(g => g.id.includes('SLIP'));
-    const erpMatch = remainingERPInvoices.find(e => e.id.includes('SLIP'));
+    const gMatch = remainingGatewayRecords.find(g => {
+      if (processedGatewayIds.has(g.id)) return false;
+      if (g.currency === 'INR') return false; // Only foreign currency gateway records
+      return g.id === bTxn.referenceNo || bTxn.description.includes(g.id);
+    });
 
-    if (gMatch && erpMatch) {
-      const referenceRate = 83.30;
-      const actualRate = bTxn.amount / erpMatch.amount;
-      const slippagePct = Math.abs((actualRate - referenceRate) / referenceRate) * 100;
-      const lossINR = Math.abs(referenceRate * 2000 - bTxn.amount);
+    if (!gMatch || !gMatch.fxRate) continue;
+
+    const erpMatch = remainingERPInvoices.find(e =>
+      !processedERPIds.has(e.id) && e.orderId === gMatch.orderId
+    );
+    if (!erpMatch) continue;
+
+    // Compute actual settled rate: bank INR amount / invoice foreign amount
+    const actualRate = bTxn.amount / erpMatch.amount;
+    const referenceRate = gMatch.fxRate;
+    const slippagePct = Math.abs((actualRate - referenceRate) / referenceRate) * 100;
+
+    if (slippagePct > 0.5) {
+      const lossINR = Math.abs(referenceRate * erpMatch.amount - bTxn.amount);
 
       processedBankIds.add(bTxn.id);
       processedGatewayIds.add(gMatch.id);
-      if (erpMatch) processedERPIds.add(erpMatch.id);
+      processedERPIds.add(erpMatch.id);
 
       exceptionResults.push({
         id: `EXC-FX-${bTxn.id}`,
         bankRecordId: bTxn.id,
         gatewayRecordIds: [gMatch.id],
-        erpInvoiceIds: erpMatch ? [erpMatch.id] : [],
+        erpInvoiceIds: [erpMatch.id],
         status: 'EXCEPTION_UNHEDGED_FX_SLIPPAGE',
         matchType: 'EXCEPTION',
         confidenceScore: 0.94,
         reconciledAmount: bTxn.amount,
         discrepancyAmount: lossINR,
         reasoningTrace: [
-          `[Honest Exception] Unhedged Foreign Currency Rate Slippage for USD Invoice`,
-          `[Rate Benchmarking] Expected Ref Rate: ${referenceRate} INR/USD | Settled Bank Rate: ${actualRate.toFixed(2)} INR/USD`,
+          `[Honest Exception] Unhedged Foreign Currency Rate Slippage for ${gMatch.currency} Invoice`,
+          `[Rate Benchmarking] Gateway Reference Rate: ${referenceRate} INR/${gMatch.currency} | Settled Bank Rate: ${actualRate.toFixed(2)} INR/${gMatch.currency}`,
           `[Threshold Breach] Rate Slippage = ${slippagePct.toFixed(2)}% (Breaches ±0.50% tolerance threshold)`,
-          `[Loss Quantified] Realized FX Loss = ₹${lossINR.toLocaleString('en-IN')}.00`,
+          `[Loss Quantified] Realized FX Loss = ₹${lossINR.toLocaleString('en-IN', { maximumFractionDigits: 2 })}`,
         ],
         remediationStub: {
           id: `REM-FX-${bTxn.id}`,
@@ -137,10 +195,20 @@ export function classifyExceptions(
     }
   }
 
-  // 4. DUPLICATE BANK PAYOUT
+  // -----------------------------------------------------------------------
+  // 4. DUPLICATE / ORPHAN BANK CREDIT (No gateway record matches at all)
+  // LOGIC: Bank credit where zero gateway records share the reference ID
+  // -----------------------------------------------------------------------
   for (const bTxn of remainingBankTxns) {
     if (processedBankIds.has(bTxn.id)) continue;
-    if (bTxn.id.includes('DUP') || bTxn.description.includes('DUPLICATE')) {
+    if (bTxn.type === 'DEBIT' || bTxn.amount < 0) continue;
+
+    const hasAnyGatewayMatch = remainingGatewayRecords.some(g => {
+      if (processedGatewayIds.has(g.id)) return false;
+      return g.id === bTxn.referenceNo || bTxn.description.includes(g.id);
+    });
+
+    if (!hasAnyGatewayMatch) {
       processedBankIds.add(bTxn.id);
 
       exceptionResults.push({
@@ -154,13 +222,14 @@ export function classifyExceptions(
         reconciledAmount: bTxn.amount,
         discrepancyAmount: bTxn.amount,
         reasoningTrace: [
-          `[Honest Exception] Unlinked / Duplicate Bank Credit Hit Account`,
-          `[3-Way Verification] Bank Credit (₹${bTxn.amount.toLocaleString('en-IN')}.00) has ZERO matching Razorpay Gateway Settlement ID`,
+          `[Honest Exception] Unlinked / Orphan Bank Credit Hit Account`,
+          `[3-Way Verification] Bank Credit (₹${bTxn.amount.toLocaleString('en-IN')}) has ZERO matching Gateway Settlement ID`,
+          `[Reference Check] Bank Ref #${bTxn.referenceNo} not found in any gateway settlement record`,
           `[Risk Classification] Potential Bank Clearing Error or Double Credit Payout`,
         ],
         remediationStub: {
           id: `REM-DUP-${bTxn.id}`,
-          title: `Flag Duplicate Bank Credit for Clearing Audit`,
+          title: `Flag Orphan Bank Credit for Clearing Audit`,
           actionLabel: 'Notify Bank Treasury Ops',
           targetCategory: 'BANK_AUDIT',
           impactAmount: bTxn.amount,
@@ -169,11 +238,24 @@ export function classifyExceptions(
     }
   }
 
-  // 5. MISSING ERP INVOICE
+  // -----------------------------------------------------------------------
+  // 5. MISSING ERP INVOICE (Gateway settled + possibly banked, but no ERP record)
+  // LOGIC: Gateway record where zero ERP invoices share the orderId
+  // -----------------------------------------------------------------------
   for (const gRecord of remainingGatewayRecords) {
     if (processedGatewayIds.has(gRecord.id)) continue;
-    if (gRecord.id.includes('GHOST') || gRecord.orderId.includes('GHOST')) {
-      const bMatch = remainingBankTxns.find(b => b.id.includes('GHOST') || b.description.includes(gRecord.id));
+    if (gRecord.status === 'DISPUTED') continue; // Handled in chargeback section
+
+    const hasERP = remainingERPInvoices.some(e =>
+      !processedERPIds.has(e.id) && e.orderId === gRecord.orderId
+    );
+
+    if (!hasERP) {
+      const bMatch = remainingBankTxns.find(b => {
+        if (processedBankIds.has(b.id)) return false;
+        return b.referenceNo === gRecord.id || b.description.includes(gRecord.id);
+      });
+
       processedGatewayIds.add(gRecord.id);
       if (bMatch) processedBankIds.add(bMatch.id);
 
@@ -203,11 +285,17 @@ export function classifyExceptions(
     }
   }
 
-  // 6. UNRESOLVED DISPUTED CHARGEBACK
+  // -----------------------------------------------------------------------
+  // 6. UNRESOLVED DISPUTED CHARGEBACK (Gateway status === 'DISPUTED')
+  // LOGIC: Gateway record flagged as disputed by issuing bank
+  // -----------------------------------------------------------------------
   for (const gRecord of remainingGatewayRecords) {
     if (processedGatewayIds.has(gRecord.id)) continue;
+
     if (gRecord.status === 'DISPUTED') {
-      const erpMatch = remainingERPInvoices.find(e => e.orderId === gRecord.orderId);
+      const erpMatch = remainingERPInvoices.find(e =>
+        !processedERPIds.has(e.id) && e.orderId === gRecord.orderId
+      );
       processedGatewayIds.add(gRecord.id);
       if (erpMatch) processedERPIds.add(erpMatch.id);
 
@@ -223,7 +311,7 @@ export function classifyExceptions(
         discrepancyAmount: gRecord.grossAmount,
         reasoningTrace: [
           `[Honest Exception] Customer Chargeback Dispute Withheld by Gateway`,
-          `[Razorpay Status] Order #${gRecord.orderId} marked as 'DISPUTED' by issuing bank`,
+          `[Gateway Status] Order #${gRecord.orderId} marked as 'DISPUTED' by issuing bank`,
           `[Bank Payout Check] Zero bank credit received; funds held in Gateway escrow reserve`,
         ],
         remediationStub: {
@@ -237,12 +325,16 @@ export function classifyExceptions(
     }
   }
 
-  // 7. BANK DEBIT CHARGEBACKS
+  // -----------------------------------------------------------------------
+  // 7. BANK DEBIT / REVERSAL (Negative amount or DEBIT type)
+  // LOGIC: Bank record with negative amount or DEBIT type
+  // -----------------------------------------------------------------------
   for (const bTxn of remainingBankTxns) {
     if (processedBankIds.has(bTxn.id)) continue;
-    if (bTxn.type === 'DEBIT' || bTxn.amount < 0 || bTxn.id.includes('NEG-CB') || bTxn.description.includes('REVERSAL')) {
+
+    if (bTxn.type === 'DEBIT' || bTxn.amount < 0) {
       processedBankIds.add(bTxn.id);
-      
+
       exceptionResults.push({
         id: `EXC-DEBIT-${bTxn.id}`,
         bankRecordId: bTxn.id,

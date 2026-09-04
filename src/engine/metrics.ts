@@ -73,6 +73,6 @@ export function calculateIndependentMetrics(
     totalGrossProcessedINR,
     totalGatewayFeesINR,
     totalTaxDeductedINR,
-    avgLatencyMs: latencyMs > 0 ? latencyMs : 14.2,
+    avgLatencyMs: latencyMs > 0 ? latencyMs : 0,
   };
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FileCheck, ShieldCheck, Printer, Lock, Award, Copy, Check, X, Cpu } from 'lucide-react';
 import type { FullReconciliationOutput } from '../../engine/reconciler';
 import type { FinancialDataset } from '../../types/finance';
@@ -14,7 +14,17 @@ export const GAAPAuditView: React.FC<GAAPAuditViewProps> = ({ output, activeData
   const [showMerkleModal, setShowMerkleModal] = useState(false);
 
   const auditDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-  const auditHash = '8f9b2c4e1a6d3e8f7b5a4c2e1d0f9a8b27c3e5d1a8f0e2b4';
+  const [auditHash, setAuditHash] = useState('computing...');
+
+  useEffect(() => {
+    async function computeAuditHash(data: any): Promise<string> {
+      const text = JSON.stringify(data);
+      const encoder = new TextEncoder();
+      const buffer = await crypto.subtle.digest('SHA-256', encoder.encode(text));
+      return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    computeAuditHash(output.allMatches).then(setAuditHash);
+  }, [output.allMatches]);
 
   const handlePrint = () => {
     window.print();
@@ -222,7 +232,7 @@ export const GAAPAuditView: React.FC<GAAPAuditViewProps> = ({ output, activeData
               </tr>
               <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
                 <td style={{ padding: '0.75rem', color: '#FFFFFF', fontWeight: 700 }}>1-to-N Bundled Payout Math & FX Float</td>
-                <td style={{ padding: '0.75rem', color: '#38BDF8' }}>Agentic AI Resolver (Zero Delta Proved)</td>
+                <td style={{ padding: '0.75rem', color: '#38BDF8' }}>Agentic AI Resolver (Delta Proved: ₹{output.allMatches.filter(m => m.status.startsWith('AGENTIC')).reduce((acc, m) => acc + m.discrepancyAmount, 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })})</td>
                 <td className="font-mono" style={{ padding: '0.75rem', textAlign: 'right', fontWeight: 700, color: '#FFFFFF' }}>{metrics.agenticCount}</td>
                 <td style={{ padding: '0.75rem', textAlign: 'right', color: '#10B981', fontWeight: 800 }}>100% Passed</td>
               </tr>

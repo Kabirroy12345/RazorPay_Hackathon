@@ -142,7 +142,7 @@ export async function runAgenticResolver(
         // Fallback for offline mode or when backend server is not running
         detectedMockMode = true;
         const candidateInvoices = unmatchedERPInvoices.filter(e =>
-          candidateGateway.some(g => g.orderId === e.orderId) || (e.id && e.id.includes('BUN'))
+          candidateGateway.some(g => g.orderId === e.orderId)
         );
         let sumGross = 0;
         candidateInvoices.forEach(e => { sumGross += e.amount; });
@@ -249,7 +249,7 @@ export async function runAgenticResolver(
       // Fallback for offline mode when backend server is not running
       detectedMockMode = true;
       const rate = bTxn.amount / gFX.grossAmount;
-      const refRate = 83.30;
+      const refRate = gFX.fxRate || 83.30;
       const tolerance = Math.abs(rate - refRate) / refRate;
       if (tolerance <= 0.005) {
         resolvedBankIds.add(bTxn.id);

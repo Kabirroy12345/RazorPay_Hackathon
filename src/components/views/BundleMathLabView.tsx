@@ -23,7 +23,7 @@ const PRESETS: BundlePreset[] = [
     refundDeduction: 2500,
     bankCredit: 48272.80,
     bundleId: 'SET-BUNDLE-88412',
-    notes: '8 ERP Invoices (INV-BUN-01..08) minus 2% MDR fee minus 18% statutory GST minus ORD-BUN-04 customer return.'
+    notes: '8 ERP Invoices (INV-SET-01..08) minus 2% MDR fee minus 18% statutory GST minus ORD-SET-04 customer return.'
   },
   {
     name: 'High-Volume Enterprise SaaS Bundle',

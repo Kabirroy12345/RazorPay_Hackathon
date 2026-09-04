@@ -33,32 +33,32 @@ for (let i = 1; i <= 20; i++) {
 
 // 2. Unseen Bundle Structure (5 invoices to 1 bank payout)
 const bundleInvoices: ERPInvoice[] = [
-  { id: 'INV-HBUN-1', orderId: 'ORD-HBUN-1', customerName: 'Client A', amount: 15000, currency: 'INR', date: '2026-09-10', status: 'PAID' },
-  { id: 'INV-HBUN-2', orderId: 'ORD-HBUN-2', customerName: 'Client B', amount: 8000, currency: 'INR', date: '2026-09-10', status: 'PAID' },
-  { id: 'INV-HBUN-3', orderId: 'ORD-HBUN-3', customerName: 'Client C', amount: 22000, currency: 'INR', date: '2026-09-11', status: 'PAID' },
-  { id: 'INV-HBUN-4', orderId: 'ORD-HBUN-4', customerName: 'Client D', amount: 5000, currency: 'INR', date: '2026-09-11', status: 'PAID' },
-  { id: 'INV-HBUN-5', orderId: 'ORD-HBUN-5', customerName: 'Client E', amount: 10000, currency: 'INR', date: '2026-09-12', status: 'PAID' }, // gross = 60000
+  { id: 'INV-HSET-1', orderId: 'ORD-HSET-1', customerName: 'Client A', amount: 15000, currency: 'INR', date: '2026-09-10', status: 'PAID' },
+  { id: 'INV-HSET-2', orderId: 'ORD-HSET-2', customerName: 'Client B', amount: 8000, currency: 'INR', date: '2026-09-10', status: 'PAID' },
+  { id: 'INV-HSET-3', orderId: 'ORD-HSET-3', customerName: 'Client C', amount: 22000, currency: 'INR', date: '2026-09-11', status: 'PAID' },
+  { id: 'INV-HSET-4', orderId: 'ORD-HSET-4', customerName: 'Client D', amount: 5000, currency: 'INR', date: '2026-09-11', status: 'PAID' },
+  { id: 'INV-HSET-5', orderId: 'ORD-HSET-5', customerName: 'Client E', amount: 10000, currency: 'INR', date: '2026-09-12', status: 'PAID' }, // gross = 60000
 ];
 
 const bundleGatewayRecords: GatewayRecord[] = bundleInvoices.map((inv, idx) => {
-  const isRefunded = idx === 1; // ORD-HBUN-2 refunded completely
+  const isRefunded = idx === 1; // ORD-HSET-2 refunded completely
   const gross = inv.amount;
   const fee = Number((gross * 0.02).toFixed(2));
   const gst = Number((fee * 0.18).toFixed(2));
   const net = isRefunded ? gross - fee - gst - 8000 : gross - fee - gst; 
   return {
-    id: `RZP-HBUN-${idx + 1}`, settlementId: 'SET-HBUN-99', orderId: inv.orderId, customerName: inv.customerName,
+    id: `RZP-HSET-${idx + 1}`, settlementId: 'SET-HSET-99', orderId: inv.orderId, customerName: inv.customerName,
     grossAmount: gross, feeAmount: fee, gstAmount: gst, netAmount: net, status: isRefunded ? 'REFUNDED' : 'SETTLED', timestamp: '2026-09-12T18:00:00Z', currency: 'INR'
   };
 });
 
 // Gross: 60000. Fee: 1200. GST: 216. Refund: 8000. Net: 50584.
 const bundleBankTxn: BankTransaction = {
-  id: 'BANK-HBUN-99', date: '2026-09-13', description: `RAZORPAY PAYOUT SET-HBUN-99`, amount: 50584.00, type: 'CREDIT', referenceNo: 'SET-HBUN-99', currency: 'INR'
+  id: 'BANK-HSET-99', date: '2026-09-13', description: `RAZORPAY PAYOUT SET-HSET-99`, amount: 50584.00, type: 'CREDIT', referenceNo: 'SET-HSET-99', currency: 'INR'
 };
 
 const bundleGroundTruth: GroundTruthEntry = {
-  bankId: 'BANK-HBUN-99', gatewayIds: bundleGatewayRecords.map(r => r.id), erpIds: bundleInvoices.map(i => i.id),
+  bankId: 'BANK-HSET-99', gatewayIds: bundleGatewayRecords.map(r => r.id), erpIds: bundleInvoices.map(i => i.id),
   expectedStatus: 'AGENTIC_BUNDLE_MATCHED', expectedCategory: 'AGENTIC'
 };
 
@@ -82,8 +82,8 @@ const malformedBankTxn: BankTransaction = {
 const malformedGroundTruth: GroundTruthEntry = { bankId: 'BANK-CORRUPT-NULL', gatewayIds: [], erpIds: [], expectedStatus: 'PIPELINE_PARSE_CORRECTION_FALLBACK', expectedCategory: 'EXCEPTION' };
 
 // 5. Unseen Exception: Negative settlement chargeback
-const chargebackBankTxn: BankTransaction = { id: 'BANK-NEG-CB', date: '2026-09-16', description: 'REVERSAL DEBIT RZP-NEG-CB', amount: -5000, type: 'DEBIT', referenceNo: 'RZP-NEG-CB', currency: 'INR' };
-const chargebackGroundTruth: GroundTruthEntry = { bankId: 'BANK-NEG-CB', gatewayIds: [], erpIds: [], expectedStatus: 'EXCEPTION_UNRESOLVED_CHARGEBACK', expectedCategory: 'EXCEPTION' };
+const chargebackBankTxn: BankTransaction = { id: 'BANK-HREV-01', date: '2026-09-16', description: 'REVERSAL DEBIT RZP-HREV-01', amount: -5000, type: 'DEBIT', referenceNo: 'RZP-HREV-01', currency: 'INR' };
+const chargebackGroundTruth: GroundTruthEntry = { bankId: 'BANK-HREV-01', gatewayIds: [], erpIds: [], expectedStatus: 'EXCEPTION_UNRESOLVED_CHARGEBACK', expectedCategory: 'EXCEPTION' };
 
 export const HOLDOUT_BANK_TRANSACTIONS = [...cleanBankTxns, bundleBankTxn, fxBankTxn, malformedBankTxn, chargebackBankTxn];
 export const HOLDOUT_GATEWAY_RECORDS = [...cleanGatewayRecords, ...bundleGatewayRecords, fxGatewayRecord];

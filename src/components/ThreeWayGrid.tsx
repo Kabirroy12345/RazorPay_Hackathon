@@ -474,7 +474,7 @@ export const ThreeWayGrid: React.FC<ThreeWayGridProps> = ({
                         <div>
                           {erpRecords.length > 1 ? (
                             <div style={{ fontWeight: 800, color: '#38BDF8', fontSize: '0.9rem' }}>
-                              {erpRecords.length} INVOICES (GROSS ₹52,000)
+                              {erpRecords.length} INVOICES (GROSS {erpRecords.length > 0 && erpRecords[0].currency === 'USD' ? '$' : '₹'}{erpRecords.reduce((sum, inv) => sum + inv.amount, 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })})
                             </div>
                           ) : (
                             <div className="font-mono data-flicker" style={{ fontWeight: 800, color: '#FFFFFF', fontSize: '0.92rem' }}>
@@ -483,7 +483,7 @@ export const ThreeWayGrid: React.FC<ThreeWayGridProps> = ({
                             </div>
                           )}
                           <div className="font-mono" style={{ fontSize: '0.7rem', color: '#94A3B8', marginTop: '0.2rem' }}>
-                            {erpRecords.length === 1 ? erpRecords[0].id : `INV-BUN-01..0${erpRecords.length}`}
+                            {erpRecords.length === 1 ? erpRecords[0].id : `${erpRecords[0].id}..${erpRecords[erpRecords.length - 1].id}`}
                           </div>
                         </div>
                       ) : (

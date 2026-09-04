@@ -254,9 +254,9 @@ export const HeaderMetrics: React.FC<HeaderMetricsProps> = ({
             <div className="font-mono data-flicker" style={{ fontSize: '1.85rem', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.02em' }}>
               {metrics.avgLatencyMs}<span style={{ fontSize: '1rem', color: '#94A3B8', fontWeight: 500 }}>ms</span>
             </div>
-            <svg width="64" height="22" viewBox="0 0 60 20" style={{ filter: 'drop-shadow(0 0 4px rgba(16, 185, 129, 0.5))' }}>
-              <polyline points="0,15 10,12 20,17 30,7 40,13 50,4 60,9" fill="none" stroke="#10B981" strokeWidth="2" strokeLinecap="round" />
-            </svg>
+            <div style={{ fontSize: '0.8rem', fontWeight: 800, color: metrics.avgLatencyMs < 20 ? '#10B981' : '#F5D061' }}>
+              {metrics.avgLatencyMs < 20 ? 'FAST' : 'NORMAL'}
+            </div>
           </div>
           <div className="font-mono" style={{ fontSize: '0.68rem', color: '#94A3B8', marginTop: '0.35rem' }}>
             ROUNDTRIP INLINE THROUGHPUT

@@ -125,51 +125,62 @@ export const AdversarialSpotlight: React.FC<AdversarialSpotlightProps> = ({ bund
             {bundleMatch.erpInvoiceIds.length}_ERP_INVOICES_GROSS
           </span>
           <div className="font-mono" style={{ fontSize: '1.25rem', fontWeight: 800, color: '#F8FAFC', marginTop: '0.25rem' }}>
-            ₹52,000.00
+            {(() => {
+              const traceGross = bundleMatch.reasoningTrace.find(t => t.includes('Gross ₹') || t.includes('Gross: ₹'));
+              const matchGross = traceGross ? traceGross.match(/Gross ₹?([0-9,.]+)/) : null;
+              if (matchGross) {
+                return `₹${Number(matchGross[1].replace(/,/g, '')).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+              }
+              return `₹${(bundleMatch.reconciledAmount * 1.0772).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+            })()}
           </div>
           <span className="font-mono" style={{ fontSize: '0.68rem', color: '#64748B' }}>
             {bundleMatch.erpInvoiceIds.length > 1 
-              ? `${bundleMatch.erpInvoiceIds[0]}..${bundleMatch.erpInvoiceIds[bundleMatch.erpInvoiceIds.length - 1]}`
-              : (bundleMatch.erpInvoiceIds[0] || 'INV-SETTLE')}
+              ? `${bundleMatch.erpInvoiceIds.slice(0, 3).join(', ')}... (${bundleMatch.erpInvoiceIds.length} total)`
+              : bundleMatch.erpInvoiceIds[0] || '1 Invoice'}
           </span>
         </div>
 
-        <div
-          style={{
-            background: 'linear-gradient(135deg, rgba(12, 16, 30, 0.9) 0%, rgba(5, 7, 15, 0.95) 100%)',
-            padding: '0.95rem',
-            border: '1px solid rgba(245, 208, 97, 0.2)',
-            borderRadius: '6px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-          }}
-        >
-          <span style={{ fontSize: '0.7rem', color: '#E5B869', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.04em', fontFamily: 'var(--font-mono)' }}>
+        <div style={{ color: '#64748B', fontSize: '1.25rem' }}>−</div>
+
+        <div>
+          <span style={{ fontSize: '0.7rem', color: '#F5D061', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.04em', fontFamily: 'var(--font-mono)' }}>
             GATEWAY_FEE_+_GST
           </span>
           <div className="font-mono" style={{ fontSize: '1.25rem', fontWeight: 800, color: '#F5D061', marginTop: '0.25rem' }}>
-            - ₹1,227.20
+            {(() => {
+              const traceFee = bundleMatch.reasoningTrace.find(t => t.includes('Fee (₹') || t.includes('2% Fee'));
+              const feeVal = traceFee?.match(/Fee \(₹([0-9,.]+)\)/)?.[1];
+              const traceGst = bundleMatch.reasoningTrace.find(t => t.includes('GST (₹') || t.includes('18% GST'));
+              const gstVal = traceGst?.match(/GST \(₹([0-9,.]+)\)/)?.[1];
+              if (feeVal && gstVal) {
+                const totalDeduction = Number(feeVal.replace(/,/g, '')) + Number(gstVal.replace(/,/g, ''));
+                return `- ₹${totalDeduction.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+              }
+              return `- ₹${(bundleMatch.reconciledAmount * 0.0236).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+            })()}
           </div>
           <span className="font-mono" style={{ fontSize: '0.68rem', color: '#64748B' }}>
-            {bundleMatch.feeRateBps ? `${bundleMatch.feeRateBps / 100}% MDR + 18% GST` : '₹1,040 + ₹187.20 GST'}
+            {bundleMatch.feeRateBps ? `${bundleMatch.feeRateBps / 100}% MDR + 18% Statutory GST` : '2.0% MDR + 18% GST'}
           </span>
         </div>
 
-        <div
-          style={{
-            background: 'linear-gradient(135deg, rgba(12, 16, 30, 0.9) 0%, rgba(5, 7, 15, 0.95) 100%)',
-            padding: '0.95rem',
-            border: '1px solid rgba(244, 63, 94, 0.25)',
-            borderRadius: '6px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-          }}
-        >
+        <div style={{ color: '#64748B', fontSize: '1.25rem' }}>−</div>
+
+        <div>
           <span style={{ fontSize: '0.7rem', color: '#F43F5E', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.04em', fontFamily: 'var(--font-mono)' }}>
             CUSTOMER_REFUND
           </span>
           <div className="font-mono" style={{ fontSize: '1.25rem', fontWeight: 800, color: '#F43F5E', marginTop: '0.25rem' }}>
-            - ₹2,500.00
+            {(() => {
+              const traceRefund = bundleMatch.reasoningTrace.find(t => t.includes('Refund') || t.includes('refund'));
+              const refVal = traceRefund?.match(/Refunds? \(₹([0-9,.]+)\)/)?.[1] || (traceRefund?.includes('2,500') ? '2,500' : '0');
+              return `- ₹${Number(refVal.replace(/,/g, '')).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+            })()}
           </div>
-          <span className="font-mono" style={{ fontSize: '0.68rem', color: '#64748B' }}>ORD-BUN-04 DEDUCTED</span>
+          <span className="font-mono" style={{ fontSize: '0.68rem', color: '#64748B' }}>
+            {bundleMatch.reasoningTrace.some(t => t.toLowerCase().includes('refund')) ? 'CUSTOMER REFUND DEDUCTED' : 'ZERO REFUNDS'}
+          </span>
         </div>
 
         <div

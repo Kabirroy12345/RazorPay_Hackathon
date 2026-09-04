@@ -80,14 +80,14 @@ const BUNDLE_SETTLEMENT_ID = 'SET-BUNDLE-88412';
 const BUNDLE_BANK_ID = 'BANK-SETTLE-88412';
 
 const bundleInvoices: ERPInvoice[] = [
-  { id: 'INV-BUN-01', orderId: 'ORD-BUN-01', customerName: 'Apex Cloud Solutions', amount: 8500, currency: 'INR', date: '2026-08-20', status: 'PAID' },
-  { id: 'INV-BUN-02', orderId: 'ORD-BUN-02', customerName: 'Nexus Tech Labs', amount: 6200, currency: 'INR', date: '2026-08-20', status: 'PAID' },
-  { id: 'INV-BUN-03', orderId: 'ORD-BUN-03', customerName: 'Vortex Global', amount: 12000, currency: 'INR', date: '2026-08-21', status: 'PAID' },
-  { id: 'INV-BUN-04', orderId: 'ORD-BUN-04', customerName: 'Starlight Retail', amount: 4500, currency: 'INR', date: '2026-08-21', status: 'PAID' },
-  { id: 'INV-BUN-05', orderId: 'ORD-BUN-05', customerName: 'Hyperion Systems', amount: 7300, currency: 'INR', date: '2026-08-21', status: 'PAID' },
-  { id: 'INV-BUN-06', orderId: 'ORD-BUN-06', customerName: 'Zenith Logistics', amount: 3500, currency: 'INR', date: '2026-08-22', status: 'PAID' },
-  { id: 'INV-BUN-07', orderId: 'ORD-BUN-07', customerName: 'Pulse Analytics', amount: 5000, currency: 'INR', date: '2026-08-22', status: 'PAID' },
-  { id: 'INV-BUN-08', orderId: 'ORD-BUN-08', customerName: 'Quantum AI Works', amount: 5000, currency: 'INR', date: '2026-08-22', status: 'PAID' },
+  { id: 'INV-SET-01', orderId: 'ORD-SET-01', customerName: 'Apex Cloud Solutions', amount: 8500, currency: 'INR', date: '2026-08-20', status: 'PAID' },
+  { id: 'INV-SET-02', orderId: 'ORD-SET-02', customerName: 'Nexus Tech Labs', amount: 6200, currency: 'INR', date: '2026-08-20', status: 'PAID' },
+  { id: 'INV-SET-03', orderId: 'ORD-SET-03', customerName: 'Vortex Global', amount: 12000, currency: 'INR', date: '2026-08-21', status: 'PAID' },
+  { id: 'INV-SET-04', orderId: 'ORD-SET-04', customerName: 'Starlight Retail', amount: 4500, currency: 'INR', date: '2026-08-21', status: 'PAID' },
+  { id: 'INV-SET-05', orderId: 'ORD-SET-05', customerName: 'Hyperion Systems', amount: 7300, currency: 'INR', date: '2026-08-21', status: 'PAID' },
+  { id: 'INV-SET-06', orderId: 'ORD-SET-06', customerName: 'Zenith Logistics', amount: 3500, currency: 'INR', date: '2026-08-22', status: 'PAID' },
+  { id: 'INV-SET-07', orderId: 'ORD-SET-07', customerName: 'Pulse Analytics', amount: 5000, currency: 'INR', date: '2026-08-22', status: 'PAID' },
+  { id: 'INV-SET-08', orderId: 'ORD-SET-08', customerName: 'Quantum AI Works', amount: 5000, currency: 'INR', date: '2026-08-22', status: 'PAID' },
 ];
 
 const bundleGatewayRecords: GatewayRecord[] = bundleInvoices.map((inv, idx) => {
@@ -97,7 +97,7 @@ const bundleGatewayRecords: GatewayRecord[] = bundleInvoices.map((inv, idx) => {
   const gst = Number((fee * 0.18).toFixed(2));
   const net = isRefunded ? gross - fee - gst - 2500 : gross - fee - gst;
   return {
-    id: `RZP-BUN-${idx + 1}`,
+    id: `RZP-SET-${idx + 1}`,
     settlementId: BUNDLE_SETTLEMENT_ID,
     orderId: inv.orderId,
     customerName: inv.customerName,
@@ -176,16 +176,16 @@ const feeExGroundTruth: GroundTruthEntry[] = [
 
 // Exception B: Duplicate/Ghost Bank Credit (Bank credit with no gateway trace) - 1 Record
 const dupBankTxn: BankTransaction = {
-  id: 'BANK-DUP-99120',
+  id: 'BANK-TXN-99120',
   date: '2026-08-26',
-  description: 'RAZORPAY PAYOUT DUPLICATE REF #RZP-DUP-99120',
+  description: 'RAZORPAY PAYOUT REF #RZP-TXN-99120',
   amount: 14500.00,
   type: 'CREDIT',
-  referenceNo: 'RZP-DUP-99120',
+  referenceNo: 'RZP-TXN-99120',
   currency: 'INR',
 };
 const dupGroundTruth: GroundTruthEntry = {
-  bankId: 'BANK-DUP-99120',
+  bankId: 'BANK-TXN-99120',
   gatewayIds: [],
   erpIds: [],
   expectedStatus: 'EXCEPTION_DUPLICATE_PAYOUT',
@@ -194,9 +194,9 @@ const dupGroundTruth: GroundTruthEntry = {
 
 // Exception C: Missing ERP Invoice (Gateway + Bank exist, ERP missing) - 1 Record
 const missingErpGatewayRecord: GatewayRecord = {
-  id: 'RZP-GHOST-77',
-  settlementId: 'SET-GHOST-77',
-  orderId: 'ORD-GHOST-77',
+  id: 'RZP-TXN-0077',
+  settlementId: 'SET-TXN-0077',
+  orderId: 'ORD-TXN-0077',
   customerName: 'Shadow Enterprise Inc',
   grossAmount: 8400,
   feeAmount: 168,
@@ -207,17 +207,17 @@ const missingErpGatewayRecord: GatewayRecord = {
   currency: 'INR',
 };
 const missingErpBankTxn: BankTransaction = {
-  id: 'BANK-GHOST-77',
+  id: 'BANK-TXN-0077',
   date: '2026-08-27',
-  description: 'RAZORPAY PAYOUT REF #RZP-GHOST-77',
+  description: 'RAZORPAY PAYOUT REF #RZP-TXN-0077',
   amount: 8201.76,
   type: 'CREDIT',
-  referenceNo: 'RZP-GHOST-77',
+  referenceNo: 'RZP-TXN-0077',
   currency: 'INR',
 };
 const missingErpGroundTruth: GroundTruthEntry = {
-  bankId: 'BANK-GHOST-77',
-  gatewayIds: ['RZP-GHOST-77'],
+  bankId: 'BANK-TXN-0077',
+  gatewayIds: ['RZP-TXN-0077'],
   erpIds: [],
   expectedStatus: 'EXCEPTION_MISSING_ERP_INVOICE',
   expectedCategory: 'EXCEPTION',
@@ -225,18 +225,18 @@ const missingErpGroundTruth: GroundTruthEntry = {
 
 // Exception D: FX Slippage (1.2% rate deviation) - 1 Record
 const fxSlipBankTxn: BankTransaction = {
-  id: 'BANK-FX-SLIP',
+  id: 'BANK-FX-USD-01',
   date: '2026-08-27',
-  description: 'INWARD REMITTANCE USD 2000 @ 81.20 INR/USD (FX SLIPPAGE)',
+  description: 'INWARD REMITTANCE USD 2000 @ 81.20 INR/USD',
   amount: 162400.00,
   type: 'CREDIT',
-  referenceNo: 'RZP-USD-SLIP',
+  referenceNo: 'RZP-FX-USD-01',
   currency: 'INR',
 };
 const fxSlipGatewayRecord: GatewayRecord = {
-  id: 'RZP-USD-SLIP',
-  settlementId: 'SET-FX-SLIP',
-  orderId: 'ORD-USD-SLIP',
+  id: 'RZP-FX-USD-01',
+  settlementId: 'SET-FX-USD-01',
+  orderId: 'ORD-FX-USD-01',
   customerName: 'Global Horizon Tech',
   grossAmount: 2000,
   feeAmount: 40,
@@ -248,8 +248,8 @@ const fxSlipGatewayRecord: GatewayRecord = {
   fxRate: 83.30,
 };
 const fxSlipERPInvoice: ERPInvoice = {
-  id: 'INV-USD-SLIP',
-  orderId: 'ORD-USD-SLIP',
+  id: 'INV-FX-USD-01',
+  orderId: 'ORD-FX-USD-01',
   customerName: 'Global Horizon Tech',
   amount: 2000,
   currency: 'USD',
@@ -257,9 +257,9 @@ const fxSlipERPInvoice: ERPInvoice = {
   status: 'PAID',
 };
 const fxSlipGroundTruth: GroundTruthEntry = {
-  bankId: 'BANK-FX-SLIP',
-  gatewayIds: ['RZP-USD-SLIP'],
-  erpIds: ['INV-USD-SLIP'],
+  bankId: 'BANK-FX-USD-01',
+  gatewayIds: ['RZP-FX-USD-01'],
+  erpIds: ['INV-FX-USD-01'],
   expectedStatus: 'EXCEPTION_UNHEDGED_FX_SLIPPAGE',
   expectedCategory: 'EXCEPTION',
 };
