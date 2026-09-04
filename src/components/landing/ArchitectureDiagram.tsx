@@ -104,20 +104,17 @@ export const ArchitectureDiagram: React.FC = () => {
         </div>
 
         {/* Blueprint Section Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.75rem', flexWrap: 'wrap', gap: '1rem' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3rem' }}>
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: themeConfig.primaryAccent, boxShadow: `0 0 10px ${themeConfig.primaryAccent}` }} />
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: themeConfig.primaryAccent, fontWeight: 900, letterSpacing: '0.12em' }}>
-                HOLOGRAPHIC RECONCILIATION TOPOLOGY
-              </span>
-            </div>
-            <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#FFFFFF', margin: 0 }}>
-              End-to-End Autonomous Multi-Corridor Matrix
-            </h3>
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: themeConfig.primaryAccent, boxShadow: `0 0 10px ${themeConfig.primaryAccent}` }} />
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: themeConfig.primaryAccent, fontWeight: 900, letterSpacing: '0.12em' }}>
+              HOLOGRAPHIC RECONCILIATION TOPOLOGY
+            </span>
           </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#8E8E93' }}>
+          <h3 style={{ fontSize: '1.65rem', fontWeight: 900, color: '#FFFFFF', margin: '0 auto 0.75rem' }}>
+            End-to-End Autonomous Multi-Corridor Matrix
+          </h3>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#8E8E93', flexWrap: 'wrap' }}>
             <span>INGESTION: <strong style={{ color: '#10B981' }}>STREAMING SFTP / WEBHOOK</strong></span>
             <span>CONSISTENCY: <strong style={{ color: themeConfig.primaryAccent }}>STRICT ACID</strong></span>
             <span>AUDIT: <strong style={{ color: '#F59E0B' }}>SHA-256 HASHED</strong></span>

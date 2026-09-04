@@ -329,7 +329,7 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
           zIndex: 10,
         }}
       >
-        <div style={{ marginBottom: '2rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: themeConfig.primaryAccent, letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
             [ 01 / THE RECONCILIATION BOTTLENECK ]
           </div>
@@ -338,10 +338,10 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
             style={{
               fontSize: 'clamp(2rem, 4.2vw, 3.4rem)',
               fontWeight: 900,
-              lineHeight: 1.1,
+              lineHeight: 1.15,
               letterSpacing: '-0.02em',
               color: '#FFFFFF',
-              margin: '0 0 1rem',
+              margin: '0 auto 1rem',
             }}
           >
             FINANCE DOESN'T HAVE<br />
@@ -349,7 +349,7 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
             <span style={{ color: themeConfig.primaryAccent }}>IT HAS A VERIFICATION PROBLEM.</span>
           </h2>
 
-          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '720px', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '720px', margin: '0 auto', lineHeight: 1.6 }}>
             Modern financial operations generate millions of transactional records every day, yet still rely heavily on 
             manual spreadsheets to verify discrepancies across disconnected systems.
           </p>
@@ -377,14 +377,14 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
           zIndex: 10,
         }}
       >
-        <div style={{ marginBottom: '2rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: themeConfig.primaryAccent, letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
             [ 02 / RECONCILIATION PIPELINE ARCHITECTURE ]
           </div>
-          <h2 style={{ fontSize: 'clamp(2rem, 4.2vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 0.75rem' }}>
+          <h2 style={{ fontSize: 'clamp(2rem, 4.2vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 auto 0.75rem' }}>
             5 STAGES TO VERIFIED PROOF
           </h2>
-          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '680px', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '680px', margin: '0 auto', lineHeight: 1.6 }}>
             Click any gate on the conveyor to inspect real-time canonical schema transformations and mathematical guardrails.
           </p>
         </div>
@@ -435,14 +435,14 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
           zIndex: 10,
         }}
       >
-        <div style={{ marginBottom: '2rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#F59E0B', letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
             [ 04 / MATHEMATICAL PROOF LAB ]
           </div>
-          <h2 style={{ fontSize: 'clamp(2rem, 4.2vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 0.75rem' }}>
+          <h2 style={{ fontSize: 'clamp(2rem, 4.2vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 auto 0.75rem' }}>
             INTERACTIVE BUNDLE MATH PROOF
           </h2>
-          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '680px', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '680px', margin: '0 auto', lineHeight: 1.6 }}>
             Demonstrating how 1 payment gateway settlement matches across 8 disparate customer invoices while rigorously calculating deductions.
           </p>
         </div>
@@ -464,14 +464,14 @@ const LandingPageMain: React.FC<LandingPageViewProps> = ({ onAuthSuccess }) => {
           zIndex: 10,
         }}
       >
-        <div style={{ marginBottom: '2rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#EF4444', letterSpacing: '0.15em', marginBottom: '0.75rem' }}>
             [ 05 / ANOMALY ISOLATION RADAR ]
           </div>
-          <h2 style={{ fontSize: 'clamp(2rem, 4.2vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 0 0.75rem' }}>
+          <h2 style={{ fontSize: 'clamp(2rem, 4.2vw, 3.2rem)', fontWeight: 900, color: '#FFFFFF', margin: '0 auto 0.75rem' }}>
             HONEST EXCEPTION REMEDIATION
           </h2>
-          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '680px', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '1.05rem', color: '#8E8E93', maxWidth: '680px', margin: '0 auto', lineHeight: 1.6 }}>
             Never force bad matches. OmniSettle isolates genuine financial anomalies into 5 strict categories for automated 1-click remediation.
           </p>
         </div>
