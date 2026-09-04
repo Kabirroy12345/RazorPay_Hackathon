@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import confetti from 'canvas-confetti';
+import { triggerFirecrackers } from './utils/firecrackers';
 import { ALL_DATASETS } from './data/datasets';
 import { executeFullReconciliation } from './engine/reconciler';
 import type { FullReconciliationOutput } from './engine/reconciler';
@@ -98,6 +98,9 @@ function AppContent() {
     setIsProcessing(true);
     setSelectedMatch(null);
 
+    // Launch energetic 5-10 firecrackers burst animation sequence across the screen
+    triggerFirecrackers();
+
     const activeBank = getEffectiveBankTxns(isSimulatingFault);
     const newOutput = await executeFullReconciliation(
       activeBank,
@@ -112,12 +115,6 @@ function AppContent() {
 
     setOutput(newOutput);
     setIsProcessing(false);
-
-    confetti({
-      particleCount: 80,
-      spread: 70,
-      origin: { y: 0.6 },
-    });
   };
 
   const handleToggleFaultSimulation = async () => {
