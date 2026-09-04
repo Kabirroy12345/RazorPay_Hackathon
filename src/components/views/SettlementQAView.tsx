@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Bot, Send, Sparkles, RefreshCw, ShieldCheck } from 'lucide-react';
+import { Bot, Send, Sparkles, RefreshCw, ShieldCheck, Copy, Check, Download } from 'lucide-react';
 import type { FullReconciliationOutput } from '../../engine/reconciler';
 import type { FinancialDataset } from '../../types/finance';
 
@@ -8,7 +8,7 @@ interface Message {
   sender: 'user' | 'agent';
   text: string;
   timestamp: string;
-  category?: 'BUNDLE' | 'CASH' | 'EXCEPTIONS' | 'TAX' | 'GENERAL';
+  category?: 'BUNDLE' | 'CASH' | 'EXCEPTIONS' | 'TAX' | 'LOOKUP' | 'GENERAL';
   ledgerCitations?: string[];
 }
 
@@ -21,6 +21,7 @@ export const SettlementQAView: React.FC<SettlementQAViewProps> = ({ output, acti
   const { metrics, allMatches, exceptionMatches } = output;
   const [query, setQuery] = useState('');
   const [isThinking, setIsThinking] = useState(false);
+  const [copiedMsgId, setCopiedMsgId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const initialMessages: Message[] = [
@@ -35,7 +36,7 @@ I have completed 3-way ledger cross-verification for **${metrics.totalRecords} s
 • **Honest Exceptions:** ${metrics.exceptionCount} unresolvable records isolated
 • **Verified Cash Position:** ₹${metrics.totalReconciledINR.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
 
-Select a preset question below or ask me any custom query regarding settlement bundles, net math, tax lines, or honest exceptions.`,
+Select a preset question below or ask me any custom query regarding settlement bundles, net math, tax lines, or specific transaction IDs.`,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       category: 'GENERAL',
       ledgerCitations: ['SYS_INIT', activeDataset.id, `BATCH_SIZE_${metrics.totalRecords}`],
@@ -62,12 +63,16 @@ Select a preset question below or ask me any custom query regarding settlement b
       prompt: 'List all unresolved exceptions from this batch and the reason each could not be matched.',
     },
     {
-      label: 'Verified Cash & Float',
+      label: 'Verified Cash & Liquidity',
       prompt: 'What is our current verified bank cash position and pending gateway settlement float?',
     },
     {
       label: 'Tax-Line GST Matching',
       prompt: 'How does the 18% GST tax-line matcher verify Razorpay MDR fee deductions?',
+    },
+    {
+      label: 'Lookup Specific Transaction',
+      prompt: 'Look up the status and reasoning for transaction INV-BUN-01 and BANK-PAYOUT-01.',
     },
     {
       label: 'Throughput & Match Rate',
@@ -76,10 +81,46 @@ Select a preset question below or ask me any custom query regarding settlement b
   ];
 
   const answerQuery = (userText: string): { responseText: string; citations: string[]; category: Message['category'] } => {
-    const q = userText.toLowerCase();
+    const q = userText.toLowerCase().trim();
+
+    // 0. Specific ID Lookup across dataset
+    const words = userText.split(/[\s,;:?]+/);
+    const potentialId = words.find(w => 
+      w.startsWith('INV-') || w.startsWith('BANK-') || w.startsWith('RZP-') || w.startsWith('ORD-') || w.startsWith('SET-')
+    );
+
+    if (potentialId) {
+      const upperId = potentialId.toUpperCase();
+      const match = allMatches.find(m => 
+        m.id.includes(upperId) || 
+        (m.bankRecordId && m.bankRecordId.includes(upperId)) ||
+        m.gatewayRecordIds.some(g => g.includes(upperId)) ||
+        m.erpInvoiceIds.some(e => e.includes(upperId))
+      );
+
+      if (match) {
+        return {
+          category: 'LOOKUP',
+          citations: [match.id, match.bankRecordId || 'NO_BANK', ...match.erpInvoiceIds.slice(0, 3)],
+          responseText: `### Ledger Lookup Result for \`${upperId}\`
+
+• **Match Vector ID:** \`${match.id}\`
+• **Reconciliation Status:** **${match.status}**
+• **Execution Handler:** \`${match.matchType}\`
+• **Reconciled Amount:** **₹${match.reconciledAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })} INR**
+• **Discrepancy / Delta:** ₹${match.discrepancyAmount.toFixed(2)}
+• **Linked Bank Ref:** \`${match.bankRecordId || 'ABSENT_IN_BANK'}\`
+• **Linked Gateway Records:** ${match.gatewayRecordIds.length > 0 ? match.gatewayRecordIds.map(id => `\`${id}\``).join(', ') : 'None'}
+• **Linked ERP Invoices:** ${match.erpInvoiceIds.length > 0 ? match.erpInvoiceIds.map(id => `\`${id}\``).join(', ') : 'None'}
+
+**AI Reasoning Trace:**
+${match.reasoningTrace.map(s => `> ${s}`).join('\n')}`,
+        };
+      }
+    }
 
     // 1. Bundle Payout / Adversarial Case
-    if (q.includes('bundle') || q.includes('88412') || q.includes('zero delta') || q.includes('1-to-n')) {
+    if (q.includes('bundle') || q.includes('88412') || q.includes('zero delta') || q.includes('1-to-n') || q.includes('prover')) {
       const bundle = allMatches.find(m => m.status === 'AGENTIC_BUNDLE_MATCHED');
       const payout = bundle ? bundle.reconciledAmount : 48272.80;
       const invCount = bundle ? bundle.erpInvoiceIds.length : 8;
@@ -104,7 +145,7 @@ The agent reconciled **1 single Bank Payout** against **${invCount} disparate ER
     }
 
     // 2. Honest Exceptions List
-    if (q.includes('exception') || q.includes('unresolved') || q.includes('error') || q.includes('could not resolve')) {
+    if (q.includes('exception') || q.includes('unresolved') || q.includes('error') || q.includes('could not resolve') || q.includes('anomaly')) {
       const formattedList = exceptionMatches
         .map((exc, idx) => `**${idx + 1}. [${exc.status}] ID: \`${exc.id}\`**\n   • Discrepancy Amount: **₹${exc.discrepancyAmount.toFixed(2)}**\n   • Root Cause: *${exc.reasoningTrace[0] || 'Flagged for controller intervention'}*\n   • Recommended Remediation: \`${exc.remediationStub?.actionLabel || 'Inspect'}\``)
         .join('\n\n');
@@ -123,7 +164,7 @@ ${formattedList || 'No unresolved exceptions detected in this dataset.'}
     }
 
     // 3. Verified Cash & Liquidity
-    if (q.includes('cash') || q.includes('liquidity') || q.includes('runway') || q.includes('float') || q.includes('balance')) {
+    if (q.includes('cash') || q.includes('liquidity') || q.includes('runway') || q.includes('float') || q.includes('balance') || q.includes('treasury')) {
       const pendingFloat = activeDataset.gatewayRecords
         .filter(g => g.status !== 'SETTLED')
         .reduce((sum, g) => sum + g.netAmount, 0) || (metrics.totalReconciledINR * 0.08);
@@ -156,12 +197,29 @@ OmniSettle features an autonomous **Tax-Line Matcher** that verifies every fee w
 1. **Gateway Fee Rate Verification:** Contracted base MDR is verified against merchant agreements (typically 2.00% to 2.50%).
 2. **18% GST Computation:** GST is rigorously calculated on the *fee amount*, never on gross transaction revenue:
    $$\\text{GST Line} = \\text{MDR Fee} \\times 18\\%$$
-3. **Overcharge Anomaly Guardrail:** When a gateway billed 2.50% instead of the contracted 2.00%, the agent flagged an immediate \`EXCEPTION_FEE_MISMATCH\` rather than swallowing the tax difference.
+3. **Overcharge Anomaly Guardrail:** When a gateway billed 2.50% instead of the contracted 2.00%, the agent flagged an immediate EXCEPTION_FEE_MISMATCH rather than swallowing the tax difference.
 4. **Total Verified Tax Deductions:** ₹${metrics.totalTaxDeductedINR.toLocaleString('en-IN', { minimumFractionDigits: 2 })} across settled batches.`,
       };
     }
 
-    // 5. General Performance / Match Rate
+    // 5. Dataset queries
+    if (q.includes('dataset') || q.includes('batch') || q.includes('data') || q.includes('records')) {
+      return {
+        category: 'GENERAL',
+        citations: [activeDataset.id, `COUNT_${activeDataset.recordCount}`],
+        responseText: `### Active Financial Batch Metadata
+• **Mounted Dataset:** **${activeDataset.name}** (${activeDataset.id})
+• **Total Transactions Mounted:** **${activeDataset.recordCount} records**
+• **Bank Statements:** ${activeDataset.bankTxns.length} records
+• **Gateway Settlements:** ${activeDataset.gatewayRecords.length} records
+• **ERP Invoices:** ${activeDataset.erpInvoices.length} invoices
+• **Reconciliation Match Rate:** **${metrics.reconciliationRate}%** closed loop
+
+You can switch to another dataset anytime from the **Data Hub & Datasets (Hotkey 7)** view.`,
+      };
+    }
+
+    // 6. General Performance / Match Rate
     return {
       category: 'GENERAL',
       citations: [`RECON_${metrics.reconciliationRate}%`, `SPEED_${metrics.avgLatencyMs}ms`],
@@ -207,7 +265,25 @@ OmniSettle features an autonomous **Tax-Line Matcher** that verifies every fee w
       };
       setMessages(prev => [...prev, agentMsg]);
       setIsThinking(false);
-    }, 550);
+    }, 450);
+  };
+
+  const handleCopyMessage = (msg: Message) => {
+    navigator.clipboard.writeText(msg.text);
+    setCopiedMsgId(msg.id);
+    setTimeout(() => setCopiedMsgId(null), 2000);
+  };
+
+  const handleExportChat = () => {
+    const transcript = messages.map(m => `[${m.timestamp}] ${m.sender.toUpperCase()}:\n${m.text}\n\n`).join('---\n\n');
+    const blob = new Blob([transcript], { type: 'text/plain;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `OmniSettle_QA_Transcript_${new Date().toISOString().slice(0, 10)}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   return (
@@ -266,13 +342,20 @@ OmniSettle features an autonomous **Tax-Line Matcher** that verifies every fee w
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+            <button
+              onClick={handleExportChat}
+              className="btn-terminal"
+              style={{ fontSize: '0.76rem', padding: '0.4rem 0.85rem' }}
+            >
+              <Download size={13} /> EXPORT TRANSCRIPT
+            </button>
             <button
               onClick={() => setMessages(initialMessages)}
               className="btn-terminal"
               style={{ fontSize: '0.76rem', padding: '0.4rem 0.85rem' }}
             >
-              <RefreshCw size={13} /> RESET CONVERSATION
+              <RefreshCw size={13} /> RESET CHAT
             </button>
             <div
               className="font-mono"
@@ -314,6 +397,8 @@ OmniSettle features an autonomous **Tax-Line Matcher** that verifies every fee w
       >
         {messages.map(msg => {
           const isUser = msg.sender === 'user';
+          const isCopied = copiedMsgId === msg.id;
+
           return (
             <div
               key={msg.id}
@@ -346,6 +431,23 @@ OmniSettle features an autonomous **Tax-Line Matcher** that verifies every fee w
                   >
                     {msg.category}
                   </span>
+                )}
+                {!isUser && (
+                  <button
+                    onClick={() => handleCopyMessage(msg)}
+                    title="Copy Answer"
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      color: isCopied ? '#10B981' : '#64748B',
+                      cursor: 'pointer',
+                      padding: '0.1rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    {isCopied ? <Check size={12} color="#10B981" /> : <Copy size={12} />}
+                  </button>
                 )}
               </div>
 
@@ -458,7 +560,7 @@ OmniSettle features an autonomous **Tax-Line Matcher** that verifies every fee w
           onKeyDown={e => {
             if (e.key === 'Enter') handleSend();
           }}
-          placeholder="Ask anything about settlements, bundled payouts, tax lines, or honest exceptions..."
+          placeholder="Ask anything about settlements, bundles, tax lines, or lookup transaction IDs..."
           style={{
             flex: 1,
             background: 'rgba(5, 7, 15, 0.8)',

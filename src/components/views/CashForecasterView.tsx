@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TrendingUp, Sliders, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { TrendingUp, Sliders, AlertTriangle, ShieldCheck, Download } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import type { FinancialDataset } from '../../types/finance';
 
@@ -7,6 +7,45 @@ interface CashForecasterViewProps {
   reconciledCashINR: number;
   activeDataset?: FinancialDataset;
 }
+
+interface ScenarioPreset {
+  name: string;
+  delayDays: number;
+  refundSurgePct: number;
+  fxShockPct: number;
+  description: string;
+}
+
+const SCENARIO_PRESETS: ScenarioPreset[] = [
+  {
+    name: 'Standard Baseline Runway',
+    delayDays: 0,
+    refundSurgePct: 0,
+    fxShockPct: 0,
+    description: 'Optimal operational flow with zero gateway payout delays and normal return rates.'
+  },
+  {
+    name: 'Festival Mega Sale Surge',
+    delayDays: 1,
+    refundSurgePct: 15,
+    fxShockPct: 0,
+    description: 'High transaction surge accompanied by higher customer order returns and chargeback reserves.'
+  },
+  {
+    name: 'Extended Bank Holiday Delay',
+    delayDays: 4,
+    refundSurgePct: 2,
+    fxShockPct: 0,
+    description: 'Consecutive banking settlement delays buffering receivables over a T+4 holiday window.'
+  },
+  {
+    name: 'Black Swan Global FX Crash',
+    delayDays: 5,
+    refundSurgePct: 20,
+    fxShockPct: 5,
+    description: 'Severe stress test: 5-day settlement lag, 20% refund surge, and 5% foreign currency devaluation.'
+  }
+];
 
 export const CashForecasterView: React.FC<CashForecasterViewProps> = ({ 
   reconciledCashINR,
@@ -22,11 +61,12 @@ export const CashForecasterView: React.FC<CashForecasterViewProps> = ({
     ? Math.round(totalGrossInflow / 7) 
     : 12500;
   const estimatedPayoutChunk = Math.round(estimatedDailyInflow * 2);
+  const estimatedDailyBurn = Math.round(estimatedDailyInflow * 0.45); // Operating overhead
 
   // Generate 30-day forecasting vector based on reconciled cash & scenario sliders
   const forecastData = Array.from({ length: 30 }, (_, i) => {
     const day = i + 1;
-    const baseDailyCash = reconciledCashINR + day * estimatedDailyInflow;
+    const baseDailyCash = reconciledCashINR + day * (estimatedDailyInflow - estimatedDailyBurn);
     const delayDeduction = day <= payoutDelayDays ? estimatedPayoutChunk : 0;
     const refundImpact = (baseDailyCash * (refundSurgePct / 100)) * 0.15;
     const fxImpact = (baseDailyCash * (fxShockPct / 100)) * 0.05;
@@ -37,14 +77,39 @@ export const CashForecasterView: React.FC<CashForecasterViewProps> = ({
       day: `D${day}`,
       baseCash: Math.round(baseDailyCash),
       projectedCash: Math.round(projectedCash),
+      variance: Math.round(baseDailyCash - projectedCash),
     };
   });
 
   const finalDayProjected = forecastData[29].projectedCash;
-  const isStressWarning = payoutDelayDays > 3 || refundSurgePct > 10 || fxShockPct > 3;
+  const minProjectedCash = Math.min(...forecastData.map(f => f.projectedCash));
+  const isStressWarning = payoutDelayDays > 3 || refundSurgePct > 10 || fxShockPct > 3 || minProjectedCash < reconciledCashINR * 0.5;
+
+  // Runway in days (days cash remains above 0 at daily burn)
+  const runwayDays = estimatedDailyBurn > 0 ? Math.min(90, Math.round(minProjectedCash / estimatedDailyBurn)) : 90;
+
+  const handleApplyPreset = (preset: ScenarioPreset) => {
+    setPayoutDelayDays(preset.delayDays);
+    setRefundSurgePct(preset.refundSurgePct);
+    setFxShockPct(preset.fxShockPct);
+  };
+
+  const handleExportCSV = () => {
+    const headers = ['Day', 'BaselineCashINR', 'StressProjectedCashINR', 'VarianceINR'];
+    const rows = forecastData.map(d => [d.day, d.baseCash, d.projectedCash, d.variance]);
+    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `OmniSettle_30Day_Cash_Forecast_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', paddingBottom: '2.5rem' }}>
       {/* Header */}
       <div
         className="terminal-panel"
@@ -56,47 +121,103 @@ export const CashForecasterView: React.FC<CashForecasterViewProps> = ({
           boxShadow: '0 8px 30px rgba(0, 0, 0, 0.45)',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
-          <div
-            style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '8px',
-              background: 'rgba(245, 208, 97, 0.12)',
-              border: '1px solid rgba(245, 208, 97, 0.35)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#F5D061',
-              boxShadow: '0 0 12px rgba(245, 208, 97, 0.25)',
-            }}
-          >
-            <TrendingUp size={20} />
-          </div>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-              <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#FFFFFF', fontFamily: 'var(--font-mono)' }}>
-                30-Day Forward Cash Forecaster & Liquidity Sandbox
-              </h2>
-              <span
-                className="badge"
-                style={{
-                  background: 'rgba(12, 140, 233, 0.1)',
-                  border: '1px solid rgba(12, 140, 233, 0.35)',
-                  color: '#38BDF8',
-                  fontSize: '0.7rem',
-                  fontWeight: 800,
-                }}
-              >
-                <ShieldCheck size={11} style={{ marginRight: '0.25rem' }} />
-                TREASURY INTELLIGENCE
-              </span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '8px',
+                background: 'rgba(245, 208, 97, 0.12)',
+                border: '1px solid rgba(245, 208, 97, 0.35)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#F5D061',
+                boxShadow: '0 0 12px rgba(245, 208, 97, 0.25)',
+              }}
+            >
+              <TrendingUp size={20} />
             </div>
-            <p style={{ color: '#94A3B8', fontSize: '0.82rem', marginTop: '0.2rem' }}>
-              Real-time rolling cash flow projection combining 3-way verified bank cash, expected gateway payouts, and scenario stress testing.
-            </p>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#FFFFFF', fontFamily: 'var(--font-mono)' }}>
+                  30-Day Forward Cash Forecaster & Liquidity Sandbox
+                </h2>
+                <span
+                  className="badge"
+                  style={{
+                    background: 'rgba(12, 140, 233, 0.1)',
+                    border: '1px solid rgba(12, 140, 233, 0.35)',
+                    color: '#38BDF8',
+                    fontSize: '0.7rem',
+                    fontWeight: 800,
+                  }}
+                >
+                  <ShieldCheck size={11} style={{ marginRight: '0.25rem' }} />
+                  TREASURY INTELLIGENCE
+                </span>
+              </div>
+              <p style={{ color: '#94A3B8', fontSize: '0.82rem', marginTop: '0.2rem' }}>
+                Real-time rolling cash flow projection combining 3-way verified bank cash, expected gateway payouts, and scenario stress testing.
+              </p>
+            </div>
           </div>
+
+          <button
+            onClick={handleExportCSV}
+            className="btn-terminal primary"
+            style={{ fontSize: '0.78rem', fontWeight: 800 }}
+          >
+            <Download size={14} /> EXPORT FORECAST CSV
+          </button>
         </div>
+      </div>
+
+      {/* Preset Scenario Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '0.85rem' }}>
+        {SCENARIO_PRESETS.map(preset => {
+          const isSelected = 
+            payoutDelayDays === preset.delayDays && 
+            refundSurgePct === preset.refundSurgePct && 
+            fxShockPct === preset.fxShockPct;
+
+          return (
+            <div
+              key={preset.name}
+              onClick={() => handleApplyPreset(preset)}
+              style={{
+                background: isSelected 
+                  ? 'linear-gradient(135deg, rgba(245, 208, 97, 0.14) 0%, rgba(12, 16, 30, 0.9) 100%)' 
+                  : 'linear-gradient(135deg, rgba(12, 16, 30, 0.7) 0%, rgba(5, 7, 15, 0.85) 100%)',
+                border: isSelected ? '1.5px solid #F5D061' : '1px solid rgba(255, 255, 255, 0.08)',
+                borderRadius: '8px',
+                padding: '0.9rem 1.1rem',
+                cursor: 'pointer',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.35rem',
+                boxShadow: isSelected ? '0 0 15px rgba(245, 208, 97, 0.2)' : 'none',
+                transition: 'all 0.15s ease',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.82rem', fontWeight: 800, color: isSelected ? '#F5D061' : '#FFFFFF' }}>
+                  {preset.name}
+                </span>
+                {isSelected && <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#F5D061' }} />}
+              </div>
+              <p style={{ fontSize: '0.72rem', color: '#94A3B8', lineHeight: '1.4' }}>
+                {preset.description}
+              </p>
+              <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.3rem', fontSize: '0.66rem', fontFamily: 'var(--font-mono)', color: '#CBD5E1' }}>
+                <span>LAG: <strong>T+{preset.delayDays}</strong></span>
+                <span>REFUND: <strong>+{preset.refundSurgePct}%</strong></span>
+                <span>FX: <strong>-{preset.fxShockPct}%</strong></span>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {/* Control Sliders & Projection Summary */}
@@ -198,12 +319,27 @@ export const CashForecasterView: React.FC<CashForecasterViewProps> = ({
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
               {isStressWarning ? <AlertTriangle size={22} color="#F43F5E" /> : <ShieldCheck size={22} color="#10B981" />}
               <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: isStressWarning ? '#F43F5E' : '#F5D061' }}>
-                {isStressWarning ? 'Liquidity Risk Alert: Stress Shock Applied' : 'Optimal Treasury Runway'}
+                {isStressWarning ? 'Liquidity Risk Alert: Elevated Stress Applied' : 'Optimal Treasury Health & Runway'}
               </h3>
             </div>
             <p style={{ fontSize: '0.84rem', color: '#94A3B8' }}>
-              Projected 30-day cash position based on active stress parameters and rolling daily inflows.
+              Projected 30-day forward cash trajectory with rolling daily settlements and stress scenario impact.
             </p>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginTop: '1rem' }}>
+              <div style={{ background: 'rgba(5, 7, 15, 0.7)', padding: '0.75rem', borderRadius: '6px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <span style={{ fontSize: '0.68rem', color: '#94A3B8', fontFamily: 'var(--font-mono)' }}>MINIMUM TROUGH</span>
+                <div className="font-mono" style={{ fontSize: '1.1rem', fontWeight: 800, color: '#FFFFFF', marginTop: '0.2rem' }}>
+                  ₹{minProjectedCash.toLocaleString('en-IN')}
+                </div>
+              </div>
+              <div style={{ background: 'rgba(5, 7, 15, 0.7)', padding: '0.75rem', borderRadius: '6px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <span style={{ fontSize: '0.68rem', color: '#94A3B8', fontFamily: 'var(--font-mono)' }}>PROJECTED RUNWAY</span>
+                <div className="font-mono" style={{ fontSize: '1.1rem', fontWeight: 800, color: isStressWarning ? '#F43F5E' : '#10B981', marginTop: '0.2rem' }}>
+                  {runwayDays}+ Days
+                </div>
+              </div>
+            </div>
           </div>
 
           <div
@@ -239,7 +375,7 @@ export const CashForecasterView: React.FC<CashForecasterViewProps> = ({
           borderRadius: '8px',
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
           <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#FFFFFF' }}>
             30-Day Rolling Cash Trajectory (Reconciled vs Stress Projected)
           </h3>

@@ -216,6 +216,7 @@ function AppContent() {
             onRunBatch={handleRunBatch}
             onToggleFaultSimulation={handleToggleFaultSimulation}
             onSelectMatch={match => setSelectedMatch(match)}
+            onNavigateView={view => setCurrentView(view)}
           />
         )}
 
@@ -246,6 +247,7 @@ function AppContent() {
           <DataHubView
             activeDataset={activeDataset}
             onSelectDataset={handleSelectDataset}
+            onNavigateView={view => setCurrentView(view)}
           />
         )}
 

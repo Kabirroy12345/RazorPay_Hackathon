@@ -852,3 +852,66 @@ html {
   opacity: 1;
   transform: translateX(-50%) translateY(-8px);
 }
+
+/* ========================================================================= */
+/* PRINT STYLESHEET: GAAP ASC 606 CERTIFIED AUDIT REPORT                      */
+/* ========================================================================= */
+@media print {
+  /* Hide interactive chrome and sidebars */
+  aside,
+  header,
+  nav,
+  .btn-terminal,
+  button,
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: #FFFFFF !important;
+    color: #0F172A !important;
+    font-family: var(--font-sans) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .terminal-panel {
+    background: #FFFFFF !important;
+    border: 1.5px solid #CBD5E1 !important;
+    box-shadow: none !important;
+    color: #0F172A !important;
+    page-break-inside: avoid;
+  }
+
+  .terminal-panel * {
+    color: #0F172A !important;
+    text-shadow: none !important;
+  }
+
+  .font-mono {
+    font-family: monospace !important;
+  }
+
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+
+  th, td {
+    border: 1px solid #CBD5E1 !important;
+    color: #0F172A !important;
+    padding: 8px !important;
+  }
+
+  thead tr {
+    background-color: #F1F5F9 !important;
+  }
+}
+
