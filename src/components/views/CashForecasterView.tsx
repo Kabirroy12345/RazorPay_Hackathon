@@ -59,11 +59,13 @@ export const CashForecasterView: React.FC<CashForecasterViewProps> = ({
   const [forecastData, setForecastData] = useState<any[]>([]);
   const [treasuryAdvice, setTreasuryAdvice] = useState<any>(null);
   const [modelProvider, setModelProvider] = useState<string>('Google Gemini 3.6 Flash + Holt-Winters Smoothing');
-  const [isLoading, setIsLoading] = useState(false);
+  const isLoading = forecastData.length === 0;
 
   // Fetch real Holt-Winters statistical forecast + Gemini Treasury Commentary
   React.useEffect(() => {
-    setIsLoading(true);
+    let isMounted = true;
+    const controller = new AbortController();
+
     const recentInflows = activeDataset?.gatewayRecords
       ? activeDataset.gatewayRecords.slice(0, 10).map(g => g.grossAmount)
       : [14200, 15800, 13900, 16400, 15100, 17200, 14800];
@@ -71,6 +73,7 @@ export const CashForecasterView: React.FC<CashForecasterViewProps> = ({
     fetch('http://localhost:3001/api/forecast', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
       body: JSON.stringify({
         reconciledCashINR,
         recentDailyInflows: recentInflows,
@@ -81,6 +84,7 @@ export const CashForecasterView: React.FC<CashForecasterViewProps> = ({
     })
       .then(res => res.json())
       .then(data => {
+        if (!isMounted) return;
         if (data.forecastDays && Array.isArray(data.forecastDays)) {
           setForecastData(data.forecastDays);
         }
@@ -90,9 +94,9 @@ export const CashForecasterView: React.FC<CashForecasterViewProps> = ({
         if (data.modelProvider) {
           setModelProvider(data.modelProvider);
         }
-        setIsLoading(false);
       })
-      .catch(() => {
+      .catch(err => {
+        if (!isMounted || err.name === 'AbortError') return;
         // Statistical fallback
         const local = Array.from({ length: 30 }, (_, i) => {
           const day = i + 1;
@@ -112,9 +116,13 @@ export const CashForecasterView: React.FC<CashForecasterViewProps> = ({
           };
         });
         setForecastData(local);
-        setIsLoading(false);
       });
-  }, [reconciledCashINR, payoutDelayDays, refundSurgePct, fxShockPct]);
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, [reconciledCashINR, payoutDelayDays, refundSurgePct, fxShockPct, activeDataset]);
 
   const finalDayProjected = forecastData[29]?.projectedCash ?? reconciledCashINR;
   const minProjectedCash = forecastData.length > 0 

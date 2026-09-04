@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Cpu, Calculator, Sparkles, CheckCircle2, Play, Copy, Check, GitFork } from 'lucide-react';
 import { solveBranchAndBoundSubsetSum, type ProverTelemetry, type CandidateInvoice } from '../../engine/prover';
 
@@ -75,7 +75,7 @@ export const BundleMathLabView: React.FC = () => {
   // Prover State & Telemetry
   const [isProving, setIsProving] = useState(false);
   const [copiedProof, setCopiedProof] = useState(false);
-  const [telemetry, setTelemetry] = useState<ProverTelemetry | null>(null);
+  const [manualTelemetry, setManualTelemetry] = useState<ProverTelemetry | null>(null);
 
   // Active calculation
   const activeGross = activeTab === 'PROVER' ? selectedPreset.grossSales : grossSales;
@@ -91,7 +91,7 @@ export const BundleMathLabView: React.FC = () => {
   const delta = Math.abs(netBankPayout - bankTarget);
 
   // Build candidate invoices for branch-and-bound solver
-  const getCandidateInvoices = (): CandidateInvoice[] => {
+  const candidateInvoices = useMemo((): CandidateInvoice[] => {
     if (activeTab === 'PROVER' && selectedPreset.invoices) {
       return selectedPreset.invoices;
     }
@@ -105,38 +105,37 @@ export const BundleMathLabView: React.FC = () => {
       invoices.push({ id: `INV-SBOX-${i.toString().padStart(2, '0')}`, amount: Math.max(100, amt) });
     }
     return invoices;
-  };
+  }, [activeTab, selectedPreset, activeGross, activeCount]);
 
-  const handleRunProver = () => {
-    setIsProving(true);
-    setTimeout(() => {
-      const candidates = getCandidateInvoices();
-      const result = solveBranchAndBoundSubsetSum({
-        targetNetPayout: bankTarget,
-        candidateInvoices: candidates,
-        feeRatePct: activeFeeRate,
-        gstEnabled: activeGstEnabled,
-        refundDeduction: activeRefund,
-        tolerance: 0.05,
-      });
-      setTelemetry(result);
-      setIsProving(false);
-    }, 250);
-  };
-
-  // Run on mount and parameter change so telemetry is always populated
-  React.useEffect(() => {
-    const candidates = getCandidateInvoices();
-    const result = solveBranchAndBoundSubsetSum({
+  // Telemetry is computed reactively via Branch-and-Bound Subset Sum
+  const computedTelemetry = useMemo(() => {
+    return solveBranchAndBoundSubsetSum({
       targetNetPayout: bankTarget,
-      candidateInvoices: candidates,
+      candidateInvoices,
       feeRatePct: activeFeeRate,
       gstEnabled: activeGstEnabled,
       refundDeduction: activeRefund,
       tolerance: 0.05,
     });
-    setTelemetry(result);
-  }, [activeGross, activeCount, activeFeeRate, activeGstEnabled, activeRefund, activeTab, selectedPreset]);
+  }, [candidateInvoices, bankTarget, activeFeeRate, activeGstEnabled, activeRefund]);
+
+  const telemetry = manualTelemetry ?? computedTelemetry;
+
+  const handleRunProver = () => {
+    setIsProving(true);
+    setTimeout(() => {
+      const result = solveBranchAndBoundSubsetSum({
+        targetNetPayout: bankTarget,
+        candidateInvoices,
+        feeRatePct: activeFeeRate,
+        gstEnabled: activeGstEnabled,
+        refundDeduction: activeRefund,
+        tolerance: 0.05,
+      });
+      setManualTelemetry(result);
+      setIsProving(false);
+    }, 250);
+  };
 
   const handleCopyProof = () => {
     const proofText = telemetry

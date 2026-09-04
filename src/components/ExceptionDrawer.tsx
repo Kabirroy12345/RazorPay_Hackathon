@@ -25,21 +25,32 @@ export const ExceptionDrawer: React.FC<ExceptionDrawerProps> = ({
   // Check if this match was already remediated
   useEffect(() => {
     if (!selectedMatch) return;
-    setReceiptInfo(null);
-    setRemediationExecuted(false);
+    let isMounted = true;
 
     fetch('http://localhost:3001/api/remediate/list')
       .then(res => res.json())
       .then(data => {
+        if (!isMounted) return;
         if (data.remediations && Array.isArray(data.remediations)) {
           const found = data.remediations.find((r: any) => r.matchId === selectedMatch.id);
           if (found) {
             setRemediationExecuted(true);
             setReceiptInfo({ receiptId: found.receiptId, deliveredAt: found.timestamp });
+            return;
           }
         }
+        setRemediationExecuted(false);
+        setReceiptInfo(null);
       })
-      .catch(() => {});
+      .catch(() => {
+        if (!isMounted) return;
+        setRemediationExecuted(false);
+        setReceiptInfo(null);
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, [selectedMatch]);
 
   useEffect(() => {
