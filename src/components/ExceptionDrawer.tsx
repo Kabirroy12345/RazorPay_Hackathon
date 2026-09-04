@@ -37,6 +37,14 @@ export const ExceptionDrawer: React.FC<ExceptionDrawerProps> = ({
     };
   }, [selectedMatch]);
 
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [onClose]);
+
   if (!selectedMatch) return null;
 
   const bRecord = bankTxns.find(b => b.id === selectedMatch.bankRecordId);
@@ -49,28 +57,38 @@ export const ExceptionDrawer: React.FC<ExceptionDrawerProps> = ({
   };
 
   return (
-    <div
-      className="terminal-panel drawer-slide-in"
-      style={{
-        position: 'fixed',
-        top: 0,
-        right: 0,
-        bottom: 0,
-        width: '560px',
-        maxWidth: '100vw',
-        background: 'linear-gradient(180deg, rgba(10, 14, 26, 0.97) 0%, rgba(5, 7, 15, 0.98) 100%)',
-        backdropFilter: 'blur(25px)',
-        WebkitBackdropFilter: 'blur(25px)',
-        borderLeft: '2px solid rgba(245, 208, 97, 0.35)',
-        boxShadow: '-15px 0 50px rgba(0,0,0,0.85)',
-        zIndex: 1000,
-        padding: '1.75rem',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '1.35rem',
-        overflowY: 'auto',
-      }}
-    >
+    <>
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(2, 6, 20, 0.75)',
+          backdropFilter: 'blur(6px)',
+          WebkitBackdropFilter: 'blur(6px)',
+          zIndex: 9998,
+        }}
+        onClick={onClose}
+      />
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          right: 0,
+          bottom: 0,
+          width: '580px',
+          maxWidth: '100vw',
+          background: 'linear-gradient(180deg, rgba(10, 14, 26, 0.98) 0%, rgba(5, 7, 15, 0.99) 100%)',
+          borderLeft: '2px solid rgba(12, 140, 233, 0.4)',
+          boxShadow: '-20px 0 60px rgba(0,0,0,0.9)',
+          zIndex: 9999,
+          padding: '1.75rem',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '1.35rem',
+          overflowY: 'auto',
+          animation: 'drawer-slide 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        }}
+      >
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid rgba(229, 184, 105, 0.2)', paddingBottom: '1.15rem' }}>
         <div>
@@ -251,5 +269,6 @@ export const ExceptionDrawer: React.FC<ExceptionDrawerProps> = ({
         </div>
       )}
     </div>
+    </>
   );
 };
