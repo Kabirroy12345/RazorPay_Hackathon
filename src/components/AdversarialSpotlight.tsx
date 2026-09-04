@@ -62,19 +62,25 @@ export const AdversarialSpotlight: React.FC<AdversarialSpotlightProps> = ({ bund
             BANK_CREDIT_PAYOUT
           </span>
           <div className="font-mono" style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
-            ₹48,272.80
+            ₹{bundleMatch.reconciledAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </div>
-          <span className="font-mono" style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>REF:BANK-SETTLE-88412</span>
+          <span className="font-mono" style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+            REF:{bundleMatch.bankRecordId || 'BANK-PAYOUT'}
+          </span>
         </div>
 
         <div style={{ background: 'var(--bg-root)', padding: '0.85rem', border: '1px solid var(--border-hairline)' }}>
           <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>
-            8_ERP_INVOICES_GROSS
+            {bundleMatch.erpInvoiceIds.length}_ERP_INVOICES_GROSS
           </span>
           <div className="font-mono" style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
             ₹52,000.00
           </div>
-          <span className="font-mono" style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>INV-BUN-01..08</span>
+          <span className="font-mono" style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+            {bundleMatch.erpInvoiceIds.length > 1 
+              ? `${bundleMatch.erpInvoiceIds[0]}..${bundleMatch.erpInvoiceIds[bundleMatch.erpInvoiceIds.length - 1]}`
+              : (bundleMatch.erpInvoiceIds[0] || 'INV-SETTLE')}
+          </span>
         </div>
 
         <div style={{ background: 'var(--bg-root)', padding: '0.85rem', border: '1px solid var(--border-hairline)' }}>
@@ -84,7 +90,9 @@ export const AdversarialSpotlight: React.FC<AdversarialSpotlightProps> = ({ bund
           <div className="font-mono" style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--accent-amber)', marginTop: '0.2rem' }}>
             - ₹1,227.20
           </div>
-          <span className="font-mono" style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>₹1,040 + ₹187.20 GST</span>
+          <span className="font-mono" style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+            {bundleMatch.feeRateBps ? `${bundleMatch.feeRateBps / 100}% MDR + 18% GST` : '₹1,040 + ₹187.20 GST'}
+          </span>
         </div>
 
         <div style={{ background: 'var(--bg-root)', padding: '0.85rem', border: '1px solid var(--border-hairline)' }}>
@@ -102,9 +110,11 @@ export const AdversarialSpotlight: React.FC<AdversarialSpotlightProps> = ({ bund
             NET_DELTA_MATH
           </span>
           <div className="font-mono" style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
-            ₹0.00 EXACT_MATCH
+            ₹{bundleMatch.discrepancyAmount.toFixed(2)} EXACT_MATCH
           </div>
-          <span className="font-mono" style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>CONFIDENCE_99%_AI</span>
+          <span className="font-mono" style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+            CONFIDENCE_{(bundleMatch.confidenceScore * 100).toFixed(0)}%_AI
+          </span>
         </div>
       </div>
 

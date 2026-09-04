@@ -10,6 +10,7 @@ import { StreamingReconcilerView } from './components/views/StreamingReconcilerV
 import { BundleMathLabView } from './components/views/BundleMathLabView';
 import { ExceptionResolutionView } from './components/views/ExceptionResolutionView';
 import { CashForecasterView } from './components/views/CashForecasterView';
+import { SettlementQAView } from './components/views/SettlementQAView';
 import { DataHubView } from './components/views/DataHubView';
 import { GAAPAuditView } from './components/views/GAAPAuditView';
 import { LandingPageView } from './components/views/LandingPageView';
@@ -41,11 +42,12 @@ function AppContent() {
       switch (e.key) {
         case '1': setCurrentView('dashboard'); break;
         case '2': setCurrentView('reconciler'); break;
-        case '3': setCurrentView('exceptions'); break;
-        case '4': setCurrentView('bundle_lab'); break;
-        case '5': setCurrentView('cash_forecast'); break;
-        case '6': setCurrentView('data_hub'); break;
-        case '7': setCurrentView('gaap_audit'); break;
+        case '3': setCurrentView('bundle_lab'); break;
+        case '4': setCurrentView('exceptions'); break;
+        case '5': setCurrentView('settlement_qa'); break;
+        case '6': setCurrentView('cash_forecast'); break;
+        case '7': setCurrentView('data_hub'); break;
+        case '8': setCurrentView('gaap_audit'); break;
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -191,6 +193,7 @@ function AppContent() {
         {currentView === 'dashboard' && (
           <ExecutiveDashboardView
             output={output}
+            datasetName={activeDataset.name}
             isProcessing={isProcessing}
             isSimulatingFault={isSimulatingFault}
             selectedMatch={selectedMatch}
@@ -215,8 +218,15 @@ function AppContent() {
           <ExceptionResolutionView output={output} />
         )}
 
+        {currentView === 'settlement_qa' && (
+          <SettlementQAView output={output} activeDataset={activeDataset} />
+        )}
+
         {currentView === 'cash_forecast' && (
-          <CashForecasterView reconciledCashINR={output.metrics.totalReconciledINR} />
+          <CashForecasterView 
+            reconciledCashINR={output.metrics.totalReconciledINR} 
+            activeDataset={activeDataset}
+          />
         )}
 
         {currentView === 'data_hub' && (

@@ -124,5 +124,6 @@ export type AppView =
   | 'bundle_lab'
   | 'exceptions'
   | 'cash_forecast'
+  | 'settlement_qa'
   | 'data_hub'
   | 'gaap_audit';

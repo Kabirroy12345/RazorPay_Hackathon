@@ -3,10 +3,14 @@ import { Lock } from 'lucide-react';
 
 interface VerifiedCashCardProps {
   reconciledCashINR: number;
+  pendingSettlementINR?: number;
 }
 
-export const VerifiedCashCard: React.FC<VerifiedCashCardProps> = ({ reconciledCashINR }) => {
-  const pendingGatewaySettlementINR = 8201.76;
+export const VerifiedCashCard: React.FC<VerifiedCashCardProps> = ({ 
+  reconciledCashINR,
+  pendingSettlementINR = 0
+}) => {
+  const pendingGatewaySettlementINR = pendingSettlementINR;
   const totalVerifiedLiquidity = reconciledCashINR + pendingGatewaySettlementINR;
 
   return (

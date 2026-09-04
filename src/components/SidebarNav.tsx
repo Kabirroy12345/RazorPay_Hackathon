@@ -7,6 +7,7 @@ import {
   TrendingUp,
   Database,
   FileCheck,
+  Bot,
   Lock,
   LogOut,
 } from 'lucide-react';
@@ -36,6 +37,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
     { id: 'reconciler', label: '3-Way Live Ledger', icon: <Zap size={18} /> },
     { id: 'bundle_lab', label: '1-to-N Bundle Math Lab', icon: <Cpu size={18} /> },
     { id: 'exceptions', label: 'Audit Exceptions', icon: <ShieldAlert size={18} />, badge: exceptionCount },
+    { id: 'settlement_qa', label: 'Settlement Q&A Agent', icon: <Bot size={18} />, badge: 'AI' },
     { id: 'cash_forecast', label: '30-Day Cash Forecaster', icon: <TrendingUp size={18} /> },
     { id: 'data_hub', label: 'Data Hub & Datasets', icon: <Database size={18} />, badge: activeDataset.id.slice(0, 4) },
     { id: 'gaap_audit', label: 'GAAP Audit Statement', icon: <FileCheck size={18} /> },

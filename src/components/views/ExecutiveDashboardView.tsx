@@ -9,6 +9,7 @@ import type { BankTransaction, GatewayRecord, ERPInvoice, MatchResult } from '..
 
 interface ExecutiveDashboardViewProps {
   output: FullReconciliationOutput;
+  datasetName?: string;
   isProcessing: boolean;
   isSimulatingFault: boolean;
   selectedMatch: MatchResult | null;
@@ -22,6 +23,7 @@ interface ExecutiveDashboardViewProps {
 
 export const ExecutiveDashboardView: React.FC<ExecutiveDashboardViewProps> = ({
   output,
+  datasetName,
   isProcessing,
   isSimulatingFault,
   selectedMatch,
@@ -34,17 +36,31 @@ export const ExecutiveDashboardView: React.FC<ExecutiveDashboardViewProps> = ({
 }) => {
   const bundleMatch = output.allMatches.find(m => m.status === 'AGENTIC_BUNDLE_MATCHED');
 
+  // Dynamically calculate pending gateway float from unsettled/unmatched records
+  const reconciledGatewayIds = new Set(
+    output.allMatches
+      .filter(m => m.status === 'FAST_PATH_MATCHED' || m.status.startsWith('AGENTIC'))
+      .flatMap(m => m.gatewayRecordIds)
+  );
+  const pendingSettlementINR = gatewayRecords
+    .filter(g => !reconciledGatewayIds.has(g.id))
+    .reduce((acc, g) => acc + g.netAmount, 0);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <HeaderMetrics
         metrics={output.metrics}
+        datasetName={datasetName}
         isProcessing={isProcessing}
         isSimulatingFault={isSimulatingFault}
         onRunBatch={onRunBatch}
         onToggleFaultSimulation={onToggleFaultSimulation}
       />
 
-      <VerifiedCashCard reconciledCashINR={output.metrics.totalReconciledINR} />
+      <VerifiedCashCard 
+        reconciledCashINR={output.metrics.totalReconciledINR} 
+        pendingSettlementINR={pendingSettlementINR}
+      />
 
       <AdversarialSpotlight bundleMatch={bundleMatch} />
 

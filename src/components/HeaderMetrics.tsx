@@ -4,6 +4,7 @@ import type { DualMetrics } from '../types/finance';
 
 interface HeaderMetricsProps {
   metrics: DualMetrics;
+  datasetName?: string;
   isProcessing: boolean;
   isSimulatingFault: boolean;
   onRunBatch: () => void;
@@ -12,6 +13,7 @@ interface HeaderMetricsProps {
 
 export const HeaderMetrics: React.FC<HeaderMetricsProps> = ({
   metrics,
+  datasetName,
   isProcessing,
   isSimulatingFault,
   onRunBatch,
@@ -34,7 +36,7 @@ export const HeaderMetrics: React.FC<HeaderMetricsProps> = ({
             </span>
           </div>
           <p className="font-mono" style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-            3-Way Accounting Auditor (Bank ↔ Gateway ↔ ERP) : GROUND_TRUTH_BATCH_52
+            3-Way Accounting Auditor (Bank ↔ Gateway ↔ ERP) : {datasetName || `SYNTHETIC_BATCH_${metrics.totalRecords}`}
           </p>
         </div>
 
@@ -63,7 +65,7 @@ export const HeaderMetrics: React.FC<HeaderMetricsProps> = ({
               </>
             ) : (
               <>
-                <Play size={16} /> EXECUTE_BATCH(52)
+                <Play size={16} /> EXECUTE_BATCH({metrics.totalRecords})
               </>
             )}
           </button>
@@ -132,7 +134,7 @@ export const HeaderMetrics: React.FC<HeaderMetricsProps> = ({
             <span style={{ color: 'var(--accent-red)' }}>{metrics.exceptionCount} ERR</span>
           </div>
           <div className="font-mono" style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
-            35 FAST / 3 AGENT / 6 ERR
+            {metrics.fastPathCount} FAST / {metrics.agenticCount} AGENT / {metrics.exceptionCount} ERR
           </div>
         </div>
 

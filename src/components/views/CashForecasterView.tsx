@@ -2,20 +2,33 @@ import React, { useState } from 'react';
 import { TrendingUp, Sliders, AlertTriangle, ShieldCheck } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
+import type { FinancialDataset } from '../../types/finance';
+
 interface CashForecasterViewProps {
   reconciledCashINR: number;
+  activeDataset?: FinancialDataset;
 }
 
-export const CashForecasterView: React.FC<CashForecasterViewProps> = ({ reconciledCashINR }) => {
+export const CashForecasterView: React.FC<CashForecasterViewProps> = ({ 
+  reconciledCashINR,
+  activeDataset 
+}) => {
   const [payoutDelayDays, setPayoutDelayDays] = useState(0);
   const [refundSurgePct, setRefundSurgePct] = useState(0);
   const [fxShockPct, setFxShockPct] = useState(0);
 
+  // Derive average daily transaction inflow dynamically from dataset financial volume
+  const totalGrossInflow = activeDataset?.gatewayRecords.reduce((s, g) => s + g.grossAmount, 0) || 0;
+  const estimatedDailyInflow = totalGrossInflow > 0 
+    ? Math.round(totalGrossInflow / 7) 
+    : 12500;
+  const estimatedPayoutChunk = Math.round(estimatedDailyInflow * 2);
+
   // Generate 30-day forecasting vector based on reconciled cash & scenario sliders
   const forecastData = Array.from({ length: 30 }, (_, i) => {
     const day = i + 1;
-    const baseDailyCash = reconciledCashINR + day * 12500;
-    const delayDeduction = day <= payoutDelayDays ? 25000 : 0;
+    const baseDailyCash = reconciledCashINR + day * estimatedDailyInflow;
+    const delayDeduction = day <= payoutDelayDays ? estimatedPayoutChunk : 0;
     const refundImpact = (baseDailyCash * (refundSurgePct / 100)) * 0.15;
     const fxImpact = (baseDailyCash * (fxShockPct / 100)) * 0.05;
 

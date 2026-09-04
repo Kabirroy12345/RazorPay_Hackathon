@@ -9,7 +9,8 @@ import {
   Database, 
   FileText, 
   ArrowUpRight,
-  CheckCircle2
+  CheckCircle2,
+  Bot
 } from 'lucide-react';
 import type { AppView } from '../../types/finance';
 
@@ -111,6 +112,25 @@ export const HolographicModules: React.FC<HolographicModulesProps> = ({ onSelect
       ),
       metricLabel: 'EXCEPTION CATEGORIES',
       metricValue: '5 STRICT CHANNELS',
+    },
+    {
+      id: 'settlement_qa' as AppView,
+      title: 'Settlement Q&A Agent',
+      subtitle: 'Natural language settlement & fee queries with ledger citations',
+      icon: <Bot size={22} color="#00D2FF" />,
+      color: '#00D2FF',
+      preview: (
+        <div style={{ width: '100%', fontFamily: 'var(--font-mono)', fontSize: '0.62rem' }}>
+          <div style={{ color: '#00D2FF', marginBottom: '0.2rem' }}>
+            Q: "Why was payout SET-88412 ₹48,272.80?"
+          </div>
+          <div style={{ color: '#10B981', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+            <CheckCircle2 size={12} /> PROVED: 52k − MDR − GST − Refund
+          </div>
+        </div>
+      ),
+      metricLabel: 'RESPONSE LATENCY',
+      metricValue: '<550ms NATURAL Q&A',
     },
     {
       id: 'cash_forecast' as AppView,
