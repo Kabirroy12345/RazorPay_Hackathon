@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import Anthropic from '@anthropic-ai/sdk';
 import dotenv from 'dotenv';
 
@@ -10,6 +9,46 @@ const router = Router();
 const SYSTEM_PROMPT = `You are an expert AI financial controller responsible for 3-way reconciliation (Bank ↔ Gateway ↔ ERP).
 You must output STRICTLY valid JSON. Do not include markdown formatting like \`\`\`json.
 Your goal is to parse the input data, perform the required financial reasoning, and return the structured JSON schema requested.`;
+
+// Helper: Call Google Gemini REST API directly with gemini-3.6-flash
+async function callGemini(prompt: string, isJson: boolean = true): Promise<any> {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey || apiKey === 'mock') throw new Error('NO_GEMINI_KEY');
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
+  const bodyPayload: any = {
+    contents: [{ parts: [{ text: prompt }] }],
+  };
+
+  if (isJson) {
+    bodyPayload.generationConfig = {
+      responseMimeType: 'application/json',
+      temperature: 0.1,
+    };
+  }
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(bodyPayload),
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Gemini API error (${response.status}): ${errText}`);
+  }
+
+  const data = await response.json();
+  const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!rawText) throw new Error('Empty response from Gemini');
+
+  if (isJson) {
+    const cleanText = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
+    return JSON.parse(cleanText);
+  }
+
+  return rawText;
+}
 
 // Helper: check which LLM provider is configured
 function getActiveProvider(): 'GEMINI' | 'ANTHROPIC' | 'FALLBACK' {
@@ -53,26 +92,14 @@ Instructions:
     // A. GOOGLE GEMINI EXECUTION
     if (provider === 'GEMINI') {
       try {
-        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-        const model = genAI.getGenerativeModel({
-          model: 'gemini-1.5-flash',
-          generationConfig: {
-            responseMimeType: 'application/json',
-            temperature: 0.1,
-          },
-          systemInstruction: SYSTEM_PROMPT,
-        });
-
-        const result = await model.generateContent(prompt);
-        const text = result.response.text();
-        const parsed = JSON.parse(text);
+        const parsed = await callGemini(prompt, true);
         return res.json({
           ...parsed,
           isMockMode: false,
-          modelProvider: 'Google Gemini 1.5 Flash',
+          modelProvider: 'Google Gemini 3.6 Flash',
         });
       } catch (geminiError: any) {
-        console.warn('Gemini API call failed, using dynamic solver:', geminiError.message);
+        console.warn('Gemini bundle call failed, using dynamic solver:', geminiError.message);
       }
     }
 
@@ -98,11 +125,11 @@ Instructions:
           modelProvider: 'Anthropic Claude 3.5 Sonnet',
         });
       } catch (claudeError: any) {
-        console.warn('Claude API call failed, using dynamic solver:', claudeError.message);
+        console.warn('Claude bundle call failed, using dynamic solver:', claudeError.message);
       }
     }
 
-    // C. DYNAMIC SUBSET-SUM ALGORITHMIC SOLVER (Deterministic Fallback)
+    // C. DYNAMIC SUBSET-SUM ALGORITHMIC SOLVER (Fallback)
     let matchedInvoiceIds: string[] = [];
     let gross = 0;
     let refunds = 0;
@@ -171,23 +198,11 @@ Instructions:
     // A. GOOGLE GEMINI EXECUTION
     if (provider === 'GEMINI') {
       try {
-        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-        const model = genAI.getGenerativeModel({
-          model: 'gemini-1.5-flash',
-          generationConfig: {
-            responseMimeType: 'application/json',
-            temperature: 0.1,
-          },
-          systemInstruction: SYSTEM_PROMPT,
-        });
-
-        const result = await model.generateContent(prompt);
-        const text = result.response.text();
-        const parsed = JSON.parse(text);
+        const parsed = await callGemini(prompt, true);
         return res.json({
           ...parsed,
           isMockMode: false,
-          modelProvider: 'Google Gemini 1.5 Flash',
+          modelProvider: 'Google Gemini 3.6 Flash',
         });
       } catch (geminiError: any) {
         console.warn('Gemini FX call failed, using fallback:', geminiError.message);
@@ -274,32 +289,38 @@ INSTRUCTIONS:
 - Answer accurately and concisely as a senior FinTech Controller / Big 4 Auditor.
 - Cite specific figures from the financial context provided above.
 - If asked about specific formulas (MDR, GST, 1-to-N bundles, FX float), break down the arithmetic step-by-step.
-- Format with markdown (bullet points, bold text).`;
+- Format with clean markdown (bullet points, bold text).`;
 
     // A. GOOGLE GEMINI CHAT
     if (provider === 'GEMINI') {
-      const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-      const result = await model.generateContent(chatPrompt);
-      return res.json({
-        responseText: result.response.text(),
-        modelProvider: 'Google Gemini 1.5 Flash',
-      });
+      try {
+        const text = await callGemini(chatPrompt, false);
+        return res.json({
+          responseText: text,
+          modelProvider: 'Google Gemini 3.6 Flash',
+        });
+      } catch (geminiError: any) {
+        console.warn('Gemini chat failed, fallback to local:', geminiError.message);
+      }
     }
 
     // B. ANTHROPIC CLAUDE CHAT
     if (provider === 'ANTHROPIC') {
-      const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
-      const response = await anthropic.messages.create({
-        model: 'claude-3-5-sonnet-20240620',
-        max_tokens: 1024,
-        messages: [{ role: 'user', content: chatPrompt }],
-      });
-      // @ts-ignore
-      return res.json({
-        responseText: response.content[0].text,
-        modelProvider: 'Anthropic Claude 3.5 Sonnet',
-      });
+      try {
+        const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
+        const response = await anthropic.messages.create({
+          model: 'claude-3-5-sonnet-20240620',
+          max_tokens: 1024,
+          messages: [{ role: 'user', content: chatPrompt }],
+        });
+        // @ts-ignore
+        return res.json({
+          responseText: response.content[0].text,
+          modelProvider: 'Anthropic Claude 3.5 Sonnet',
+        });
+      } catch (claudeError: any) {
+        console.warn('Claude chat failed, fallback to local:', claudeError.message);
+      }
     }
 
     return res.status(404).json({ error: 'NO_LLM_KEY_CONFIGURED' });
