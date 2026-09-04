@@ -694,3 +694,132 @@ html {
     opacity: 0;
   }
 }
+
+/* ==========================================================================
+   ULTRA-PREMIUM SECTION DIVIDERS & SCROLL REVEAL ANIMATIONS
+   ========================================================================== */
+
+/* Horizontal glowing divider between sections */
+.section-glow-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(0, 210, 255, 0.4) 30%, rgba(124, 58, 237, 0.4) 70%, transparent 100%);
+  box-shadow: 0 0 15px rgba(0, 210, 255, 0.15);
+  margin: 0 auto;
+  max-width: min(80vw, 1200px);
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection styling */
+::selection {
+  background: rgba(0, 210, 255, 0.25);
+  color: #FFFFFF;
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  outline: 2px solid rgba(0, 210, 255, 0.6);
+  outline-offset: 2px;
+}
+
+/* Premium button press animation */
+.btn-press-scale:active {
+  transform: scale(0.97) !important;
+}
+
+/* Floating ambient glow for hero section */
+@keyframes ambientFloat {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.5; }
+  50% { transform: translateY(-20px) scale(1.05); opacity: 0.8; }
+}
+
+/* Subtle breathing glow for accent elements */
+@keyframes breatheGlow {
+  0%, 100% { box-shadow: 0 0 15px rgba(0, 210, 255, 0.2); }
+  50% { box-shadow: 0 0 25px rgba(0, 210, 255, 0.4); }
+}
+
+/* Grid line pattern overlay */
+@keyframes gridSlide {
+  0% { background-position: 0 0; }
+  100% { background-position: 40px 40px; }
+}
+
+/* Number counter tick animation */
+@keyframes counterTick {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.counter-tick {
+  animation: counterTick 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Premium card hover lift */
+.card-hover-lift {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+.card-hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(0, 210, 255, 0.1);
+}
+
+/* Staggered fade-in for list items */
+.stagger-fade > * {
+  opacity: 0;
+  animation: counterTick 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.stagger-fade > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-fade > *:nth-child(2) { animation-delay: 0.10s; }
+.stagger-fade > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-fade > *:nth-child(4) { animation-delay: 0.20s; }
+.stagger-fade > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-fade > *:nth-child(6) { animation-delay: 0.30s; }
+
+/* Ultra-thin horizontal rule */
+.hr-thin {
+  border: none;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  margin: 2rem 0;
+}
+
+/* Frosted glass panel */
+.glass-frosted {
+  background: rgba(14, 20, 38, 0.6);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Tooltip arrow styling */
+[data-tooltip] {
+  position: relative;
+  cursor: help;
+}
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-4px);
+  padding: 0.3rem 0.6rem;
+  background: #1E293B;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: #E2E8F0;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+}
+[data-tooltip]:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-8px);
+}

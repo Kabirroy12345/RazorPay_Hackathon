@@ -31,9 +31,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onJudgePass, onOpenAuthModal }) 
         left: 0,
         right: 0,
         height: '72px',
-        backgroundColor: 'rgba(5, 7, 14, 0.88)',
-        backdropFilter: 'blur(24px)',
-        WebkitBackdropFilter: 'blur(24px)',
+        background: 'rgba(5, 7, 14, 0.75)',
+        backdropFilter: 'blur(20px) saturate(1.5)',
+        WebkitBackdropFilter: 'blur(20px) saturate(1.5)',
         borderBottom: `1px solid ${themeConfig.borderSubtle}`,
         boxShadow: `0 10px 30px rgba(0, 0, 0, 0.6), 0 1px 0 ${themeConfig.glowColor}`,
         zIndex: 1000,
@@ -78,7 +78,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onJudgePass, onOpenAuthModal }) 
 
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.08rem', fontWeight: 900, letterSpacing: '0.06em', color: '#FFFFFF' }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.08rem', fontWeight: 900, letterSpacing: '0.1em', color: '#FFFFFF' }}>
                 OMNISETTLE
               </span>
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.08rem', fontWeight: 900, color: themeConfig.primaryAccent }}>
@@ -109,24 +109,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onJudgePass, onOpenAuthModal }) 
                 textDecoration: 'none',
                 position: 'relative',
                 padding: '0.4rem 0.2rem',
+                paddingBottom: '0.25rem',
+                borderBottom: isHovered ? '2px solid ' + themeConfig.primaryAccent : '2px solid transparent',
                 transition: 'all 0.2s ease',
               }}
             >
               {link.label}
-              {isHovered && (
-                <span
-                  style={{
-                    position: 'absolute',
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    height: '2px',
-                    background: themeConfig.primaryAccent,
-                    boxShadow: `0 0 8px ${themeConfig.primaryAccent}`,
-                    borderRadius: '1px',
-                  }}
-                />
-              )}
             </a>
           );
         })}
