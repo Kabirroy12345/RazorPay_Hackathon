@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Cpu, Calculator, Sparkles, CheckCircle2, Play, Copy, Check } from 'lucide-react';
+import { Cpu, Calculator, Sparkles, CheckCircle2, Play, Copy, Check, GitFork } from 'lucide-react';
+import { solveBranchAndBoundSubsetSum, type ProverTelemetry, type CandidateInvoice } from '../../engine/prover';
 
 interface BundlePreset {
   name: string;
@@ -11,6 +12,7 @@ interface BundlePreset {
   bankCredit: number;
   bundleId: string;
   notes: string;
+  invoices?: CandidateInvoice[];
 }
 
 const PRESETS: BundlePreset[] = [
@@ -23,7 +25,17 @@ const PRESETS: BundlePreset[] = [
     refundDeduction: 2500,
     bankCredit: 48272.80,
     bundleId: 'SET-BUNDLE-88412',
-    notes: '8 ERP Invoices (INV-SET-01..08) minus 2% MDR fee minus 18% statutory GST minus ORD-SET-04 customer return.'
+    notes: '8 ERP Invoices (INV-SET-01..08) minus 2% MDR fee minus 18% statutory GST minus ORD-SET-04 customer return.',
+    invoices: [
+      { id: 'INV-SET-01', amount: 8500, orderId: 'ORD-SET-01' },
+      { id: 'INV-SET-02', amount: 6200, orderId: 'ORD-SET-02' },
+      { id: 'INV-SET-03', amount: 12000, orderId: 'ORD-SET-03' },
+      { id: 'INV-SET-04', amount: 4500, orderId: 'ORD-SET-04' },
+      { id: 'INV-SET-05', amount: 7300, orderId: 'ORD-SET-05' },
+      { id: 'INV-SET-06', amount: 3500, orderId: 'ORD-SET-06' },
+      { id: 'INV-SET-07', amount: 5000, orderId: 'ORD-SET-07' },
+      { id: 'INV-SET-08', amount: 5000, orderId: 'ORD-SET-08' },
+    ]
   },
   {
     name: 'High-Volume Enterprise SaaS Bundle',
@@ -60,9 +72,10 @@ export const BundleMathLabView: React.FC = () => {
   const [gstEnabled, setGstEnabled] = useState(true);
   const [refundDeduction, setRefundDeduction] = useState(2500);
   
-  // Prover Simulation State
+  // Prover State & Telemetry
   const [isProving, setIsProving] = useState(false);
   const [copiedProof, setCopiedProof] = useState(false);
+  const [telemetry, setTelemetry] = useState<ProverTelemetry | null>(null);
 
   // Active calculation
   const activeGross = activeTab === 'PROVER' ? selectedPreset.grossSales : grossSales;
@@ -77,27 +90,44 @@ export const BundleMathLabView: React.FC = () => {
   const bankTarget = activeTab === 'PROVER' ? selectedPreset.bankCredit : netBankPayout;
   const delta = Math.abs(netBankPayout - bankTarget);
 
+  // Build candidate invoices for branch-and-bound solver
+  const getCandidateInvoices = (): CandidateInvoice[] => {
+    if (activeTab === 'PROVER' && selectedPreset.invoices) {
+      return selectedPreset.invoices;
+    }
+    // Synthesize structured candidates for sandbox
+    const avg = Math.round(activeGross / activeCount);
+    const invoices: CandidateInvoice[] = [];
+    let rem = activeGross;
+    for (let i = 1; i <= activeCount; i++) {
+      const amt = i === activeCount ? rem : Math.round(avg * (0.6 + (i % 5) * 0.2));
+      rem -= amt;
+      invoices.push({ id: `INV-SBOX-${i.toString().padStart(2, '0')}`, amount: Math.max(100, amt) });
+    }
+    return invoices;
+  };
+
   const handleRunProver = () => {
     setIsProving(true);
-    setTimeout(() => {
-      setIsProving(false);
-    }, 600);
+    const candidates = getCandidateInvoices();
+    const result = solveBranchAndBoundSubsetSum({
+      targetNetPayout: bankTarget,
+      candidateInvoices: candidates,
+      feeRatePct: activeFeeRate,
+      gstEnabled: activeGstEnabled,
+      refundDeduction: activeRefund,
+      tolerance: 0.05,
+    });
+    setTelemetry(result);
+    setIsProving(false);
   };
 
   const handleCopyProof = () => {
-    const proofText = `### OMNISETTLE 1-TO-N BUNDLED RECONCILIATION PROOF
+    const proofText = telemetry
+      ? telemetry.proofSteps.join('\n')
+      : `### OMNISETTLE 1-TO-N BUNDLED RECONCILIATION PROOF
 Bundle Reference: ${activeTab === 'PROVER' ? selectedPreset.bundleId : 'CUSTOM-SANDBOX'}
-Status: MATHEMATICALLY VERIFIED (Confidence: 99.98%)
-
-1. Gross Invoices (${activeCount} Items): ₹${activeGross.toFixed(2)}
-2. Contracted MDR Fee (${activeFeeRate.toFixed(2)}%): -₹${feeAmount.toFixed(2)}
-3. Statutory 18% GST on MDR Fee: -₹${gstAmount.toFixed(2)}
-4. Customer Refunds Withheld: -₹${activeRefund.toFixed(2)}
-------------------------------------------------------
-Expected Net Payout: ₹${netBankPayout.toFixed(2)}
-Actual Bank Credit:   ₹${bankTarget.toFixed(2)}
-Variance / Delta:    ₹${delta.toFixed(4)} (ZERO DELTA EXACT MATCH)
-Cryptographic Proof: SHA256-PROVER-SUBSET-SUM-VERIFIED`;
+Gross: ₹${activeGross} | Target Net: ₹${bankTarget} | Delta: ₹${delta.toFixed(4)}`;
 
     navigator.clipboard.writeText(proofText);
     setCopiedProof(true);
@@ -478,6 +508,35 @@ Cryptographic Proof: SHA256-PROVER-SUBSET-SUM-VERIFIED`;
                   : 'Variance flagged for human signoff.'}
               </span>
             </div>
+            {telemetry && (
+              <div
+                style={{
+                  marginTop: '1rem',
+                  padding: '1rem',
+                  background: 'rgba(12, 140, 233, 0.08)',
+                  border: '1px solid rgba(12, 140, 233, 0.3)',
+                  borderRadius: '6px',
+                  fontSize: '0.78rem',
+                  fontFamily: 'var(--font-mono)',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem', color: '#38BDF8', fontWeight: 800 }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <GitFork size={13} /> BRANCH & BOUND SEARCH TELEMETRY
+                  </span>
+                  <span>{telemetry.executionTimeMs} ms</span>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem', color: '#94A3B8' }}>
+                  <div>Search Space: <strong style={{ color: '#FFF' }}>2^{activeCount} ({telemetry.searchSpaceSize.toLocaleString()})</strong></div>
+                  <div>Nodes Explored: <strong style={{ color: '#FFF' }}>{telemetry.nodesExplored}</strong></div>
+                  <div>Branches Pruned: <strong style={{ color: '#10B981' }}>{telemetry.branchesPruned}</strong></div>
+                  <div>Max Tree Depth: <strong style={{ color: '#FFF' }}>{telemetry.maxDepth}</strong></div>
+                </div>
+                <div style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.08)', color: '#F5D061', fontSize: '0.72rem' }}>
+                  Certificate: <code>{telemetry.proofCertificate}</code>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

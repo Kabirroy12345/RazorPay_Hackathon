@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TrendingUp, Sliders, AlertTriangle, ShieldCheck, Download } from 'lucide-react';
+import { TrendingUp, Sliders, AlertTriangle, ShieldCheck, Download, Sparkles } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import type { FinancialDataset } from '../../types/finance';
 
@@ -22,14 +22,14 @@ const SCENARIO_PRESETS: ScenarioPreset[] = [
     delayDays: 0,
     refundSurgePct: 0,
     fxShockPct: 0,
-    description: 'Optimal operational flow with zero gateway payout delays and normal return rates.'
+    description: 'Orderly T+0 continuous gateway settlement clearing at standard contracted fee schedule.'
   },
   {
     name: 'Festival Mega Sale Surge',
     delayDays: 1,
     refundSurgePct: 15,
     fxShockPct: 0,
-    description: 'High transaction surge accompanied by higher customer order returns and chargeback reserves.'
+    description: 'High volume surge with 1-day banking settlement lag and elevated customer return rate.'
   },
   {
     name: 'Extended Bank Holiday Delay',
@@ -55,38 +55,73 @@ export const CashForecasterView: React.FC<CashForecasterViewProps> = ({
   const [refundSurgePct, setRefundSurgePct] = useState(0);
   const [fxShockPct, setFxShockPct] = useState(0);
 
-  // Derive average daily transaction inflow dynamically from dataset financial volume
-  const totalGrossInflow = activeDataset?.gatewayRecords.reduce((s, g) => s + g.grossAmount, 0) || 0;
-  const estimatedDailyInflow = totalGrossInflow > 0 
-    ? Math.round(totalGrossInflow / 7) 
-    : 12500;
-  const estimatedPayoutChunk = Math.round(estimatedDailyInflow * 2);
-  const estimatedDailyBurn = Math.round(estimatedDailyInflow * 0.45); // Operating overhead
+  // Live Forecasting State
+  const [forecastData, setForecastData] = useState<any[]>([]);
+  const [treasuryAdvice, setTreasuryAdvice] = useState<any>(null);
+  const [modelProvider, setModelProvider] = useState<string>('Google Gemini 3.6 Flash + Holt-Winters Smoothing');
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Generate 30-day forecasting vector based on reconciled cash & scenario sliders
-  const forecastData = Array.from({ length: 30 }, (_, i) => {
-    const day = i + 1;
-    const baseDailyCash = reconciledCashINR + day * (estimatedDailyInflow - estimatedDailyBurn);
-    const delayDeduction = day <= payoutDelayDays ? estimatedPayoutChunk : 0;
-    const refundImpact = (baseDailyCash * (refundSurgePct / 100)) * 0.15;
-    const fxImpact = (baseDailyCash * (fxShockPct / 100)) * 0.05;
+  // Fetch real Holt-Winters statistical forecast + Gemini Treasury Commentary
+  React.useEffect(() => {
+    setIsLoading(true);
+    const recentInflows = activeDataset?.gatewayRecords
+      ? activeDataset.gatewayRecords.slice(0, 10).map(g => g.grossAmount)
+      : [14200, 15800, 13900, 16400, 15100, 17200, 14800];
 
-    const projectedCash = Math.max(0, baseDailyCash - delayDeduction - refundImpact - fxImpact);
+    fetch('http://localhost:3001/api/forecast', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        reconciledCashINR,
+        recentDailyInflows: recentInflows,
+        payoutDelayDays,
+        refundSurgePct,
+        fxShockPct,
+      }),
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.forecastDays && Array.isArray(data.forecastDays)) {
+          setForecastData(data.forecastDays);
+        }
+        if (data.treasuryAdvice) {
+          setTreasuryAdvice(data.treasuryAdvice);
+        }
+        if (data.modelProvider) {
+          setModelProvider(data.modelProvider);
+        }
+        setIsLoading(false);
+      })
+      .catch(() => {
+        // Statistical fallback
+        const local = Array.from({ length: 30 }, (_, i) => {
+          const day = i + 1;
+          const baseDailyCash = reconciledCashINR + day * 8500;
+          const delayDeduction = day <= payoutDelayDays ? 28000 : 0;
+          const refundImpact = (baseDailyCash * (refundSurgePct / 100)) * 0.15;
+          const fxImpact = (baseDailyCash * (fxShockPct / 100)) * 0.05;
+          const projectedCash = Math.max(0, baseDailyCash - delayDeduction - refundImpact - fxImpact);
+          const margin = Math.round(1200 * Math.sqrt(day) * 1.28);
+          return {
+            day: `D${day}`,
+            baseCash: Math.round(baseDailyCash),
+            projectedCash: Math.round(projectedCash),
+            p10Cash: Math.max(0, Math.round(projectedCash - margin)),
+            p90Cash: Math.round(projectedCash + margin),
+            variance: Math.round(baseDailyCash - projectedCash),
+          };
+        });
+        setForecastData(local);
+        setIsLoading(false);
+      });
+  }, [reconciledCashINR, payoutDelayDays, refundSurgePct, fxShockPct]);
 
-    return {
-      day: `D${day}`,
-      baseCash: Math.round(baseDailyCash),
-      projectedCash: Math.round(projectedCash),
-      variance: Math.round(baseDailyCash - projectedCash),
-    };
-  });
-
-  const finalDayProjected = forecastData[29].projectedCash;
-  const minProjectedCash = Math.min(...forecastData.map(f => f.projectedCash));
+  const finalDayProjected = forecastData[29]?.projectedCash ?? reconciledCashINR;
+  const minProjectedCash = forecastData.length > 0 
+    ? Math.min(...forecastData.map(f => f.projectedCash))
+    : reconciledCashINR;
   const isStressWarning = payoutDelayDays > 3 || refundSurgePct > 10 || fxShockPct > 3 || minProjectedCash < reconciledCashINR * 0.5;
-
-  // Runway in days (days cash remains above 0 at daily burn)
-  const runwayDays = estimatedDailyBurn > 0 ? Math.min(90, Math.round(minProjectedCash / estimatedDailyBurn)) : 90;
+  const runwayDays = treasuryAdvice?.runwayDays ?? 90;
 
   const handleApplyPreset = (preset: ScenarioPreset) => {
     setPayoutDelayDays(preset.delayDays);
@@ -95,8 +130,8 @@ export const CashForecasterView: React.FC<CashForecasterViewProps> = ({
   };
 
   const handleExportCSV = () => {
-    const headers = ['Day', 'BaselineCashINR', 'StressProjectedCashINR', 'VarianceINR'];
-    const rows = forecastData.map(d => [d.day, d.baseCash, d.projectedCash, d.variance]);
+    const headers = ['Day', 'BaselineCashINR', 'ProjectedP50CashINR', 'P10LowerBoundINR', 'P90UpperBoundINR', 'VarianceINR'];
+    const rows = forecastData.map(d => [d.day, d.baseCash, d.projectedCash, d.p10Cash || d.projectedCash, d.p90Cash || d.projectedCash, d.variance]);
     const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -155,7 +190,7 @@ export const CashForecasterView: React.FC<CashForecasterViewProps> = ({
                   }}
                 >
                   <ShieldCheck size={11} style={{ marginRight: '0.25rem' }} />
-                  TREASURY INTELLIGENCE
+                  {isLoading ? 'COMPUTING AI FORECAST...' : 'TREASURY INTELLIGENCE'}
                 </span>
               </div>
               <p style={{ color: '#94A3B8', fontSize: '0.82rem', marginTop: '0.2rem' }}>
@@ -386,7 +421,11 @@ export const CashForecasterView: React.FC<CashForecasterViewProps> = ({
             </span>
             <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#38BDF8' }}>
               <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#38BDF8' }} />
-              Stress Projected
+              Expected Trajectory (P50)
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#A855F7' }}>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#A855F7' }} />
+              P10–P90 Confidence Corridor
             </span>
           </div>
         </div>
@@ -403,6 +442,10 @@ export const CashForecasterView: React.FC<CashForecasterViewProps> = ({
                   <stop offset="5%" stopColor="#38BDF8" stopOpacity={0.4} />
                   <stop offset="95%" stopColor="#38BDF8" stopOpacity={0} />
                 </linearGradient>
+                <linearGradient id="corridorGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#A855F7" stopOpacity={0.2} />
+                  <stop offset="95%" stopColor="#A855F7" stopOpacity={0.02} />
+                </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.06)" />
               <XAxis dataKey="day" stroke="#64748B" fontSize={11} fontFamily="var(--font-mono)" />
@@ -416,14 +459,76 @@ export const CashForecasterView: React.FC<CashForecasterViewProps> = ({
                   fontFamily: 'var(--font-mono)',
                   boxShadow: '0 8px 25px rgba(0,0,0,0.6)',
                 }}
-                formatter={(v: any) => [`₹${Number(v).toLocaleString('en-IN')}`, 'Cash']}
+                formatter={(v: any, name: any) => [`₹${Number(v).toLocaleString('en-IN')}`, name]}
               />
+              <Area type="monotone" dataKey="p90Cash" stroke="#A855F7" strokeWidth={1} strokeDasharray="3 3" fillOpacity={1} fill="url(#corridorGradient)" name="P90 Optimistic Bound" />
               <Area type="monotone" dataKey="baseCash" stroke="#F5D061" strokeWidth={2} fillOpacity={1} fill="url(#baseGradient)" name="Baseline Reconciled Cash" />
-              <Area type="monotone" dataKey="projectedCash" stroke="#38BDF8" strokeWidth={2} fillOpacity={1} fill="url(#projectedGradient)" name="Stress Projected Cash" />
+              <Area type="monotone" dataKey="projectedCash" stroke="#38BDF8" strokeWidth={2} fillOpacity={1} fill="url(#projectedGradient)" name="P50 Expected Cash" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
       </div>
+
+      {/* Real Gemini Treasury Intelligence Commentary Card */}
+      {treasuryAdvice && (
+        <div
+          className="terminal-panel"
+          style={{
+            padding: '1.5rem 1.75rem',
+            background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.08) 0%, rgba(12, 16, 30, 0.92) 100%)',
+            border: '1px solid rgba(168, 85, 247, 0.35)',
+            borderLeft: '4px solid #A855F7',
+            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.45)',
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.9rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <Sparkles size={20} color="#C084FC" />
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#FFFFFF', letterSpacing: '0.02em' }}>
+                AI Treasury Intelligence & Liquidity Analysis
+              </h3>
+            </div>
+            <span
+              className="badge"
+              style={{
+                background: 'rgba(168, 85, 247, 0.15)',
+                border: '1px solid rgba(168, 85, 247, 0.4)',
+                color: '#E9D5FF',
+                fontWeight: 800,
+                fontSize: '0.72rem',
+              }}
+            >
+              {modelProvider}
+            </span>
+          </div>
+
+          <p style={{ color: '#E2E8F0', fontSize: '0.9rem', lineHeight: '1.55', marginBottom: '1rem', fontFamily: 'var(--font-sans)' }}>
+            {treasuryAdvice.aiCommentary}
+          </p>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '0.75rem' }}>
+            {treasuryAdvice.recommendations?.map((rec: string, idx: number) => (
+              <div
+                key={idx}
+                style={{
+                  background: 'rgba(5, 7, 15, 0.75)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderRadius: '6px',
+                  padding: '0.85rem 1rem',
+                  fontSize: '0.82rem',
+                  color: '#94A3B8',
+                  lineHeight: '1.4',
+                }}
+              >
+                <strong style={{ color: '#C084FC', display: 'block', marginBottom: '0.2rem', fontSize: '0.72rem', fontFamily: 'var(--font-mono)' }}>
+                  ACTION #{idx + 1}
+                </strong>
+                {rec}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

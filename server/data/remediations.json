@@ -1,0 +1,13 @@
+[
+  {
+    "matchId": "EXC-FEE-TEST-001",
+    "exceptionType": "EXCEPTION_FEE_MISMATCH",
+    "discrepancyAmount": 320,
+    "suggestedAction": "Submit Razorpay Fee Dispute",
+    "targetEndpoint": "http://localhost:3001/api/remediate/webhook-listener",
+    "hmacSignature": "sha256=5109a001292e9861b77119d1...",
+    "receiptId": "RZP-RECEIPT-1788526669119-KXM7Y",
+    "status": "DELIVERED_200_OK",
+    "deliveredAt": "2026-09-04T12:57:49.116Z"
+  }
+]

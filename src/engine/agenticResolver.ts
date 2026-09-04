@@ -202,7 +202,7 @@ export async function runAgenticResolver(
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000); 
+      const timeoutId = setTimeout(() => controller.abort(), 35000); 
 
       const startTime = performance.now();
       const response = await fetch(`${BACKEND_URL}/fx`, {
