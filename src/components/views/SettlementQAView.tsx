@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Bot, Send, Sparkles, RefreshCw } from 'lucide-react';
+import { Bot, Send, Sparkles, RefreshCw, Crown, ShieldCheck } from 'lucide-react';
 import type { FullReconciliationOutput } from '../../engine/reconciler';
 import type { FinancialDataset } from '../../types/finance';
 
@@ -27,15 +27,15 @@ export const SettlementQAView: React.FC<SettlementQAViewProps> = ({ output, acti
     {
       id: 'msg-init-1',
       sender: 'agent',
-      text: `Hello, Controller. I am OmniSettle's autonomous Settlement Q&A Agent.
-I have parsed **${metrics.totalRecords} synthetic records** from the **${activeDataset.name}** batch.
+      text: `Greetings, Chief Controller. I am OmniSettle's autonomous Settlement Q&A Agent.
+I have completed 3-way ledger cross-verification for **${metrics.totalRecords} synthetic records** from the **${activeDataset.name}** batch.
 
 • **Reconciliation Match Rate:** ${metrics.reconciliationRate}% (${metrics.fastPathCount + metrics.agenticCount}/${metrics.totalRecords} matched)
 • **Measured Accuracy:** ${metrics.classificationAccuracy}% against ground truth
 • **Honest Exceptions:** ${metrics.exceptionCount} unresolvable records isolated
 • **Verified Cash Position:** ₹${metrics.totalReconciledINR.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
 
-Select a preset question below or ask me any custom question regarding settlements, bundled payouts, tax-line matching, or unresolved exceptions.`,
+Select a preset question below or ask me any custom query regarding settlement bundles, net math, tax lines, or honest exceptions.`,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       category: 'GENERAL',
       ledgerCitations: ['SYS_INIT', activeDataset.id, `BATCH_SIZE_${metrics.totalRecords}`],
@@ -211,37 +211,86 @@ OmniSettle features an autonomous **Tax-Line Matcher** that verifies every fee w
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', height: 'calc(100vh - 5rem)' }}>
-      {/* Header Bar */}
-      <div className="terminal-panel" style={{ padding: '1rem 1.25rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', height: 'calc(100vh - 6rem)' }}>
+      {/* Royal Header Bar */}
+      <div
+        className="terminal-panel"
+        style={{
+          padding: '1.15rem 1.5rem',
+          background: 'linear-gradient(135deg, rgba(19, 26, 48, 0.75) 0%, rgba(8, 11, 22, 0.85) 100%)',
+          border: '1px solid rgba(245, 208, 97, 0.25)',
+          borderLeft: '4px solid #F5D061',
+          boxShadow: '0 8px 30px rgba(0, 0, 0, 0.45)',
+        }}
+      >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <div style={{ padding: '0.5rem', background: 'rgba(56, 189, 248, 0.1)', border: '1px solid var(--accent-amber)', borderRadius: '4px', color: 'var(--accent-amber)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+            <div
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '8px',
+                background: 'rgba(245, 208, 97, 0.12)',
+                border: '1px solid rgba(245, 208, 97, 0.35)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#F5D061',
+                boxShadow: '0 0 14px rgba(245, 208, 97, 0.25)',
+              }}
+            >
               <Bot size={22} />
             </div>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF', letterSpacing: '0.02em' }}>
                   SETTLEMENT Q&A AGENT
                 </h2>
-                <span className="badge badge-amber">AUTONOMOUS_CONTROLLER</span>
+                <span
+                  className="badge"
+                  style={{
+                    background: 'rgba(245, 208, 97, 0.1)',
+                    border: '1px solid rgba(245, 208, 97, 0.35)',
+                    color: '#F5D061',
+                    fontSize: '0.68rem',
+                    fontWeight: 800,
+                  }}
+                >
+                  <Crown size={11} style={{ marginRight: '0.25rem' }} />
+                  AUTONOMOUS CONTROLLER
+                </span>
               </div>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '0.2rem' }}>
+              <p style={{ color: '#94A3B8', fontSize: '0.82rem', marginTop: '0.2rem' }}>
                 Natural language query assistant powered by live 3-way reconciliation ledger intelligence • Active: {activeDataset.name}
               </p>
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <button
               onClick={() => setMessages(initialMessages)}
               className="btn-terminal"
-              style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem' }}
+              style={{ fontSize: '0.76rem', padding: '0.4rem 0.85rem' }}
             >
-              <RefreshCw size={14} /> RESET_CONVERSATION
+              <RefreshCw size={13} /> RESET CONVERSATION
             </button>
-            <div className="font-mono" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', background: 'var(--bg-root)', padding: '0.4rem 0.8rem', border: '1px solid var(--border-hairline)' }}>
-              RECORDS_MOUNTED: <strong style={{ color: 'var(--accent-amber)' }}>{metrics.totalRecords}</strong>
+            <div
+              className="font-mono"
+              style={{
+                fontSize: '0.76rem',
+                color: '#CBD5E1',
+                background: 'rgba(5, 7, 15, 0.85)',
+                padding: '0.45rem 0.9rem',
+                border: '1px solid rgba(229, 184, 105, 0.25)',
+                borderRadius: '6px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+              }}
+            >
+              <ShieldCheck size={13} color="#F5D061" />
+              <span>RECORDS MOUNTED:</span>
+              <strong style={{ color: '#F5D061' }}>{metrics.totalRecords}</strong>
             </div>
           </div>
         </div>
@@ -252,11 +301,15 @@ OmniSettle features an autonomous **Tax-Line Matcher** that verifies every fee w
         className="terminal-panel"
         style={{
           flex: 1,
-          padding: '1.25rem',
+          padding: '1.5rem',
           overflowY: 'auto',
           display: 'flex',
           flexDirection: 'column',
-          gap: '1rem',
+          gap: '1.25rem',
+          background: 'linear-gradient(180deg, rgba(12, 16, 30, 0.85) 0%, rgba(5, 7, 15, 0.94) 100%)',
+          border: '1px solid rgba(229, 184, 105, 0.2)',
+          borderRadius: '8px',
+          boxShadow: '0 8px 30px rgba(0,0,0,0.4)',
         }}
       >
         {messages.map(msg => {
@@ -269,19 +322,28 @@ OmniSettle features an autonomous **Tax-Line Matcher** that verifies every fee w
                 maxWidth: isUser ? '75%' : '88%',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '0.35rem',
+                gap: '0.4rem',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', alignSelf: isUser ? 'flex-end' : 'flex-start' }}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: 'var(--text-muted)' }}>
-                  {isUser ? 'CONTROLLER' : 'AI_FINANCE_AGENT'}
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: isUser ? '#38BDF8' : '#F5D061', fontWeight: 800 }}>
+                  {isUser ? 'CHIEF_CONTROLLER' : 'OMNISETTLE_AI_PROOFER'}
                 </span>
-                <span style={{ fontSize: '0.65rem', color: 'var(--border-hairline)' }}>•</span>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'var(--text-muted)' }}>
+                <span style={{ fontSize: '0.65rem', color: 'rgba(255, 255, 255, 0.2)' }}>•</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: '#64748B' }}>
                   {msg.timestamp}
                 </span>
                 {msg.category && (
-                  <span className="badge badge-amber" style={{ fontSize: '0.62rem', padding: '0.1rem 0.35rem' }}>
+                  <span
+                    className="badge"
+                    style={{
+                      fontSize: '0.62rem',
+                      padding: '0.1rem 0.4rem',
+                      background: 'rgba(245, 208, 97, 0.1)',
+                      border: '1px solid rgba(245, 208, 97, 0.3)',
+                      color: '#F5D061',
+                    }}
+                  >
                     {msg.category}
                   </span>
                 )}
@@ -289,22 +351,39 @@ OmniSettle features an autonomous **Tax-Line Matcher** that verifies every fee w
 
               <div
                 style={{
-                  background: isUser ? 'rgba(56, 189, 248, 0.12)' : 'var(--bg-root)',
-                  border: isUser ? '1px solid var(--accent-amber)' : '1px solid var(--border-hairline)',
-                  padding: '1rem 1.25rem',
+                  background: isUser
+                    ? 'linear-gradient(135deg, rgba(56, 189, 248, 0.16) 0%, rgba(12, 16, 30, 0.9) 100%)'
+                    : 'linear-gradient(135deg, rgba(245, 208, 97, 0.06) 0%, rgba(5, 7, 15, 0.95) 100%)',
+                  border: isUser
+                    ? '1px solid rgba(56, 189, 248, 0.4)'
+                    : '1px solid rgba(245, 208, 97, 0.22)',
+                  borderRadius: isUser ? '10px 10px 2px 10px' : '10px 10px 10px 2px',
+                  padding: '1.15rem 1.4rem',
                   fontSize: '0.88rem',
-                  lineHeight: '1.6',
-                  color: 'var(--text-primary)',
+                  lineHeight: '1.65',
+                  color: '#F8FAFC',
                   whiteSpace: 'pre-wrap',
+                  boxShadow: '0 4px 18px rgba(0, 0, 0, 0.35)',
                 }}
               >
                 {msg.text}
               </div>
 
               {msg.ledgerCitations && msg.ledgerCitations.length > 0 && (
-                <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap', marginTop: '0.2rem' }}>
+                <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginTop: '0.15rem' }}>
                   {msg.ledgerCitations.map((cite, i) => (
-                    <span key={i} className="font-mono" style={{ fontSize: '0.62rem', color: 'var(--text-muted)', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-hairline)', padding: '0.1rem 0.4rem' }}>
+                    <span
+                      key={i}
+                      className="font-mono"
+                      style={{
+                        fontSize: '0.65rem',
+                        color: '#94A3B8',
+                        background: 'rgba(5, 7, 15, 0.8)',
+                        border: '1px solid rgba(229, 184, 105, 0.18)',
+                        padding: '0.12rem 0.45rem',
+                        borderRadius: '3px',
+                      }}
+                    >
                       REF: {cite}
                     </span>
                   ))}
@@ -315,9 +394,20 @@ OmniSettle features an autonomous **Tax-Line Matcher** that verifies every fee w
         })}
 
         {isThinking && (
-          <div style={{ alignSelf: 'flex-start', display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.75rem 1rem', background: 'var(--bg-root)', border: '1px solid var(--border-hairline)' }}>
-            <div style={{ width: '12px', height: '12px', border: '2px solid var(--accent-amber)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-            <span className="font-mono" style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+          <div
+            style={{
+              alignSelf: 'flex-start',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              padding: '0.85rem 1.25rem',
+              background: 'rgba(5, 7, 15, 0.9)',
+              border: '1px solid rgba(245, 208, 97, 0.25)',
+              borderRadius: '8px',
+            }}
+          >
+            <div style={{ width: '14px', height: '14px', border: '2px solid #F5D061', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+            <span className="font-mono" style={{ fontSize: '0.78rem', color: '#E5B869', fontWeight: 700 }}>
               INSPECTING_3WAY_LEDGER_VECTORS...
             </span>
           </div>
@@ -327,7 +417,7 @@ OmniSettle features an autonomous **Tax-Line Matcher** that verifies every fee w
       </div>
 
       {/* Suggested Quick Query Chips */}
-      <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingBottom: '0.25rem' }}>
+      <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingBottom: '0.2rem' }}>
         {quickPrompts.map((qp, idx) => (
           <button
             key={idx}
@@ -335,19 +425,32 @@ OmniSettle features an autonomous **Tax-Line Matcher** that verifies every fee w
             disabled={isThinking}
             className="btn-terminal"
             style={{
-              fontSize: '0.74rem',
+              fontSize: '0.76rem',
               whiteSpace: 'nowrap',
-              padding: '0.4rem 0.75rem',
-              background: 'var(--bg-surface)',
+              padding: '0.45rem 0.85rem',
+              background: 'rgba(12, 16, 30, 0.8)',
+              borderColor: 'rgba(229, 184, 105, 0.2)',
+              color: '#CBD5E1',
             }}
           >
-            <Sparkles size={12} color="var(--accent-amber)" /> {qp.label}
+            <Sparkles size={12} color="#F5D061" /> {qp.label}
           </button>
         ))}
       </div>
 
       {/* Interactive Input Box */}
-      <div className="terminal-panel" style={{ padding: '0.75rem', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+      <div
+        className="terminal-panel"
+        style={{
+          padding: '0.75rem 1rem',
+          display: 'flex',
+          gap: '0.75rem',
+          alignItems: 'center',
+          background: 'linear-gradient(135deg, rgba(12, 16, 30, 0.9) 0%, rgba(5, 7, 15, 0.95) 100%)',
+          border: '1px solid rgba(245, 208, 97, 0.25)',
+          borderRadius: '8px',
+        }}
+      >
         <input
           type="text"
           value={query}
@@ -355,15 +458,16 @@ OmniSettle features an autonomous **Tax-Line Matcher** that verifies every fee w
           onKeyDown={e => {
             if (e.key === 'Enter') handleSend();
           }}
-          placeholder="Ask anything about settlements, bundles, exceptions, cash flow, or tax lines..."
+          placeholder="Ask anything about settlements, bundled payouts, tax lines, or honest exceptions..."
           style={{
             flex: 1,
-            background: 'var(--bg-root)',
-            border: '1px solid var(--border-hairline)',
-            color: 'var(--text-primary)',
-            padding: '0.65rem 1rem',
+            background: 'rgba(5, 7, 15, 0.8)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: '6px',
+            color: '#FFFFFF',
+            padding: '0.7rem 1.15rem',
             fontFamily: 'var(--font-sans)',
-            fontSize: '0.85rem',
+            fontSize: '0.88rem',
             outline: 'none',
           }}
         />
@@ -371,9 +475,9 @@ OmniSettle features an autonomous **Tax-Line Matcher** that verifies every fee w
           onClick={() => handleSend()}
           disabled={!query.trim() || isThinking}
           className="btn-terminal primary"
-          style={{ padding: '0.65rem 1.25rem' }}
+          style={{ padding: '0.7rem 1.35rem', fontSize: '0.82rem', fontWeight: 800 }}
         >
-          <Send size={15} /> SEND_QUERY
+          <Send size={14} /> SEND QUERY
         </button>
       </div>
     </div>

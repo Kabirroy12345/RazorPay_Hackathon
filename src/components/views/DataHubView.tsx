@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Database, Upload, CheckCircle2, FileSpreadsheet, ArrowRight } from 'lucide-react';
+import { Database, Upload, FileSpreadsheet, ArrowRight, Crown, ShieldCheck } from 'lucide-react';
 import { DATASET_LIST } from '../../data/datasets';
 import { parseCustomCSVText } from '../../utils/csvParser';
 import type { FinancialDataset } from '../../types/finance';
@@ -22,24 +22,68 @@ export const DataHubView: React.FC<DataHubViewProps> = ({ activeDataset, onSelec
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      <div className="terminal-panel" style={{ padding: '1.25rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.2rem' }}>
-          <Database size={22} color="var(--accent-amber)" />
-          <h2 style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-            Financial Data Hub & Custom Dataset Builder
-          </h2>
+      {/* Royal Header */}
+      <div
+        className="terminal-panel"
+        style={{
+          padding: '1.35rem 1.6rem',
+          background: 'linear-gradient(135deg, rgba(19, 26, 48, 0.75) 0%, rgba(8, 11, 22, 0.85) 100%)',
+          border: '1px solid rgba(245, 208, 97, 0.25)',
+          borderLeft: '4px solid #F5D061',
+          boxShadow: '0 8px 30px rgba(0, 0, 0, 0.45)',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
+          <div
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '8px',
+              background: 'rgba(245, 208, 97, 0.12)',
+              border: '1px solid rgba(245, 208, 97, 0.35)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#F5D061',
+              boxShadow: '0 0 12px rgba(245, 208, 97, 0.25)',
+            }}
+          >
+            <Database size={20} />
+          </div>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#FFFFFF', fontFamily: 'var(--font-mono)' }}>
+                FINANCIAL_DATA_HUB & VAULT_MANAGER
+              </h2>
+              <span
+                className="badge"
+                style={{
+                  background: 'rgba(245, 208, 97, 0.1)',
+                  border: '1px solid rgba(245, 208, 97, 0.35)',
+                  color: '#F5D061',
+                  fontSize: '0.7rem',
+                  fontWeight: 800,
+                }}
+              >
+                <Crown size={11} style={{ marginRight: '0.25rem' }} />
+                ROYAL VAULT
+              </span>
+            </div>
+            <p style={{ color: '#94A3B8', fontSize: '0.82rem', marginTop: '0.2rem' }}>
+              Switch between pre-packaged enterprise synthetic benchmark datasets or ingest custom Bank, Gateway, and ERP CSV ledger batches.
+            </p>
+          </div>
         </div>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-          Switch between pre-packaged enterprise financial datasets or upload custom Bank, Gateway, and ERP CSV files.
-        </p>
       </div>
 
+      {/* Benchmark Datasets Section */}
       <div>
-        <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', color: 'var(--text-primary)' }}>
-          Select Pre-Packaged Synthetic Benchmark Suite
+        <h3 style={{ fontSize: '1.05rem', fontWeight: 800, marginBottom: '1rem', color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <span>Enterprise Synthetic Benchmark Suites</span>
+          <span style={{ fontSize: '0.7rem', color: '#E5B869', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>(50+ VECTORS GROUND TRUTH)</span>
         </h3>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.15rem' }}>
           {DATASET_LIST.map(ds => {
             const isActive = activeDataset.id === ds.id;
             return (
@@ -48,49 +92,70 @@ export const DataHubView: React.FC<DataHubViewProps> = ({ activeDataset, onSelec
                 onClick={() => onSelectDataset(ds)}
                 className="terminal-panel"
                 style={{
-                  padding: '1.25rem',
-                  border: isActive ? '2px solid var(--accent-amber)' : '1px solid var(--border-hairline)',
-                  background: isActive ? 'rgba(56, 189, 248, 0.08)' : 'var(--bg-card)',
+                  padding: '1.35rem',
+                  border: isActive ? '2px solid #F5D061' : '1px solid rgba(255, 255, 255, 0.08)',
+                  background: isActive
+                    ? 'linear-gradient(135deg, rgba(245, 208, 97, 0.1) 0%, rgba(12, 16, 30, 0.9) 100%)'
+                    : 'linear-gradient(135deg, rgba(12, 16, 30, 0.8) 0%, rgba(5, 7, 15, 0.9) 100%)',
                   cursor: 'pointer',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                   gap: '1rem',
-                  transition: 'all 0.15s ease',
+                  borderRadius: '8px',
+                  boxShadow: isActive ? '0 0 25px rgba(245, 208, 97, 0.25), 0 8px 25px rgba(0,0,0,0.5)' : '0 4px 15px rgba(0,0,0,0.3)',
+                  transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
                 }}
               >
                 <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                    <span className={`badge ${isActive ? 'badge-amber' : 'badge-amber'}`}>
-                      {ds.recordCount} Records
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.65rem' }}>
+                    <span
+                      className="badge"
+                      style={{
+                        background: isActive ? 'rgba(245, 208, 97, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                        border: isActive ? '1px solid rgba(245, 208, 97, 0.4)' : '1px solid rgba(255, 255, 255, 0.1)',
+                        color: isActive ? '#F5D061' : '#94A3B8',
+                        fontWeight: 800,
+                        fontSize: '0.7rem',
+                      }}
+                    >
+                      {ds.recordCount} RECORDS
                     </span>
-                    {isActive && <CheckCircle2 size={18} color="var(--accent-amber)" />}
+                    {isActive && (
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#10B981', fontSize: '0.72rem', fontWeight: 800 }}>
+                        <ShieldCheck size={16} color="#10B981" /> MOUNTED
+                      </span>
+                    )}
                   </div>
 
-                  <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.4rem' }}>
+                  <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#FFFFFF', marginBottom: '0.45rem' }}>
                     {ds.name}
                   </h4>
-                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>
+                  <p style={{ fontSize: '0.82rem', color: '#94A3B8', lineHeight: '1.5' }}>
                     {ds.description}
                   </p>
                 </div>
 
                 <button
                   style={{
-                    background: isActive ? 'var(--accent-amber)' : 'rgba(255,255,255,0.06)',
-                    color: isActive ? '#000' : 'var(--text-primary)',
+                    background: isActive ? 'linear-gradient(135deg, #FFE082 0%, #F5D061 100%)' : 'rgba(255,255,255,0.06)',
+                    color: isActive ? '#050711' : '#F8FAFC',
                     border: 'none',
-                    padding: '0.55rem 0.85rem',
-                    fontWeight: 700,
+                    padding: '0.6rem 0.95rem',
+                    borderRadius: '6px',
+                    fontWeight: 800,
                     fontSize: '0.8rem',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '0.4rem',
+                    gap: '0.45rem',
+                    fontFamily: 'var(--font-mono)',
+                    boxShadow: isActive ? '0 0 12px rgba(245, 208, 97, 0.35)' : 'none',
+                    transition: 'all 0.15s ease',
                   }}
                 >
-                  {isActive ? 'Active Dataset' : 'Load Dataset'} <ArrowRight size={14} />
+                  {isActive ? 'ACTIVE VAULT' : 'MOUNT DATASET'} <ArrowRight size={14} />
                 </button>
               </div>
             );
@@ -98,51 +163,94 @@ export const DataHubView: React.FC<DataHubViewProps> = ({ activeDataset, onSelec
         </div>
       </div>
 
-      <div className="terminal-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', borderBottom: '1px solid var(--border-hairline)', paddingBottom: '0.75rem' }}>
-          <Upload size={20} color="var(--accent-amber)" />
-          <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+      {/* Custom CSV File Ingestion */}
+      <div
+        className="terminal-panel"
+        style={{
+          padding: '1.6rem',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '1.35rem',
+          background: 'linear-gradient(135deg, rgba(12, 16, 30, 0.9) 0%, rgba(5, 7, 15, 0.95) 100%)',
+          border: '1px solid rgba(229, 184, 105, 0.22)',
+          boxShadow: '0 8px 30px rgba(0,0,0,0.4)',
+          borderRadius: '8px',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', borderBottom: '1px solid rgba(229, 184, 105, 0.16)', paddingBottom: '0.85rem' }}>
+          <Upload size={20} color="#F5D061" />
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#FFFFFF' }}>
             Custom CSV File Ingestion & Live Parser
           </h3>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.15rem' }}>
           <div>
-            <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '0.4rem' }}>
-              1. Paste Bank Statement CSV:
+            <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#E5B869', display: 'block', marginBottom: '0.45rem', fontFamily: 'var(--font-mono)' }}>
+              1. BANK STATEMENT CSV:
             </label>
             <textarea
               rows={5}
               placeholder="id,date,description,amount,referenceNo,currency&#10;BANK-01,2026-08-28,RAZORPAY PAYOUT,10000.00,RZP-01,INR"
               value={bankCsvText}
               onChange={e => setBankCsvText(e.target.value)}
-              style={{ width: '100%', background: '#07090e', border: '1px solid var(--border-hairline)', padding: '0.65rem', color: 'var(--text-primary)', fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}
+              style={{
+                width: '100%',
+                background: '#050711',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '6px',
+                padding: '0.75rem',
+                color: '#FFFFFF',
+                fontSize: '0.75rem',
+                fontFamily: 'var(--font-mono)',
+                outline: 'none',
+              }}
             />
           </div>
 
           <div>
-            <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '0.4rem' }}>
-              2. Paste Gateway Settlement CSV:
+            <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#E5B869', display: 'block', marginBottom: '0.45rem', fontFamily: 'var(--font-mono)' }}>
+              2. GATEWAY SETTLEMENT CSV:
             </label>
             <textarea
               rows={5}
               placeholder="id,orderId,customerName,grossAmount,feeAmount&#10;RZP-01,ORD-01,Acme Corp,10236.00,200.00"
               value={gatewayCsvText}
               onChange={e => setGatewayCsvText(e.target.value)}
-              style={{ width: '100%', background: '#07090e', border: '1px solid var(--border-hairline)', padding: '0.65rem', color: 'var(--text-primary)', fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}
+              style={{
+                width: '100%',
+                background: '#050711',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '6px',
+                padding: '0.75rem',
+                color: '#FFFFFF',
+                fontSize: '0.75rem',
+                fontFamily: 'var(--font-mono)',
+                outline: 'none',
+              }}
             />
           </div>
 
           <div>
-            <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '0.4rem' }}>
-              3. Paste ERP Sales Ledger CSV:
+            <label style={{ fontSize: '0.8rem', fontWeight: 700, color: '#E5B869', display: 'block', marginBottom: '0.45rem', fontFamily: 'var(--font-mono)' }}>
+              3. ERP SALES LEDGER CSV:
             </label>
             <textarea
               rows={5}
               placeholder="id,orderId,customerName,amount,date&#10;INV-01,ORD-01,Acme Corp,10236.00,2026-08-28"
               value={erpCsvText}
               onChange={e => setErpCsvText(e.target.value)}
-              style={{ width: '100%', background: '#07090e', border: '1px solid var(--border-hairline)', padding: '0.65rem', color: 'var(--text-primary)', fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}
+              style={{
+                width: '100%',
+                background: '#050711',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '6px',
+                padding: '0.75rem',
+                color: '#FFFFFF',
+                fontSize: '0.75rem',
+                fontFamily: 'var(--font-mono)',
+                outline: 'none',
+              }}
             />
           </div>
         </div>
@@ -150,9 +258,15 @@ export const DataHubView: React.FC<DataHubViewProps> = ({ activeDataset, onSelec
         <button
           onClick={handleParseCustom}
           className="btn-terminal primary"
-          style={{ width: '100%', justifyContent: 'center', padding: '0.75rem' }}
+          style={{
+            width: '100%',
+            justifyContent: 'center',
+            padding: '0.85rem',
+            fontSize: '0.85rem',
+            fontWeight: 800,
+          }}
         >
-          <FileSpreadsheet size={18} /> Parse & Load Custom Financial Batch
+          <FileSpreadsheet size={18} /> PARSE & MOUNT CUSTOM FINANCIAL BATCH
         </button>
       </div>
     </div>

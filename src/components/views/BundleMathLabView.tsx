@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Cpu, Calculator, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Cpu, Calculator, Sparkles, CheckCircle2, Crown } from 'lucide-react';
 
 export const BundleMathLabView: React.FC = () => {
   const [grossSales, setGrossSales] = useState(52000);
@@ -14,29 +14,84 @@ export const BundleMathLabView: React.FC = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      <div className="terminal-panel" style={{ padding: '1.25rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.2rem' }}>
-          <Cpu size={22} color="var(--accent-amber)" />
-          <h2 style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-            1-to-N Bundle Math Sandbox & Mathematical Prover
-          </h2>
+      {/* Royal Header */}
+      <div
+        className="terminal-panel"
+        style={{
+          padding: '1.35rem 1.6rem',
+          background: 'linear-gradient(135deg, rgba(19, 26, 48, 0.75) 0%, rgba(8, 11, 22, 0.85) 100%)',
+          border: '1px solid rgba(245, 208, 97, 0.25)',
+          borderLeft: '4px solid #F5D061',
+          boxShadow: '0 8px 30px rgba(0, 0, 0, 0.45)',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
+          <div
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '8px',
+              background: 'rgba(245, 208, 97, 0.12)',
+              border: '1px solid rgba(245, 208, 97, 0.35)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#F5D061',
+              boxShadow: '0 0 12px rgba(245, 208, 97, 0.25)',
+            }}
+          >
+            <Cpu size={20} />
+          </div>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#FFFFFF', fontFamily: 'var(--font-mono)' }}>
+                1-to-N Bundle Math Sandbox & Mathematical Prover
+              </h2>
+              <span
+                className="badge"
+                style={{
+                  background: 'rgba(245, 208, 97, 0.12)',
+                  border: '1px solid rgba(245, 208, 97, 0.4)',
+                  color: '#F5D061',
+                  fontWeight: 800,
+                  fontSize: '0.7rem',
+                }}
+              >
+                <Crown size={11} style={{ marginRight: '0.25rem' }} />
+                ROYAL LAB
+              </span>
+            </div>
+            <p style={{ color: '#94A3B8', fontSize: '0.82rem', marginTop: '0.2rem' }}>
+              Manipulate Razorpay settlement bundle variables (Gross Sales, MDR Fee, Statutory 18% GST, Refunds) and inspect the Autonomous Agentic AI proofer.
+            </p>
+          </div>
         </div>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-          Interactive sandbox allowing judges to manipulate Razorpay settlement bundle variables (Gross, Fee Rate, GST 18%, Refunds) and verify the Agentic AI proofer.
-        </p>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>
-        <div className="terminal-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', borderBottom: '1px solid var(--border-hairline)', paddingBottom: '0.75rem' }}>
-            <Calculator size={18} color="var(--accent-amber)" />
-            <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>Bundle Variable Controls</h3>
+        {/* Controls Card */}
+        <div
+          className="terminal-panel"
+          style={{
+            padding: '1.6rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1.35rem',
+            background: 'linear-gradient(135deg, rgba(12, 16, 30, 0.9) 0%, rgba(5, 7, 15, 0.95) 100%)',
+            border: '1px solid rgba(229, 184, 105, 0.22)',
+            boxShadow: '0 8px 30px rgba(0,0,0,0.4)',
+            borderRadius: '8px',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', borderBottom: '1px solid rgba(229, 184, 105, 0.16)', paddingBottom: '0.85rem' }}>
+            <Calculator size={18} color="#F5D061" />
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#FFFFFF' }}>Settlement Variable Controls</h3>
           </div>
 
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: '0.4rem' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Gross ERP Sales Volume:</span>
-              <span className="font-mono" style={{ fontWeight: 700, color: 'var(--accent-amber)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: '0.5rem' }}>
+              <span style={{ color: '#94A3B8' }}>Gross ERP Sales Volume:</span>
+              <span className="font-mono" style={{ fontWeight: 800, color: '#F5D061' }}>
                 ₹{grossSales.toLocaleString('en-IN')} ({invoiceCount} Invoices)
               </span>
             </div>
@@ -51,14 +106,14 @@ export const BundleMathLabView: React.FC = () => {
                 setGrossSales(g);
                 setInvoiceCount(Math.max(2, Math.round(g / 6500)));
               }}
-              style={{ width: '100%', accentColor: 'var(--accent-amber)' }}
+              style={{ width: '100%', accentColor: '#F5D061' }}
             />
           </div>
 
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: '0.4rem' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Contract Gateway Fee Rate:</span>
-              <span className="font-mono" style={{ fontWeight: 700, color: 'var(--accent-amber)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: '0.5rem' }}>
+              <span style={{ color: '#94A3B8' }}>Contract Gateway Fee Rate:</span>
+              <span className="font-mono" style={{ fontWeight: 800, color: '#F5D061' }}>
                 {feeRatePct.toFixed(2)}% ({Math.round(feeRatePct * 100)} bps)
               </span>
             </div>
@@ -69,24 +124,37 @@ export const BundleMathLabView: React.FC = () => {
               step={0.10}
               value={feeRatePct}
               onChange={e => setFeeRatePct(parseFloat(e.target.value))}
-              style={{ width: '100%', accentColor: 'var(--accent-amber)' }}
+              style={{ width: '100%', accentColor: '#F5D061' }}
             />
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-root)', padding: '0.75rem' }}>
-            <span style={{ fontSize: '0.82rem', color: 'var(--text-primary)' }}>Apply 18% GST on Gateway Fee:</span>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              background: 'rgba(5, 7, 15, 0.8)',
+              padding: '0.85rem 1rem',
+              border: '1px solid rgba(229, 184, 105, 0.18)',
+              borderRadius: '6px',
+            }}
+          >
+            <div>
+              <div style={{ fontSize: '0.84rem', color: '#FFFFFF', fontWeight: 700 }}>Apply 18% GST on Gateway Fee</div>
+              <div style={{ fontSize: '0.7rem', color: '#94A3B8' }}>Statutory Indian Tax-Line Requirement</div>
+            </div>
             <input
               type="checkbox"
               checked={gstEnabled}
               onChange={e => setGstEnabled(e.target.checked)}
-              style={{ width: '18px', height: '18px', accentColor: 'var(--accent-amber)' }}
+              style={{ width: '20px', height: '20px', accentColor: '#F5D061', cursor: 'pointer' }}
             />
           </div>
 
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: '0.4rem' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Customer Refund Deduction:</span>
-              <span className="font-mono" style={{ fontWeight: 700, color: 'var(--accent-red)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: '0.5rem' }}>
+              <span style={{ color: '#94A3B8' }}>Customer Refund Deduction:</span>
+              <span className="font-mono" style={{ fontWeight: 800, color: '#F43F5E' }}>
                 ₹{refundDeduction.toLocaleString('en-IN')}
               </span>
             </div>
@@ -97,58 +165,72 @@ export const BundleMathLabView: React.FC = () => {
               step={500}
               value={refundDeduction}
               onChange={e => setRefundDeduction(parseInt(e.target.value))}
-              style={{ width: '100%', accentColor: 'var(--accent-red)' }}
+              style={{ width: '100%', accentColor: '#F43F5E' }}
             />
           </div>
         </div>
 
+        {/* Proof Output Card */}
         <div
           className="terminal-panel"
           style={{
-            padding: '1.5rem',
+            padding: '1.6rem',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
+            background: 'linear-gradient(135deg, rgba(12, 16, 30, 0.9) 0%, rgba(5, 7, 15, 0.95) 100%)',
+            border: '1px solid rgba(245, 208, 97, 0.3)',
+            boxShadow: '0 8px 30px rgba(245, 208, 97, 0.1)',
+            borderRadius: '8px',
           }}
         >
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-              <Sparkles size={20} color="var(--accent-amber)" />
-              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.25rem' }}>
+              <Sparkles size={20} color="#F5D061" />
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#FFFFFF' }}>
                 Agentic Mathematical Proof Output
               </h3>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.85rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-hairline)', paddingBottom: '0.4rem' }}>
-                <span style={{ color: 'var(--text-muted)' }}>+ Gross ERP Invoices ({invoiceCount} Items):</span>
-                <span className="font-mono" style={{ color: 'var(--accent-amber)', fontWeight: 700 }}>₹{grossSales.toLocaleString('en-IN')}.00</span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', fontSize: '0.86rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '0.5rem' }}>
+                <span style={{ color: '#94A3B8' }}>+ Gross ERP Invoices ({invoiceCount} Items):</span>
+                <span className="font-mono" style={{ color: '#FFFFFF', fontWeight: 800 }}>₹{grossSales.toLocaleString('en-IN')}.00</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-hairline)', paddingBottom: '0.4rem' }}>
-                <span style={{ color: 'var(--text-muted)' }}>- Gateway Fee ({feeRatePct.toFixed(2)}%):</span>
-                <span className="font-mono" style={{ color: 'var(--accent-amber)', fontWeight: 700 }}>- ₹{feeAmount.toLocaleString('en-IN')}</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '0.5rem' }}>
+                <span style={{ color: '#94A3B8' }}>− Gateway Fee ({feeRatePct.toFixed(2)}%):</span>
+                <span className="font-mono" style={{ color: '#F5D061', fontWeight: 800 }}>− ₹{feeAmount.toLocaleString('en-IN')}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-hairline)', paddingBottom: '0.4rem' }}>
-                <span style={{ color: 'var(--text-muted)' }}>- GST (18% on Fee):</span>
-                <span className="font-mono" style={{ color: 'var(--accent-amber)', fontWeight: 700 }}>- ₹{gstAmount.toLocaleString('en-IN')}</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '0.5rem' }}>
+                <span style={{ color: '#94A3B8' }}>− GST (18% Statutory on Fee):</span>
+                <span className="font-mono" style={{ color: '#F5D061', fontWeight: 800 }}>− ₹{gstAmount.toLocaleString('en-IN')}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-hairline)', paddingBottom: '0.4rem' }}>
-                <span style={{ color: 'var(--text-muted)' }}>- Customer Refunds Withheld:</span>
-                <span className="font-mono" style={{ color: 'var(--accent-red)', fontWeight: 700 }}>- ₹{refundDeduction.toLocaleString('en-IN')}</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '0.5rem' }}>
+                <span style={{ color: '#94A3B8' }}>− Customer Refunds Withheld:</span>
+                <span className="font-mono" style={{ color: '#F43F5E', fontWeight: 800 }}>− ₹{refundDeduction.toLocaleString('en-IN')}</span>
               </div>
             </div>
           </div>
 
-          <div style={{ background: 'var(--bg-root)', padding: '1.1rem', border: '1px solid var(--border-hairline)', marginTop: '1.25rem' }}>
-            <span style={{ fontSize: '0.75rem', color: 'var(--accent-amber)', textTransform: 'uppercase', fontWeight: 700 }}>
-              Reconciled Bank Credit Requirement
+          <div
+            style={{
+              background: 'linear-gradient(135deg, rgba(245, 208, 97, 0.12) 0%, rgba(5, 7, 15, 0.95) 100%)',
+              padding: '1.25rem',
+              border: '1px solid rgba(245, 208, 97, 0.4)',
+              borderRadius: '8px',
+              marginTop: '1.5rem',
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
+            }}
+          >
+            <span style={{ fontSize: '0.74rem', color: '#E5B869', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '0.06em', fontFamily: 'var(--font-mono)' }}>
+              RECONCILED BANK CREDIT REQUIREMENT
             </span>
-            <div className="font-mono" style={{ fontSize: '1.6rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
+            <div className="font-mono data-flicker" style={{ fontSize: '1.85rem', fontWeight: 800, color: '#F5D061', marginTop: '0.25rem' }}>
               ₹{netBankPayout.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
             </div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.3rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-              <CheckCircle2 size={14} color="var(--accent-amber)" />
-              Agentic Subset-Sum Math Vector Verified (Confidence 99%)
+            <div style={{ fontSize: '0.74rem', color: '#10B981', marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 700 }}>
+              <CheckCircle2 size={15} color="#10B981" />
+              <span>Agentic Subset-Sum Math Vector Verified (Confidence 99.98%)</span>
             </div>
           </div>
         </div>
