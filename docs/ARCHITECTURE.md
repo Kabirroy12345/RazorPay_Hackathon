@@ -8,32 +8,32 @@ OmniSettle AI (`OMNI_SETTLE`) is an autonomous, three-way financial reconciliati
 
 ```mermaid
 flowchart TD
-    subgraph INGESTION ["1. Ingestion Layer"]
-        B[Bank Statement CSV / MT940]
-        G[Razorpay Settlement Batch JSON / CSV]
-        E[ERP Sales Invoices SAP / NetSuite]
+    subgraph INGESTION["1. Ingestion Layer"]
+        B["Bank Statement CSV / MT940"]
+        G["Razorpay Settlement Batch JSON / CSV"]
+        E["ERP Sales Invoices SAP / NetSuite"]
     end
 
-    subgraph VALIDATION ["2. Pre-Flight Validation & Normalization"]
-        V[Schema & Type Validator]
-        C[Currency & Coordinate Normalizer]
+    subgraph VALIDATION["2. Pre-Flight Validation and Normalization"]
+        V["Schema and Type Validator"]
+        C["Currency and Coordinate Normalizer"]
     end
 
-    subgraph DUAL_PATH ["3. Dual-Path Reconciliation Chamber"]
+    subgraph DUAL_PATH["3. Dual-Path Reconciliation Chamber"]
         direction TB
-        FP[Fast-Path Rule Matcher<br/>• 1:1 Reference ID & Hash<br/>• Strict Zero-Token Execution<br/>• Latency: &lt; 1.2ms]
-        AR[Agentic AI Resolver<br/>• Google Gemini 3.6 Flash<br/>• Branch-and-Bound Subset Sum<br/>• MDR, GST, & Refund Decomposition]
-        EX[Honest Exception Classifier<br/>• Fee Overcharge (&gt; 2.05%)<br/>• Duplicate Bank Credits<br/>• Unrecorded Revenue<br/>• Unhedged FX Slippage (&gt; ±0.5%)]
+        FP["Fast-Path Rule Matcher<br/>• 1:1 Reference ID and Hash<br/>• Strict Zero-Token Execution<br/>• Latency: less than 1.2ms"]
+        AR["Agentic AI Resolver<br/>• Google Gemini 3.6 Flash<br/>• Branch-and-Bound Subset Sum<br/>• MDR, GST, and Refund Decomposition"]
+        EX["Honest Exception Classifier<br/>• Fee Overcharge over 2.05%<br/>• Duplicate Bank Credits<br/>• Unrecorded Revenue<br/>• Unhedged FX Slippage over 0.5%"]
     end
 
-    subgraph PROVER ["4. Deterministic Subset-Sum Theorem Prover"]
-        BB[Branch-and-Bound Search Space 2^N<br/>• Suffix-Sum Upper Bounding<br/>• Partial-Sum Lower Bounding<br/>• Microsecond Proof Certificate]
+    subgraph PROVER["4. Deterministic Subset-Sum Theorem Prover"]
+        BB["Branch-and-Bound Search Space 2^N<br/>• Suffix-Sum Upper Bounding<br/>• Partial-Sum Lower Bounding<br/>• Microsecond Proof Certificate"]
     end
 
-    subgraph AUDIT_REMEDIATION ["5. Audit & Autonomous Remediation"]
-        MK[Web Crypto SHA-256 Merkle Tree<br/>• GAAP ASC 606 Certified<br/>• Tamper-Proof Audit Hash]
-        WH[Cryptographic Webhook Dispatcher<br/>• HMAC-SHA256 Signatures<br/>• Disk-Persisted Receipts<br/>• Automated Gateway Disputes]
-        HW[Holt-Winters Forward Cash Forecaster<br/>• 30-Day Liquidity Projections<br/>• P10-P50-P90 Confidence Corridors<br/>• Gemini Treasury Advisory]
+    subgraph AUDIT_REMEDIATION["5. Audit and Autonomous Remediation"]
+        MK["Web Crypto SHA-256 Merkle Tree<br/>• GAAP ASC 606 Certified<br/>• Tamper-Proof Audit Hash"]
+        WH["Cryptographic Webhook Dispatcher<br/>• HMAC-SHA256 Signatures<br/>• Disk-Persisted Receipts<br/>• Automated Gateway Disputes"]
+        HW["Holt-Winters Forward Cash Forecaster<br/>• 30-Day Liquidity Projections<br/>• P10-P50-P90 Confidence Corridors<br/>• Gemini Treasury Advisory"]
     end
 
     INGESTION --> VALIDATION

@@ -90,31 +90,31 @@ OmniSettle AI avoids the trap of running expensive LLM calls on every single tra
 
 ```mermaid
 flowchart TD
-    subgraph INGESTION ["1. MULTI-SOURCE INGESTION"]
-        B[Bank Statement CSV / MT940]
-        G[Razorpay Settlement Batch]
-        E[ERP Sales Invoices SAP / NetSuite]
+    subgraph INGESTION["1. MULTI-SOURCE INGESTION"]
+        B["Bank Statement CSV / MT940"]
+        G["Razorpay Settlement Batch"]
+        E["ERP Sales Invoices SAP / NetSuite"]
     end
 
-    subgraph PREFLIGHT ["2. VALIDATION & SANITIZATION"]
-        V[Schema Validator & Type Normalizer]
+    subgraph PREFLIGHT["2. VALIDATION AND SANITIZATION"]
+        V["Schema Validator and Type Normalizer"]
     end
 
-    subgraph DUAL_CHAMBER ["3. DUAL-PATH RECONCILIATION CHAMBER"]
+    subgraph DUAL_CHAMBER["3. DUAL-PATH RECONCILIATION CHAMBER"]
         direction TB
-        FP[⚡ FAST-PATH DETERMINISTIC MATCHER<br/>• 1:1 Reference ID & Hash Match<br/>• Zero Tokens Consumed (0.00 Cost)<br/>• Execution Latency: &lt; 1.2ms]
+        FP["⚡ FAST-PATH DETERMINISTIC MATCHER<br/>• 1:1 Reference ID and Hash Match<br/>• Zero Tokens Consumed - $0.00 Cost<br/>• Execution Latency: &lt; 1.2ms"]
         
-        AR[🧠 AGENTIC AI REASONING RESOLVER<br/>• Google Gemini 3.6 Flash<br/>• 1-to-N Bundled Settlement Decomposition<br/>• Statutory GST (18%) & MDR Fee Math]
+        AR["🧠 AGENTIC AI REASONING RESOLVER<br/>• Google Gemini 3.6 Flash<br/>• 1-to-N Bundled Settlement Decomposition<br/>• Statutory GST 18% and MDR Fee Math"]
         
-        BB[🔬 BRANCH-AND-BOUND SUBSET-SUM PROVER<br/>• Combinatorial State Space Exploration (2^N)<br/>• Suffix-Sum Upper Bounding & Pruning<br/>• Deterministic SHA-256 Proof Certificate]
+        BB["🔬 BRANCH-AND-BOUND SUBSET-SUM PROVER<br/>• Combinatorial State Space Exploration 2^N<br/>• Suffix-Sum Upper Bounding and Pruning<br/>• Deterministic SHA-256 Proof Certificate"]
         
-        EX[🚨 HONEST EXCEPTION CLASSIFIER<br/>• Fee Overcharges (&gt; 2.05%)<br/>• Duplicate Bank Credits<br/>• Missing ERP Invoices / Ghost Debits<br/>• Unhedged FX Slippage (&gt; ±0.5%)]
+        EX["🚨 HONEST EXCEPTION CLASSIFIER<br/>• Fee Overcharges above 2.05%<br/>• Duplicate Bank Credits<br/>• Missing ERP Invoices / Ghost Debits<br/>• Unhedged FX Slippage above 0.5%"]
     end
 
-    subgraph PERSISTENCE_AUDIT ["4. AUDIT, FORECAST & REMEDIATION"]
-        MK[Web Crypto SHA-256 Merkle Tree<br/>• GAAP ASC 606 Compliant<br/>• Tamper-Proof Audit Hash]
-        HW[Holt-Winters Forward Cash Forecaster<br/>• Double Exponential Smoothing<br/>• P10-P50-P90 Confidence Envelopes<br/>• Gemini Treasury Advisory]
-        WH[Cryptographic Webhook Dispatcher<br/>• HMAC-SHA256 Signatures<br/>• Disk-Persisted Receipts<br/>• Live HTTP 200 Receiver Delivery]
+    subgraph PERSISTENCE_AUDIT["4. AUDIT, FORECAST AND REMEDIATION"]
+        MK["Web Crypto SHA-256 Merkle Tree<br/>• GAAP ASC 606 Compliant<br/>• Tamper-Proof Audit Hash"]
+        HW["Holt-Winters Forward Cash Forecaster<br/>• Double Exponential Smoothing<br/>• P10-P50-P90 Confidence Envelopes<br/>• Gemini Treasury Advisory"]
+        WH["Cryptographic Webhook Dispatcher<br/>• HMAC-SHA256 Signatures<br/>• Disk-Persisted Receipts<br/>• Live HTTP 200 Receiver Delivery"]
     end
 
     INGESTION --> PREFLIGHT
