@@ -15,6 +15,15 @@
   <a href="#-gaap-asc-606-audit-center"><img src="https://img.shields.io/badge/Audit_Compliance-GAAP_ASC_606_%2B_SHA--256-D9A441?style=for-the-badge&logo=blockchaindotcom&logoColor=white" alt="GAAP ASC 606" /></a>
 </p>
 
+<p align="center">
+  <a href="https://razorpay-hackathon-dh2j.onrender.com/" target="_blank">
+    <img src="https://img.shields.io/badge/LIVE%20DEMO-razorpay--hackathon--dh2j.onrender.com-00D2FF?style=for-the-badge&logo=render&logoColor=white" alt="Live Demo on Render" />
+  </a>
+</p>
+
+> 🌐 **Official Live Cloud Deployment**: [**https://razorpay-hackathon-dh2j.onrender.com**](https://razorpay-hackathon-dh2j.onrender.com/)  
+> 🔑 **Judge Quick-Pass**: Click **`[JUDGE QUICK-PASS ➔]`** on the navbar or log in with `judge@razorpay.com` / `judge2026`.
+
 ---
 
 ## 📑 Table of Contents
