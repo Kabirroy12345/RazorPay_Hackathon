@@ -1,6 +1,7 @@
 const getApiBase = (): string => {
-  if (typeof process !== 'undefined' && process.env?.VITE_API_URL) {
-    return process.env.VITE_API_URL;
+  const proc = (globalThis as any).process;
+  if (typeof proc !== 'undefined' && proc?.env?.VITE_API_URL) {
+    return proc.env.VITE_API_URL;
   }
   try {
     if (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_API_URL) {
