@@ -6,6 +6,7 @@ import type {
   MatchResult,
   ReconciliationStatus,
 } from '../types/finance';
+import { API_BASE } from '../config/api';
 import { 
   ExternalLink, 
   Zap, 
@@ -85,7 +86,7 @@ export const ThreeWayGrid: React.FC<ThreeWayGridProps> = ({
     onSelectMatch?.(match);
 
     // Check if already remediated
-    fetch('http://localhost:3001/api/remediate/list')
+    fetch(`${API_BASE}/api/remediate/list`)
       .then(res => res.json())
       .then(data => {
         if (data.remediations && Array.isArray(data.remediations)) {
@@ -104,7 +105,7 @@ export const ThreeWayGrid: React.FC<ThreeWayGridProps> = ({
     setModalIsSending(true);
 
     try {
-      const res = await fetch('http://localhost:3001/api/remediate/dispatch', {
+      const res = await fetch(`${API_BASE}/api/remediate/dispatch`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

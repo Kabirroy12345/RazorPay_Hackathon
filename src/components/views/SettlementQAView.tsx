@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Bot, Send, Sparkles, RefreshCw, ShieldCheck, Copy, Check, Download } from 'lucide-react';
 import type { FullReconciliationOutput } from '../../engine/reconciler';
 import type { FinancialDataset } from '../../types/finance';
+import { API_BASE } from '../../config/api';
 
 interface Message {
   id: string;
@@ -333,7 +334,7 @@ Select a preset question below or ask me any custom query regarding settlement b
     setQuery('');
     setIsThinking(true);
 
-    fetch('http://localhost:3001/api/resolve/chat', {
+    fetch(`${API_BASE}/api/resolve/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

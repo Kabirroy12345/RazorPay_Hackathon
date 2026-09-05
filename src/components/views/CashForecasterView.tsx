@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { TrendingUp, Sliders, AlertTriangle, ShieldCheck, Download, Sparkles } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import type { FinancialDataset } from '../../types/finance';
+import { API_BASE } from '../../config/api';
 
 interface CashForecasterViewProps {
   reconciledCashINR: number;
@@ -70,7 +71,7 @@ export const CashForecasterView: React.FC<CashForecasterViewProps> = ({
       ? activeDataset.gatewayRecords.slice(0, 10).map(g => g.grossAmount)
       : [14200, 15800, 13900, 16400, 15100, 17200, 14800];
 
-    fetch('http://localhost:3001/api/forecast', {
+    fetch(`${API_BASE}/api/forecast`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       signal: controller.signal,

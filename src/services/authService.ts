@@ -18,7 +18,9 @@ const TOKEN_KEY = 'omnisettle_jwt_token';
 const USER_KEY = 'omnisettle_auth_user';
 const REGISTERED_USERS_KEY = 'omnisettle_registered_users';
 
-const API_BASE = 'http://localhost:3001/api/auth';
+import { API_BASE as SERVER_URL } from '../config/api';
+
+const API_BASE = `${SERVER_URL}/api/auth`;
 
 export interface StoredLocalUser {
   id: string;

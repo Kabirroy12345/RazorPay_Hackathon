@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
+    "start": "npx tsx server/index.ts",
     "test": "npx tsx src/benchmark.ts",
     "benchmark": "npx tsx src/benchmark.ts"
   },

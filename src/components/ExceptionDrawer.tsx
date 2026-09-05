@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, ShieldAlert, CheckCircle2, ArrowRight, Sparkles, Wrench } from 'lucide-react';
 import type { MatchResult, BankTransaction, GatewayRecord, ERPInvoice } from '../types/finance';
+import { API_BASE } from '../config/api';
 
 interface ExceptionDrawerProps {
   selectedMatch: MatchResult | null;
@@ -27,7 +28,7 @@ export const ExceptionDrawer: React.FC<ExceptionDrawerProps> = ({
     if (!selectedMatch) return;
     let isMounted = true;
 
-    fetch('http://localhost:3001/api/remediate/list')
+    fetch(`${API_BASE}/api/remediate/list`)
       .then(res => res.json())
       .then(data => {
         if (!isMounted) return;
@@ -90,7 +91,7 @@ export const ExceptionDrawer: React.FC<ExceptionDrawerProps> = ({
     setIsSending(true);
 
     try {
-      const res = await fetch('http://localhost:3001/api/remediate/dispatch', {
+      const res = await fetch(`${API_BASE}/api/remediate/dispatch`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

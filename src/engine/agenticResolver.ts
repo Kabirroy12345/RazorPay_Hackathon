@@ -1,4 +1,5 @@
 import type { BankTransaction, GatewayRecord, ERPInvoice, MatchResult } from '../types/finance';
+import { API_BASE } from '../config/api';
 
 export interface AgenticResult {
   agenticMatchedResults: MatchResult[];
@@ -25,7 +26,7 @@ export async function runAgenticResolver(
   // Use Vite env var or Node process.env or fallback
   const BACKEND_URL = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_BACKEND_URL) ||
                       ((globalThis as any).process?.env?.VITE_BACKEND_URL) ||
-                      'http://localhost:3001/api/resolve';
+                      `${API_BASE}/api/resolve`;
 
   let detectedMockMode = false;
 
