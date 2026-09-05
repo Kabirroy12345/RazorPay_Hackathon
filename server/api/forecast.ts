@@ -134,12 +134,15 @@ Provide JSON strictly matching this schema:
   "recommendations": string[] // 3 high-priority tactical treasury recommendations
 }`;
 
-        const candidateModels = ['gemini-2.0-flash', 'gemini-1.5-flash'];
+        const candidateModels = ['gemini-3.6-flash', 'gemini-2.5-flash', 'gemini-1.5-flash'];
         for (const model of candidateModels) {
-          const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
           const response = await fetch(url, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              'x-goog-api-key': apiKey,
+            },
             body: JSON.stringify({
               contents: [{ parts: [{ text: geminiPrompt }] }],
               generationConfig: { responseMimeType: 'application/json', temperature: 0.1 },
@@ -154,7 +157,7 @@ Provide JSON strictly matching this schema:
             modelProvider = 'Google Gemini 3.6 Flash + Holt-Winters Smoothing';
             break;
           }
-          if (response.status === 401 || response.status === 403) break;
+          if (response.status === 429 || response.status === 401 || response.status === 403) break;
         }
       } catch (geminiErr: any) {
         console.warn(`[Treasury AI] Gemini advisory unavailable (${geminiErr.message || 'Error'}), served statistical Holt-Winters projection.`);

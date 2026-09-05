@@ -10,16 +10,16 @@ const SYSTEM_PROMPT = `You are an expert AI financial controller responsible for
 You must output STRICTLY valid JSON. Do not include markdown formatting like \`\`\`json.
 Your goal is to parse the input data, perform the required financial reasoning, and return the structured JSON schema requested.`;
 
-// Helper: Call Google Gemini REST API directly with production endpoints (2.0-flash / 1.5-flash)
+// Helper: Call Google Gemini REST API directly with x-goog-api-key header (compatible with 2026 AQ. and AIza keys)
 async function callGemini(prompt: string, isJson: boolean = true): Promise<any> {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey || apiKey === 'mock') throw new Error('NO_GEMINI_KEY');
 
-  const candidateModels = ['gemini-2.0-flash', 'gemini-1.5-flash'];
+  const candidateModels = ['gemini-3.6-flash', 'gemini-2.5-flash', 'gemini-1.5-flash'];
   let lastError: any = null;
 
   for (const model of candidateModels) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
     const bodyPayload: any = {
       contents: [{ parts: [{ text: prompt }] }],
     };
@@ -34,15 +34,19 @@ async function callGemini(prompt: string, isJson: boolean = true): Promise<any> 
     try {
       const response = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': apiKey,
+        },
         body: JSON.stringify(bodyPayload),
       });
 
       if (!response.ok) {
         const status = response.status;
-        lastError = new Error(`HTTP ${status}`);
-        // If unauthenticated (401) or forbidden (403), no need to retry other models
-        if (status === 401 || status === 403) break;
+        const errData = await response.json().catch(() => ({}));
+        const msg = errData?.error?.message || `HTTP ${status}`;
+        lastError = new Error(status === 429 ? 'QUOTA_EXHAUSTED (HTTP 429)' : `HTTP ${status}`);
+        if (status === 429 || status === 401 || status === 403) break;
         continue;
       }
 
@@ -58,7 +62,7 @@ async function callGemini(prompt: string, isJson: boolean = true): Promise<any> 
       return rawText;
     } catch (err: any) {
       lastError = err;
-      if (err.message?.includes('401') || err.message?.includes('403')) break;
+      if (err.message?.includes('QUOTA_EXHAUSTED') || err.message?.includes('429')) break;
     }
   }
 
