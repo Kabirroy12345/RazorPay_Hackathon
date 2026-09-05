@@ -10,44 +10,59 @@ const SYSTEM_PROMPT = `You are an expert AI financial controller responsible for
 You must output STRICTLY valid JSON. Do not include markdown formatting like \`\`\`json.
 Your goal is to parse the input data, perform the required financial reasoning, and return the structured JSON schema requested.`;
 
-// Helper: Call Google Gemini REST API directly with gemini-3.6-flash
+// Helper: Call Google Gemini REST API directly with production endpoints (2.0-flash / 1.5-flash)
 async function callGemini(prompt: string, isJson: boolean = true): Promise<any> {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey || apiKey === 'mock') throw new Error('NO_GEMINI_KEY');
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
-  const bodyPayload: any = {
-    contents: [{ parts: [{ text: prompt }] }],
-  };
+  const candidateModels = ['gemini-2.0-flash', 'gemini-1.5-flash'];
+  let lastError: any = null;
 
-  if (isJson) {
-    bodyPayload.generationConfig = {
-      responseMimeType: 'application/json',
-      temperature: 0.1,
+  for (const model of candidateModels) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+    const bodyPayload: any = {
+      contents: [{ parts: [{ text: prompt }] }],
     };
+
+    if (isJson) {
+      bodyPayload.generationConfig = {
+        responseMimeType: 'application/json',
+        temperature: 0.1,
+      };
+    }
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bodyPayload),
+      });
+
+      if (!response.ok) {
+        const status = response.status;
+        lastError = new Error(`HTTP ${status}`);
+        // If unauthenticated (401) or forbidden (403), no need to retry other models
+        if (status === 401 || status === 403) break;
+        continue;
+      }
+
+      const data = await response.json();
+      const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!rawText) throw new Error('Empty response from Gemini');
+
+      if (isJson) {
+        const cleanText = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
+        return JSON.parse(cleanText);
+      }
+
+      return rawText;
+    } catch (err: any) {
+      lastError = err;
+      if (err.message?.includes('401') || err.message?.includes('403')) break;
+    }
   }
 
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(bodyPayload),
-  });
-
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Gemini API error (${response.status}): ${errText}`);
-  }
-
-  const data = await response.json();
-  const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!rawText) throw new Error('Empty response from Gemini');
-
-  if (isJson) {
-    const cleanText = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
-    return JSON.parse(cleanText);
-  }
-
-  return rawText;
+  throw lastError || new Error('Gemini API call failed');
 }
 
 // Helper: check which LLM provider is configured
@@ -99,7 +114,7 @@ Instructions:
           modelProvider: 'Google Gemini 3.6 Flash',
         });
       } catch (geminiError: any) {
-        console.warn('Gemini bundle call failed, using dynamic solver:', geminiError.message);
+        console.warn(`[AI Gateway] Gemini API unavailable (${geminiError.message || 'Error'}), activated Deterministic Subset-Sum Engine.`);
       }
     }
 
@@ -205,7 +220,7 @@ Instructions:
           modelProvider: 'Google Gemini 3.6 Flash',
         });
       } catch (geminiError: any) {
-        console.warn('Gemini FX call failed, using fallback:', geminiError.message);
+        console.warn(`[AI Gateway] Gemini FX call unavailable (${geminiError.message || 'Error'}), using corridor tolerance engine.`);
       }
     }
 
@@ -300,7 +315,7 @@ INSTRUCTIONS:
           modelProvider: 'Google Gemini 3.6 Flash',
         });
       } catch (geminiError: any) {
-        console.warn('Gemini chat failed, fallback to local:', geminiError.message);
+        console.warn(`[AI Gateway] Gemini chat unavailable (${geminiError.message || 'Error'}), fallback to local FinTech knowledge graph.`);
       }
     }
 

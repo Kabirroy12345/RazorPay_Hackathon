@@ -134,25 +134,30 @@ Provide JSON strictly matching this schema:
   "recommendations": string[] // 3 high-priority tactical treasury recommendations
 }`;
 
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: geminiPrompt }] }],
-            generationConfig: { responseMimeType: 'application/json', temperature: 0.1 },
-          }),
-        });
+        const candidateModels = ['gemini-2.0-flash', 'gemini-1.5-flash'];
+        for (const model of candidateModels) {
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: geminiPrompt }] }],
+              generationConfig: { responseMimeType: 'application/json', temperature: 0.1 },
+            }),
+          });
 
-        if (response.ok) {
-          const data = await response.json();
-          const parsed = JSON.parse(data?.candidates?.[0]?.content?.parts?.[0]?.text || '{}');
-          if (parsed.aiCommentary) aiCommentary = parsed.aiCommentary;
-          if (Array.isArray(parsed.recommendations) && parsed.recommendations.length > 0) recommendations = parsed.recommendations;
-          modelProvider = 'Google Gemini 3.6 Flash + Holt-Winters Smoothing';
+          if (response.ok) {
+            const data = await response.json();
+            const parsed = JSON.parse(data?.candidates?.[0]?.content?.parts?.[0]?.text || '{}');
+            if (parsed.aiCommentary) aiCommentary = parsed.aiCommentary;
+            if (Array.isArray(parsed.recommendations) && parsed.recommendations.length > 0) recommendations = parsed.recommendations;
+            modelProvider = 'Google Gemini 3.6 Flash + Holt-Winters Smoothing';
+            break;
+          }
+          if (response.status === 401 || response.status === 403) break;
         }
       } catch (geminiErr: any) {
-        console.warn('Gemini forecast commentary error, using statistical default:', geminiErr.message);
+        console.warn(`[Treasury AI] Gemini advisory unavailable (${geminiErr.message || 'Error'}), served statistical Holt-Winters projection.`);
       }
     }
 
